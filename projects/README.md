@@ -8,8 +8,23 @@ projects/<projekt-name>/
 ├── inputs/                # Bekommen: Decks, Excel, Briefings, Transkripte (unverändert, wird nie archiviert)
 ├── work/                  # Werkbank: aktuelle Arbeitsstände — Notizen, Analysen, Entwürfe
 ├── outputs/               # Rausgegangen: datiert (YYYY-MM-DD_<name>) — die Liefer-Historie des Projekts
+├── code/                  # NUR falls zum Projekt ein Git-Repo gehört: Klon mit eigener Historie (siehe unten)
 └── _archive/              # Ersetzte Arbeitsstände aus work/ (entsteht beim ersten Ersatz)
 ```
+
+## Gehört zum Projekt ein Git-Repo?
+
+Arbeitet der User an einem Projekt mit eigenem Repo (Produktcode, Website, Firmen-Repo), wird dieses **in das Projekt geklont, nicht in den Workspace gemischt**:
+
+```bash
+git clone <repo-url> projects/<slug>/code
+```
+
+Damit sieht Claude in einer Sitzung beides: den Projektkontext (README, Aufgaben, Entscheidungen) und den echten Code. Die beiden Git-Historien bleiben getrennt — `.gitignore` schließt `projects/*/code/` aus, der Tagesabschluss committet also nie fremden Code in das persönliche Workspace-Repo.
+
+**Warum getrennt und nicht alles in einem Repo:** Im Workspace liegen Aufgaben, Notizen und Mail-Zusammenfassungen — persönliches Arbeitsmaterial. Läge das im Firmen-Repo, läse es jeder Kollege mit. Umgekehrt hat Firmencode in einem privaten Sicherungs-Repo nichts verloren. Beides fällt erst auf, wenn es zu spät ist.
+
+**Eintragen** in `context/config.yaml → inventory.repos` (Name + URL), dann erscheint es als Karte im Dashboard.
 
 ## Kern-Prinzipien
 

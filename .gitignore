@@ -6,6 +6,10 @@ __pycache__/
 .env
 .env.local
 
+# Fremde Git-Repos, die zu einem Projekt gehoeren (projects/README.md).
+# Eigene Historie, eigener Ort — nie in das persoenliche Workspace-Repo mitcommitten.
+projects/*/code/
+
 # Laufzeit-Artefakte dieses Workspace (kein Versionsgut)
 _tmp/*
 !_tmp/README.md
