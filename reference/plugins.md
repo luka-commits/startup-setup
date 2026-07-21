@@ -42,6 +42,9 @@ Die Kurz-Übersicht, aus der Claude im Alltag empfiehlt (installiert wird nur au
 | Token-Kosten sehen und senken | `codeburn` (unten, läuft ohne Installation via `npx`) | Wenn die Rechnung Fragen aufwirft |
 | Umbauten einfach halten statt aufblasen | `ponytail` (oben) | Vor jedem größeren Eigenbau |
 | Die CLAUDE.md nach Monaten aufräumen | `claude-md-management` (offizieller Katalog) | Wenn die Regeln Wildwuchs ansetzen |
+| Vertriebs-/Marketing-Arbeit mit Claude | `anthropics/knowledge-work-plugins` (offiziell, unten) | Wenn Sales/Marketing im Team Claude nutzt |
+| Einen Skill finden, den es vielleicht schon gibt | `find-skills` (unten) | Bevor etwas selbst gebaut wird |
+| Ernsthaft Software entwickeln (TDD, Debugging, Planung) | `superpowers` (unten) | Nur auf Entwickler-Rechnern |
 
 ## Optional (bei Bedarf)
 
@@ -62,6 +65,24 @@ Docs: https://impeccable.style
 
 **Wann:** Erst, wenn du das Dashboard optisch ernsthaft weiterentwickelst, zum Beispiel mit `/impeccable critique context/today.html`. Vorher überflüssig.
 
+### `knowledge-work-plugins`: Sales, Marketing & Co (offiziell von Anthropic)
+
+**Install:** `/plugin marketplace add anthropics/knowledge-work-plugins`, dann z.B. `/plugin install sales@knowledge-work-plugins`
+
+Open-Source-Plugins von Anthropic für Wissensarbeit jenseits von Code — Vertrieb, Marketing und mehr. Für ein Startup oft der relevanteste Katalog nach dem offiziellen: Wer im Team Angebote, Kampagnen oder Kunden-Recherche mit Claude macht, findet hier fertige Abläufe statt Eigenbau.
+
+### `find-skills`: erst suchen, dann bauen
+
+**Install:** `npx skills add vercel-labs/skills --skill find-skills`
+
+Durchsucht die offene Skill-Registry (skills.sh), bevor etwas selbst gebaut wird — die „gibt es das schon?"-Frage als Werkzeug. Zaun dazu: Die Registry ist Community-Ware, Qualität schwankt. Gefundene Skills erst ansehen (Quelle, was sie lesen/schreiben), dann installieren — nie blind, und Claude installiert grundsätzlich nichts ungefragt.
+
+### `superpowers`: Entwicklungs-Methodik für die Techniker im Team
+
+**Install:** `/plugin marketplace add obra/superpowers-marketplace`, dann `/plugin install superpowers@superpowers-marketplace`
+
+Bewährtes Skill-Framework für ernsthafte Software-Entwicklung: Brainstorming → Plan → Umsetzung, testgetrieben, systematisches Debugging. **Aber:** Es hängt sich in jede Session ein und drückt seine Methodik durch — auf dem Rechner von jemandem, der hier nur Briefings und Projekte steuert, ist das Lärm und kollidiert mit dem schlanken Alltag dieses Pakets. Deshalb: nur auf Entwickler-Rechnern, nicht als Team-Standard.
+
 ### `codeburn`: Verbrauch sichtbar machen
 
 **Test ohne Installation:** `npx codeburn`
@@ -70,14 +91,22 @@ Read-only, liest nur lokale Session-Dateien, nichts verlässt den Rechner. Zeigt
 
 **Wann:** Wenn du wissen willst, was deine Nutzung konkret treibt. Für den Alltagsfall reicht die Sektion „Verbrauch im Griff" im Hilfe-Tab des Dashboards.
 
-## Bewusst NICHT installieren
+## Power-User — mit offenen Augen
 
-### `claude-mem`: Memory-Plugin
+Zwei Werkzeuge für Leute, die das System schon sicher fahren und mehr wollen. Beide bewusst NICHT für die erste Zeit und nicht für jeden Rechner.
 
-Die Gründe, in der Reihenfolge ihres Gewichts:
+### `claude-mem`: Session-übergreifendes Zusatz-Gedächtnis
 
-1. **Es loggt jeden Werkzeugaufruf**, einschließlich der gelesenen Projektdaten, in eine eigene Datenbank. Wer mit Kundendaten arbeitet, gibt damit eine Kopie an eine Stelle, die er nicht kontrolliert.
-2. **Großer Dependency-Footprint:** Daemon, Vektor-Datenbank und ein permanent laufender Hintergrund-Server. Viel bewegliches Teil für einen Nutzen, den dieses Paket schon abdeckt.
-3. **Assoziierter Crypto-Token beim Maintainer.** Kein technisches Argument, aber es sagt etwas über die langfristigen Anreize eines Projekts, dem man Lesezugriff auf alles gibt.
+**Install:** `/plugin marketplace add thedotmack/claude-mem`, dann `/plugin install claude-mem@thedotmack`
 
-**Der Ersatz ist schon eingebaut:** Das dateibasierte Gedächtnis dieses Workspace (`context/PROJECTS.md`, `STATUS.md`, `JOURNAL.md`) deckt denselben Bedarf, ohne einen Server Dritter. Es hat außerdem einen Vorteil, den kein Vektor-Speicher hat: Du kannst es lesen, korrigieren und in Git versionieren.
+Merkt sich, was in früheren Sessions passiert ist, und macht es durchsuchbar — nützlich, wenn viel außerhalb der Kern-Befehle gearbeitet wird und Kontext zwischen Sessions verloren geht. **Vor dem Einschalten drei Dinge wissen:**
+
+1. **Es loggt Werkzeugaufrufe** — inklusive gelesener Projektinhalte — in eine eigene lokale Datenbank. Wer mit vertraulichen Kundendaten arbeitet, klärt das vorher (dieselbe Frage wie bei jedem Werkzeug mit Vollzugriff).
+2. **Es bringt einen Daemon und eine Vektor-Datenbank mit** — läuft im Hintergrund, will gewartet werden. Wenn etwas klemmt, ist das eine Fehlerquelle mehr.
+3. **Das Datei-Gedächtnis bleibt die Wahrheit.** `PROJECTS.md`, `STATUS.md` und `JOURNAL.md` sind weiterhin der Ort, an dem der Stand lebt — lesbar, korrigierbar, in Git versioniert. claude-mem ist Zusatz-Recall, nie Ersatz. Nichts aus dem System darauf umbauen.
+
+### `task-observer`: Skill-Lücken automatisch protokollieren (Experiment)
+
+**Install:** `npx skills add rebelytics/one-skill-to-rule-them-all --skill task-observer`
+
+Beobachtet die Arbeit, loggt Lücken und Verbesserungs-Kandidaten, speist wöchentliche Reviews. Ehrliche Einordnung: **Dieses Paket hat dafür schon eigene Mechanik** — die „ab jetzt"-Lernschleife, den Tagesabschluss und `claude-code-setup` für die Automatisierungs-Analyse. task-observer legt ein zweites Beobachtungs-Log daneben (zwei Orte für dieselbe Art Wissen) und kostet in jeder Session etwas mit. Wer es probiert: als Experiment mit Ablaufdatum — nach zwei Wochen entscheiden, ob es die eingebaute Schleife wirklich schlägt, sonst wieder raus.

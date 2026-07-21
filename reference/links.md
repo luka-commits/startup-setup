@@ -41,8 +41,13 @@ Jeder Link mit dem Moment, in dem man ihn braucht. Anleitungen aus dem Paket zue
 | Link | Was |
 |---|---|
 | [github.com/anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | Der offizielle Anthropic-Katalog — wird beim Setup freigeschaltet; was davon zählt, steht in [`plugins.md`](plugins.md) |
+| [github.com/anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins) | Offizielle Plugins für Sales/Marketing-Arbeit — für Startups oft der zweitwichtigste Katalog |
 | [github.com/DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Anti-Over-Engineering, empfohlen vor eigenen Umbauten |
+| [github.com/obra/superpowers](https://github.com/obra/superpowers) | Entwicklungs-Methodik — nur für die Techniker im Team |
+| [github.com/vercel-labs/skills](https://github.com/vercel-labs/skills) | `find-skills`: die offene Skill-Registry durchsuchen, bevor man selbst baut |
 | [impeccable.style](https://impeccable.style) | Design-Guidance, erst bei ernsthafter Dashboard-Weiterentwicklung |
+
+Die Einordnung, was wann sinnvoll ist (und was bewusst nur mit Zaun): [`plugins.md`](plugins.md).
 
 ## Konten-Übersicht
 
