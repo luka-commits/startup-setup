@@ -98,6 +98,10 @@ Du wirst `/morning` vergessen. Du wirst zwei Wochen beim Klienten sein und hier 
 - **Der Wiedereinstieg kostet EINE Nachricht:** Sag „guten Morgen", du wirst gefragt, was in der Zwischenzeit passiert ist — zwei, drei Stichpunkte genügen, den Rest räumt Claude auf (auch die Aufgaben, die längst erledigt sind).
 - **Es gibt keinen Verfall.** Wer im Chat arbeitet, hält das System nebenbei aktuell, auch ganz ohne Befehle.
 
+## Wünsche äußern kostet einen Satz
+
+Fehlt dir etwas („kann das auch Angebote nachverfolgen?", „ich hätte gern einen Befehl für den Wochenbericht") — sag es einfach im Chat. Was sich sofort bauen lässt, wird gebaut. Was das Paket selbst weiterentwickeln müsste, verpackt Claude auf Wunsch als fertige Mail an die Person, von der du das System hast — du liest drüber und klickst Senden. So fließt dein Bedarf zurück, ohne dass du irgendwo ein Ticket schreiben musst.
+
 ## Wenn etwas hakt
 
 - **Einfach im Chat sagen, was komisch ist** ("das Dashboard zeigt alte Daten", "die Task ist doppelt") — das System repariert abgeleitete Dateien selbst und sichert vor jeder Änderung den letzten Projektstand.

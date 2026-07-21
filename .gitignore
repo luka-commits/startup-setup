@@ -18,3 +18,7 @@ context/today.html
 AUSLIEFERUNG.md
 ROADMAP.md
 _abgeloest/
+
+# Lukas Deliverables über das Paket (nie ausliefern) — nur die Wurzel:
+# projects/*/outputs/ beim Kunden MUSS mitgesichert werden
+/outputs/

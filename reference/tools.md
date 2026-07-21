@@ -71,6 +71,19 @@ playwright screenshot https://example.com test.png
 
 > **Zu prüfen:** In Firmen mit gemanagten Laptops kann der Browser-Download blockiert sein oder über einen internen Proxy laufen müssen. Beim ersten Aufsetzen einmal durchspielen, statt es vorauszusetzen.
 
+## OpenRouter: Bilder und Spezial-Modelle (optional)
+
+Claude kann keine Bilder erzeugen. Wenn im Alltag Produktbilder, Illustrationen oder Social-Grafiken gebraucht werden — oder ein selbstgebauter Skill mal ein anderes Modell (Gemini-Bildmodelle, Kimi, …) aufrufen soll — läuft das über **einen** OpenRouter-Account statt fünf einzelner Anbieter-Konten: ein Key, alle Modelle, Abrechnung an einer Stelle.
+
+**Einrichten:** Account auf [openrouter.ai](https://openrouter.ai), Key unter **Keys**, dann dauerhaft setzen (gleiches Muster wie beim Firecrawl-Key):
+
+```
+echo 'export OPENROUTER_API_KEY="sk-or-DEIN-KEY"' >> ~/.zshrc     # Mac
+setx OPENROUTER_API_KEY "sk-or-DEIN-KEY"                          # Windows (PowerShell)
+```
+
+**Ehrliche Einordnung:** Das ist nichts für Tag 1. Der Chat selbst läuft immer über Claude (dein Abo, kein Doppel-Zahlen); OpenRouter kommt erst ins Spiel, wenn ein konkreter Bedarf da ist — dann sagt Claude von selbst, dass dafür der Key fehlt, und dieser Abschnitt ist die Anleitung.
+
 ## Reihenfolge beim Einrichten
 
 Beide gehören zur Standard-Ausstattung dieser Variante und werden im Setup mitinstalliert. Das Kernsystem (Briefing, Projekte, Entwürfe, Einsortieren) läuft auch ohne sie, es kann dann nur weniger. Wenn du wirklich nur eines aufsetzt, nimm firecrawl. Web-Inhalte kommen im Alltag häufiger vor als Browser-Automatisierung.

@@ -51,4 +51,4 @@ Die Einordnung, was wann sinnvoll ist (und was bewusst nur mit Zaun): [`plugins.
 
 ## Konten-Übersicht
 
-Damit klar ist, was man am Ende alles hat: **Claude** (Pro/Max/Team, für Claude Code) · **GitHub** (kostenlos, Workspace-Repo + tägliche Sicherung) · **Firecrawl** (eigener Firmen-Account, Web-Inhalte). Mehr nicht.
+Damit klar ist, was man am Ende alles hat: **Claude** (Pro/Max/Team, für Claude Code) · **GitHub** (kostenlos, Workspace-Repo + tägliche Sicherung) · **Firecrawl** (eigener Firmen-Account, Web-Inhalte) · optional **OpenRouter** ([openrouter.ai](https://openrouter.ai), erst bei Bedarf: Bilderstellung + Spezial-Modelle, siehe [`tools.md`](tools.md)). Mehr nicht.
