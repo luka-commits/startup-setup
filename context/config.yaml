@@ -46,6 +46,9 @@ own_tools: []
 inventory:
 
   # Verbindungen zu Mail, Kalender, Dateiablage, CRM. Anleitung: reference/mcp.md
+  # Optionales Feld `slot:` ordnet einen Eintrag einem der sechs festen Fähigkeits-Slots
+  # im Workspace-Tab zu: mail | kalender | ablage | chat | crm | dev.
+  # Beispiel: - {name: "Microsoft 365", slot: mail, status: true, purpose: "Postfach fürs Briefing"}
   connectors: []
     # - name: "Microsoft 365"
     #   purpose: "Mail und Kalender"

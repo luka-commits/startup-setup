@@ -1,6 +1,6 @@
 ---
 name: morning
-description: "Tages-Briefing und Mail-Triage — der Tagesstart. Use whenever the user asks for 'morning briefing', 'guten morgen', 'tagesstart', 'briefe mich', 'start my day', 'what's today', 'wo muss ich antworten', 'postfach scannen', or any request to orient them to the current day. Lädt Kalender (Termine, Reminder), triagiert Mail (Handlungsbedarf / Follow-up / Wartet / Tickets / Kenntnis) und den Workspace-Stand, erzeugt ein Briefing im Chat und rendert das Dashboard (context/today.html, 5 Tabs). Neue Mail-Funde landen als Inbox-Einträge, die der User übernimmt oder verwirft — nichts verschwindet still. Bietet am Ende optional Mail-Entwürfe für die eindeutigen Fälle an (nie automatisch, nie bei Sensiblem) und ein kurzes Gespräch, um den Tag zu planen. Kein Ranking, keine Top-3 — der User priorisiert selbst."
+description: "Tages-Briefing und Mail-Triage — der Tagesstart. Use whenever the user asks for 'morning briefing', 'guten morgen', 'tagesstart', 'briefe mich', 'start my day', 'what's today', 'wo muss ich antworten', 'postfach scannen', or any request to orient them to the current day. Lädt Kalender (Termine, Reminder), triagiert Mail (Handlungsbedarf / Follow-up / Wartet / Tickets / Kenntnis) und den Workspace-Stand, erzeugt ein Briefing im Chat und rendert das Dashboard (context/today.html, 6 Tabs). Neue Mail-Funde landen als Inbox-Einträge, die der User übernimmt oder verwirft — nichts verschwindet still. Bietet am Ende optional Mail-Entwürfe für die eindeutigen Fälle an (nie automatisch, nie bei Sensiblem) und ein kurzes Gespräch, um den Tag zu planen. Kein Ranking, keine Top-3 — der User priorisiert selbst."
 ---
 
 # Morning Briefing Skill
@@ -540,7 +540,7 @@ Die Prüfliste steht in `reference/selbsttest.md` — dort lesen, nicht hier dup
 
 **Zwei Ausgaben aus einem Durchlauf:**
 - **Im Chat-Briefing:** der **wichtigste** offene Punkt als EINE Zeile am Ende, in Klartext (nie Dateiname, Pfad oder Feldname). Stufe A täglich, Stufe B nur montags, alles sauber = kein Wort. Zwei Befunde heißt trotzdem nur eine Zeile.
-- **Ins Dashboard:** ALLE offenen Punkte als Fragment `{{SELBSTTEST}}` (Step 7b) im Tab „Start Here". Nichts offen → leerer String, der Block blendet sich aus.
+- **Ins Dashboard:** ALLE offenen Punkte als Fragment `{{SELBSTTEST}}` (Step 7b) im Tab „Workspace". Nichts offen → leerer String, der Block blendet sich aus.
 
 ## Step 6b: Aufräumen (still, kostet nichts wenn nichts anfällt)
 

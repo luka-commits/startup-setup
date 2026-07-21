@@ -77,7 +77,7 @@ Der letzte Punkt ist der, der später zählt: Verweist ein Transkript nächste W
 
 ## Täglicher/wöchentlicher Loop
 
-1. **Morgens:** `/morning` — Kalender + Mail + offene Tasks als Briefing im Chat + volles Dashboard (`context/today.html`, 5 Tabs: Heute / Kalender / Projekte & Notizen / Start Here / Hilfe). Neue Mail-Funde landen in der Inbox-Zone (übernehmen oder verwerfen — nichts verschwindet still). Am Ende optional: Tag kurz durchplanen — dein Plan landet mit Fortschrittsbalken im Dashboard. Bereits triagierte Mails werden nicht doppelt gelesen (Markierung im Postfach + internes Ledger).
+1. **Morgens:** `/morning` — Kalender + Mail + offene Tasks als Briefing im Chat + volles Dashboard (`context/today.html`, 6 Tabs: Heute / Kalender / Projekte & Notizen / Workspace / Start Here / Hilfe — der Workspace-Tab zeigt jederzeit, was verbunden ist, was noch offen ist und was zuletzt lief). Neue Mail-Funde landen in der Inbox-Zone (übernehmen oder verwerfen — nichts verschwindet still). Am Ende optional: Tag kurz durchplanen — dein Plan landet mit Fortschrittsbalken im Dashboard. Bereits triagierte Mails werden nicht doppelt gelesen (Markierung im Postfach + internes Ledger).
 2. **Tagsüber:** normal mit Claude arbeiten. Status-Änderungen, Blocker, Entscheidungen einfach im Chat erwähnen — der Workspace aktualisiert sich selbst.
 3. **Abends:** `/eod` — kurzer Check-in: Plan gegen Realität, was liegen bleibt, was entschieden wurde.
 4. **Der Kalender-Tab zeigt bewusst nur heute:** deine Termine als Zeitachse mit den freien Blöcken dazwischen, und bei Terminen mit Projekt-Bezug ein aufklappbares Briefing. Was in den nächsten Tagen ansteht, fragst du im Chat („was steht diese Woche an?").

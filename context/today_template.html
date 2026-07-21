@@ -445,6 +445,47 @@
     border-radius: 10px; padding: 12px 15px; font-size: 12.5px; line-height: 1.55; color: var(--text-3); }
   .inv-empty code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px;
     background: var(--bg); border-radius: 4px; padding: 1px 5px; }
+  /* Amber-Abzeichen fuer Routinen, deren letzter Lauf lange her ist. Green-Override der .on-Karte
+     wird bewusst zurueckgeholt, sonst faerbt .inv-card.on das Warn-Abzeichen gruen. */
+  .inv-badge.warn, .inv-card.on .inv-badge.warn {
+    background: var(--amber-soft); border-color: var(--amber-border); color: var(--amber-deep); }
+
+  /* ── Verbindungs-Slots: sechs feste Anschluesse, ruhiges Raster ── */
+  /* gefuellt = gruener Punkt (Brandfarbe), offen = grauer Ring. Kein Rot, keine Akzent-Balken. */
+  /* Feste drei Spalten: sechs Slots ergeben zwei volle Reihen. auto-fill wuerde bei breiten
+     Fenstern fuenf Karten nebeneinander setzen und die sechste allein stehen lassen. */
+  .slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); margin-top: 10px; }
+  @media (max-width: 1000px) { .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 620px) { .slots { grid-template-columns: 1fr; } }
+  .slot { display: flex; gap: 11px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 13px 15px; box-shadow: var(--shadow-1); }
+  .slot-dot { flex: none; width: 10px; height: 10px; margin-top: 5px; border-radius: 50%;
+    border: 2px solid var(--border-strong); background: transparent; }
+  .slot.on .slot-dot { border-color: var(--brand); background: var(--brand);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent); }
+  .slot-body { min-width: 0; }
+  .slot-cap { margin: 0 0 2px; font-size: 10.5px; font-weight: 600; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--text-3); }
+  .slot-name { margin: 0 0 3px; font-size: 13.5px; font-weight: 600; letter-spacing: -.01em;
+    display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .slot-name.muted { color: var(--text-3); font-weight: 500; }
+  .slot-badge { font-size: 10px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px; background: var(--brand-soft); color: var(--brand-deep); }
+  .slot-desc { margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-2); overflow-wrap: anywhere; }
+
+  /* ── Zeilen-Listen: zuletzt benutzte Befehle + Gedaechtnis-Dateien ── */
+  .rowlist { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .cmduse, .memrow { display: flex; align-items: baseline; gap: 10px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 13px; box-shadow: var(--shadow-1); }
+  .cmduse code, .memrow code { flex: none; font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px; color: var(--brand-deep); background: var(--brand-soft); border-radius: 6px; padding: 2px 8px; }
+  .cmduse > span, .memrow > span { font-size: 12px; color: var(--text-2); overflow-wrap: anywhere; }
+  .cmduse-warn { margin-left: auto; flex: none; font-size: 11px; font-weight: 600;
+    color: var(--amber-deep); background: var(--amber-soft); border: 1px solid var(--amber-border);
+    border-radius: 999px; padding: 2px 8px; }
+  .memrow .memwhen { margin-left: auto; flex: none; font-size: 11.5px; color: var(--text-3); white-space: nowrap; }
 
   footer.bottom { max-width: 1380px; margin: 0 auto; padding: 16px 48px 40px;
     color: var(--text-3); font-size: 11.5px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -499,6 +540,7 @@
     <button class="tab active" data-tab="heute">Heute</button>
     <button class="tab" data-tab="kalender">Kalender</button>
     <button class="tab" data-tab="projekte">Projekte &amp; Notizen</button>
+    <button class="tab" data-tab="workspace">Workspace</button>
     <button class="tab" data-tab="tools">Start Here</button>
     <button class="tab" data-tab="hilfe">Hilfe</button>
   </div>
@@ -567,26 +609,7 @@
     <div class="pgrid">{{PROJECT_DETAIL}}</div>
   </div><!-- /pane-projekte -->
 
-  <div class="tabpane" id="pane-tools" hidden>
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow-1)">
-      <b style="font-size:13.5px">👋 Neu hier? Das ganze System in 3 Minuten (Video)</b>
-      <video controls preload="none" src="../reference/quickstart.mp4" style="width:100%;border-radius:8px;background:#000;display:block;margin-top:10px"></video>
-      <p style="margin:8px 0 0;font-size:12.5px;line-height:1.55;color:var(--text-2)">Startet nichts? Dann liegt die Datei noch nicht bei — sie gehört in <code>reference/quickstart.mp4</code>. Kein Problem: Der Guide darunter deckt dasselbe ab.</p>
-    </div>
-
-    <div class="guide">
-      <h3 class="label">So arbeitest du damit</h3>
-      <ol class="guide-steps">
-        <li><b>Morgens</b> „Guten Morgen" sagen. Claude holt Kalender und Mails, briefed dich und baut dieses Dashboard. Optional planst du danach den Tag durch.</li>
-        <li><b>Tagsüber</b> einfach reden, kein Befehl nötig: „Kapitel 3 ist fertig", „warte auf die IT", „Termin lief gut, wir machen X". Claude sortiert es ein.</li>
-        <li><b>Dokumente</b> in den <code>inbox/</code>-Ordner legen und „lies das ein" sagen. Entscheidungen und To-dos landen im richtigen Projekt.</li>
-        <li><b>Abends</b> „Feierabend": kurzer Tagesabschluss, was war und was liegen bleibt. Was in den nächsten Tagen ansteht, fragst du einfach im Chat („was steht diese Woche an?").</li>
-        <li><b>Wenn etwas falsch ist</b>, sag es einfach: „das stimmt nicht", „hab ich längst beantwortet". Wird korrigiert, ohne Diskussion. Kommt derselbe Fehler öfter, wird die Ursache abgestellt.</li>
-        <li><b>In Eile?</b> „Guten Morgen, schnell" lässt die Postfach-Analyse weg: Kalender und Aufgaben in rund 30 Sekunden. <b>Länger weg gewesen?</b> Sag einfach „guten Morgen", du wirst gefragt, was liegengeblieben ist.</li>
-      </ol>
-      <p class="guide-foot">Du musst dir keine Befehle merken. „Was liegt heute an?" tut dasselbe wie „Guten Morgen", und eine frische Unterhaltung pro Tag reicht völlig.</p>
-    </div>
-
+  <div class="tabpane" id="pane-workspace" hidden>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
       <symbol id="i-cmd" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M8 10l2.5 2L8 14"/><path d="M13 15h4"/></symbol>
       <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5"/><path d="M15 3v5"/><path d="M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v4"/></symbol>
@@ -596,8 +619,54 @@
       <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
     </defs></svg>
 
+    <h3 class="label">Deine Verbindungen</h3>
+    <p class="sec-sub">Die sechs Anschlüsse deines Systems. Grüner Punkt heißt verbunden, grauer Ring heißt noch offen. Verbunden wird einmalig in Claude Cowork unter Einstellungen und Connectors; die Anleitung steht in <code>reference/mcp.md</code>.</p>
+    <div class="slots" id="slots">
+      <!-- {{SLOTS}} — Fragment-Format (wird 1:1 an dieser Stelle eingesetzt):
+           IMMER genau sechs Slots, IMMER in dieser Reihenfolge, auch wenn die meisten offen sind:
+             1. Mail · 2. Kalender · 3. Dateiablage · 4. Team-Chat · 5. CRM · 6. Entwicklung
+
+           Gefüllter Slot (Anschluss steht):
+             <div class="slot on"><span class="slot-dot"></span><div class="slot-body"><p class="slot-cap">MAIL</p><p class="slot-name">PRODUKT<span class="slot-badge">heute aktiv</span></p><p class="slot-desc">ZWECK</p></div></div>
+
+           Offener Slot (noch nicht verbunden):
+             <div class="slot"><span class="slot-dot"></span><div class="slot-body"><p class="slot-cap">CRM</p><p class="slot-name muted">offen</p><p class="slot-desc">WANN-ES-SICH-LOHNT + Verbinde-Hinweis</p></div></div>
+
+           Regeln:
+             - SLOT-CAP ist immer der Slot-Name in Großbuchstaben, nie der Produktname.
+             - PRODUKT = das tatsächlich verbundene Produkt (Outlook, Google Kalender, SharePoint, Slack, …).
+             - <span class="slot-badge">heute aktiv</span> NUR, wenn der Anschluss heute wirklich Daten geliefert hat.
+               Kein Abzeichen ist der Normalfall; der grüne Punkt sagt bereits, dass es steht.
+             - ZWECK = ein kurzer Satz, was dieser Anschluss für den Nutzer tut.
+             - Offene Slots tragen nie Rot und nie das Wort Fehler. Sie sind eine Möglichkeit, kein Defekt.
+             - Alle Texte HTML-escapen (&amp; &lt; &gt;), keine Em-Dashes.
+             - Quelle und Regeln: reference/dashboard-render.md
+             - Wird der Platzhalter gar nicht ersetzt (oder bleibt leer), setzt das Template selbst
+               alle sechs Slots als "offen" mit einem generischen Hinweis. -->
+      {{SLOTS}}
+    </div>
+
+    <h3 class="label sec">Befehle</h3>
+    <p class="sec-sub">Die vier festen Befehle deines Systems. Auswendig lernen musst du sie nicht, im Chat reicht auch normale Sprache.</p>
+    <div class="invgrid">
+      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Tages-Briefing</p><p class="inv-desc">Kalender, Mail-Triage und Tasks zum Tagesstart. Baut auch dieses Dashboard.</p><code class="inv-chip">/morning</code></div></div>
+      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Tagesabschluss</p><p class="inv-desc">Plan gegen Realität, was liegen bleibt, was entschieden wurde.</p><code class="inv-chip">/eod</code></div></div>
+      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Mail-Entwurf</p><p class="inv-desc">Mail in deinem Stil, fertig zum Abschicken in deinem Mailprogramm.</p><code class="inv-chip">/email</code></div></div>
+      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Dokumente einsortieren</p><p class="inv-desc">Dokumente, Transkripte und Notizen automatisch in deine Projekte einsortieren.</p><code class="inv-chip">/ingest</code></div></div>
+    </div>
+    <div class="rowlist" id="cmduse" data-collapse-empty>
+      <!-- {{COMMANDS_USED}} — "Zuletzt benutzt", eine Zeile pro Befehl:
+             <div class="cmduse"><code>/morning</code><span>zuletzt heute 07:31</span></div>
+           Liegt der letzte Lauf ungewöhnlich lange zurück, zusätzlich am Zeilenende:
+             <span class="cmduse-warn">lange her</span>
+           Welche Befehle auftauchen, wie "zuletzt" formuliert wird und ab wann "lange her" gilt,
+           steht im Render-Vertrag. Quelle und Regeln: reference/dashboard-render.md
+           Keine Zeile (oder Platzhalter nicht ersetzt) → der Block klappt komplett weg. -->
+      {{COMMANDS_USED}}
+    </div>
+
     <h3 class="label sec">Deine Ausstattung</h3>
-    <p class="sec-sub">Was dein System kann und was davon bei dir schon eingerichtet ist. Farbiges Symbol heißt eingerichtet, graues heißt noch offen. Gepflegt wird die Liste in <code>context/config.yaml</code> unter <code>inventory</code>; die Befehle sind immer da.</p>
+    <p class="sec-sub">Was dein System kann und was davon bei dir schon eingerichtet ist. Farbiges Symbol heißt eingerichtet, graues heißt noch offen. Gepflegt wird die Liste in <code>context/config.yaml</code> unter <code>inventory</code>.</p>
     <div id="ausstattung">
       <!-- {{AUSSTATTUNG}} — Fragment-Format (wird 1:1 an dieser Stelle eingesetzt):
            Fünf Kategorie-Blöcke, IMMER alle fünf, IMMER in dieser Reihenfolge, jeder exakt so:
@@ -622,6 +691,10 @@
                connectors ohne status → "nicht verbunden" · clis ohne status → "nicht installiert" · plugins ohne status → "nicht installiert".
                Ist etwas eingerichtet, kein Abzeichen setzen; das farbige Symbol sagt es bereits.
                AUSNAHME repos: die Karte des Workspace-Repos trägt "gesichert vor X" (aus git log, siehe dashboard-render.md).
+               AUSNAHME routines: die Karte darf zusätzlich zum Chip ein Abzeichen "zuletzt gelaufen vor X" tragen.
+                 Ist unklar, ob die Routine überhaupt noch läuft (letzter Lauf deutlich über dem Zeitplan),
+                 stattdessen die amber-Variante <span class="inv-badge warn">läuft evtl. nicht mehr</span> setzen.
+                 Wann welches greift: siehe dashboard-render.md.
              - <code class="inv-chip">…</code> NUR wo eine Adresse oder ein Zeitplan dazugehört, sonst weglassen:
                repos → url · routines → schedule. connectors/clis/plugins tragen keinen Chip.
              - BESCHREIBUNG = purpose aus config.yaml. Fehlt purpose, Karte ohne <p class="inv-desc">.
@@ -629,13 +702,6 @@
              - Leere Kategorie: den Block trotzdem ausgeben, das <div class="invgrid"> einfach leer lassen.
                Den Hinweis setzt das Template selbst aus data-hint. Wird der Platzhalter gar nicht ersetzt,
                zeigt das Template ebenfalls einen ruhigen Hinweis statt einer Lücke. -->
-      <h4 class="inv-cat">Befehle</h4>
-      <div class="invgrid">
-        <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Tages-Briefing</p><p class="inv-desc">Kalender, Mail-Triage und Tasks zum Tagesstart. Baut auch dieses Dashboard.</p><code class="inv-chip">/morning</code></div></div>
-        <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Tagesabschluss</p><p class="inv-desc">Plan gegen Realität, was liegen bleibt, was entschieden wurde.</p><code class="inv-chip">/eod</code></div></div>
-        <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Mail-Entwurf</p><p class="inv-desc">Mail in deinem Stil, fertig zum Abschicken in deinem Mailprogramm.</p><code class="inv-chip">/email</code></div></div>
-        <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Dokumente einsortieren</p><p class="inv-desc">Dokumente, Transkripte und Notizen automatisch in deine Projekte einsortieren.</p><code class="inv-chip">/ingest</code></div></div>
-      </div>
       <div id="inv-dyn">{{AUSSTATTUNG}}</div>
       <div class="health" id="health" data-collapse-empty>
         <h4>Was an deinem System noch offen ist</h4>
@@ -643,12 +709,15 @@
       </div>
     </div>
 
-    <h3 class="label sec">Ohne Befehl, einfach sagen</h3>
-    <p class="sec-sub">Diese drei brauchen keinen Befehl. Sag es im Chat in eigenen Worten, der Rest passiert von selbst.</p>
-    <div class="tgrid">
-      <div class="tool"><code>Chat</code><h3>Mein Mail-Stil</h3><p>Einmalig: Claude liest deine gesendeten Mails (nur lesen, nichts wird gesendet) und lernt deinen Schreibstil. Danach klingen alle Entwürfe nach dir, nicht nach Vorlage.</p><p class="say">„Leite meinen Mail-Stil ab"</p></div>
-      <div class="tool"><code>Chat</code><h3>Neuer Case</h3><p>Ordner, Projekt-Steckbrief und erste Aufgaben legt Claude selbst an. Sag einfach, dass etwas Neues anfängt — den Rest macht das System.</p><p class="say">„Ich starte einen neuen Case: …"</p></div>
-      <div class="tool"><code>Chat</code><h3>Problembericht</h3><p>Etwas kaputt und nichts hilft? Claude baut eine fertige Mail an die Person, von der du das System hast — mit allem, was sie wissen muss. Du klickst nur Senden.</p><p class="say">„Schreib einen Problembericht"</p></div>
+    <h3 class="label sec">Dein Gedächtnis, live</h3>
+    <p class="sec-sub">Die Dateien in <code>context/</code>, in denen dein Arbeitsstand wirklich liegt. Sie sind der Grund, warum das System dich noch kennt, wenn du morgen eine frische Unterhaltung startest.</p>
+    <div class="rowlist" id="memory">
+      <!-- {{MEMORY_FILES}} — eine Zeile pro Arbeitsdatei aus context/:
+             <div class="memrow"><code>PROJECTS.md</code><span>ZWECK</span><span class="memwhen">aktualisiert VOR X</span></div>
+           ZWECK = ein kurzer Halbsatz, was in der Datei steht (die Projekte, die Aufgaben, die Historie).
+           Welche Dateien auftauchen und wie der Zeitpunkt formuliert wird: reference/dashboard-render.md
+           Keine Zeile (oder Platzhalter nicht ersetzt) → das Template setzt selbst einen ruhigen Hinweis. -->
+      {{MEMORY_FILES}}
     </div>
 
     <h3 class="label sec">Eigene Tools</h3>
@@ -661,10 +730,42 @@
     </div>
 
     <h3 class="label sec">Zusätzlich verfügbar</h3>
-    <p class="sec-sub">Skills und Plugins, die nicht Teil dieses Pakets sind, die du dir aber dazuholen kannst. Frag Claude, wenn du etwas brauchst, das die Werkzeuge oben nicht abdecken.</p>
-    <div class="tgrid">
+    <p class="sec-sub">Skills und Plugins, die nicht Teil dieses Pakets sind, die du dir aber dazuholen kannst. Frag Claude, wenn du etwas brauchst, das deine Ausstattung oben nicht abdeckt.</p>
+    <div class="tgrid" id="tools-extra">
+      <!-- {{TOOLS_EXTRA}} — pro Empfehlung eine Kachel im .tool-Format (wie "Eigene Tools").
+           Kein Eintrag (oder Platzhalter nicht ersetzt) → das Template setzt selbst einen Hinweis. -->
       {{TOOLS_EXTRA}}
     </div>
+  </div><!-- /pane-workspace -->
+
+  <div class="tabpane" id="pane-tools" hidden>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow-1)">
+      <b style="font-size:13.5px">👋 Neu hier? Das ganze System in 3 Minuten (Video)</b>
+      <video controls preload="none" src="../reference/quickstart.mp4" style="width:100%;border-radius:8px;background:#000;display:block;margin-top:10px"></video>
+      <p style="margin:8px 0 0;font-size:12.5px;line-height:1.55;color:var(--text-2)">Startet nichts? Dann liegt die Datei noch nicht bei — sie gehört in <code>reference/quickstart.mp4</code>. Kein Problem: Der Guide darunter deckt dasselbe ab.</p>
+    </div>
+
+    <div class="guide">
+      <h3 class="label">So arbeitest du damit</h3>
+      <ol class="guide-steps">
+        <li><b>Morgens</b> „Guten Morgen" sagen. Claude holt Kalender und Mails, briefed dich und baut dieses Dashboard. Optional planst du danach den Tag durch.</li>
+        <li><b>Tagsüber</b> einfach reden, kein Befehl nötig: „Kapitel 3 ist fertig", „warte auf die IT", „Termin lief gut, wir machen X". Claude sortiert es ein.</li>
+        <li><b>Dokumente</b> in den <code>inbox/</code>-Ordner legen und „lies das ein" sagen. Entscheidungen und To-dos landen im richtigen Projekt.</li>
+        <li><b>Abends</b> „Feierabend": kurzer Tagesabschluss, was war und was liegen bleibt. Was in den nächsten Tagen ansteht, fragst du einfach im Chat („was steht diese Woche an?").</li>
+        <li><b>Wenn etwas falsch ist</b>, sag es einfach: „das stimmt nicht", „hab ich längst beantwortet". Wird korrigiert, ohne Diskussion. Kommt derselbe Fehler öfter, wird die Ursache abgestellt.</li>
+        <li><b>In Eile?</b> „Guten Morgen, schnell" lässt die Postfach-Analyse weg: Kalender und Aufgaben in rund 30 Sekunden. <b>Länger weg gewesen?</b> Sag einfach „guten Morgen", du wirst gefragt, was liegengeblieben ist.</li>
+      </ol>
+      <p class="guide-foot">Du musst dir keine Befehle merken. „Was liegt heute an?" tut dasselbe wie „Guten Morgen", und eine frische Unterhaltung pro Tag reicht völlig.</p>
+    </div>
+
+    <h3 class="label sec">Ohne Befehl, einfach sagen</h3>
+    <p class="sec-sub">Diese drei brauchen keinen Befehl. Sag es im Chat in eigenen Worten, der Rest passiert von selbst.</p>
+    <div class="tgrid">
+      <div class="tool"><code>Chat</code><h3>Mein Mail-Stil</h3><p>Einmalig: Claude liest deine gesendeten Mails (nur lesen, nichts wird gesendet) und lernt deinen Schreibstil. Danach klingen alle Entwürfe nach dir, nicht nach Vorlage.</p><p class="say">„Leite meinen Mail-Stil ab"</p></div>
+      <div class="tool"><code>Chat</code><h3>Neuer Case</h3><p>Ordner, Projekt-Steckbrief und erste Aufgaben legt Claude selbst an. Sag einfach, dass etwas Neues anfängt — den Rest macht das System.</p><p class="say">„Ich starte einen neuen Case: …"</p></div>
+      <div class="tool"><code>Chat</code><h3>Problembericht</h3><p>Etwas kaputt und nichts hilft? Claude baut eine fertige Mail an die Person, von der du das System hast — mit allem, was sie wissen muss. Du klickst nur Senden.</p><p class="say">„Schreib einen Problembericht"</p></div>
+    </div>
+
   </div><!-- /pane-tools -->
 
   <div class="tabpane" id="pane-hilfe" hidden>
@@ -723,10 +824,12 @@
 </footer>
 
 <script>
-  // Leere Sektionen komplett ausblenden
+  // Leere Sektionen komplett ausblenden. Mit Liste zaehlt die Liste (der Rahmen hat noch eine
+  // Ueberschrift), ohne Liste zaehlen die eigenen Kind-Elemente — ein unersetzter Platzhalter
+  // ist reiner Text und damit kein Kind-Element, faellt also korrekt als "leer" durch.
   document.querySelectorAll('[data-collapse-empty]').forEach(el => {
     const ul = el.querySelector('ul');
-    if (!ul || !ul.children.length) el.style.display = 'none';
+    if (!(ul ? ul.children.length : el.childElementCount)) el.style.display = 'none';
   });
 
   // Eigene Tools: keine konfiguriert (oder Platzhalter nicht ersetzt) → ruhiger Hinweis statt Lücke
@@ -750,8 +853,41 @@
     });
   })();
 
+  // Verbindungs-Slots: die sechs Anschluesse stehen immer, auch ohne Daten. Ist der Platzhalter
+  // nicht ersetzt, zeigt das Template sie selbst als "offen" — nie eine Luecke, nie ein rohes Fragment.
+  (function () {
+    const box = document.getElementById('slots');
+    if (!box || box.querySelector('.slot')) return;
+    box.innerHTML = [
+      ['Mail', 'Sobald das Postfach verbunden ist, holt Claude deine Mails und sortiert sie für dich vor.'],
+      ['Kalender', 'Zeigt deine Termine im Briefing und im Kalender-Tab. Läuft über denselben Connector wie die Mail.'],
+      ['Dateiablage', 'Lässt Claude Dokumente aus eurer Ablage lesen, statt dass du sie einzeln herüberkopierst.'],
+      ['Team-Chat', 'Lohnt sich, sobald wichtige Absprachen im Chat laufen und nicht mehr per Mail.'],
+      ['CRM', 'Lohnt sich, wenn du Kunden oder Leads pflegst und der Stand dort lebt.'],
+      ['Entwicklung', 'Für alle, die Code oder Repos verwalten und den Stand im Blick behalten wollen.'],
+    ].map(([cap, desc]) =>
+      '<div class="slot"><span class="slot-dot"></span><div class="slot-body">' +
+      '<p class="slot-cap">' + cap.toUpperCase() + '</p>' +
+      '<p class="slot-name muted">offen</p>' +
+      '<p class="slot-desc">' + desc + ' Verbinden kannst du das in Claude Cowork unter Einstellungen und Connectors.</p>' +
+      '</div></div>'
+    ).join('');
+  })();
+
+  // Zusaetzlich verfuegbar: nichts empfohlen (oder Platzhalter nicht ersetzt) → ruhiger Hinweis
+  (function () {
+    const g = document.getElementById('tools-extra');
+    if (g && !g.querySelector('.tool')) g.innerHTML = '<div class="inv-empty">Hier steht noch keine Empfehlung. Sag im Chat, was du brauchst, dann prüft Claude, ob es dafür einen fertigen Skill oder ein Plugin gibt.</div>';
+  })();
+
+  // Gedaechtnis: noch keine Arbeitsdateien gelesen (oder Platzhalter nicht ersetzt) → ruhiger Hinweis
+  (function () {
+    const g = document.getElementById('memory');
+    if (g && !g.querySelector('.memrow')) g.innerHTML = '<div class="inv-empty">Hier stehen gleich deine Arbeitsdateien aus <code>context/</code> mit ihrem letzten Stand. Nach dem ersten Briefing füllt sich die Liste von selbst.</div>';
+  })();
+
   // Tabs — aktiver Tab überlebt Auto-Reloads (sessionStorage), Deep-Link via #kalender/#projekte
-  const panes = { heute: document.getElementById('pane-heute'), kalender: document.getElementById('pane-kalender'), projekte: document.getElementById('pane-projekte'), tools: document.getElementById('pane-tools'), hilfe: document.getElementById('pane-hilfe') };
+  const panes = { heute: document.getElementById('pane-heute'), kalender: document.getElementById('pane-kalender'), projekte: document.getElementById('pane-projekte'), workspace: document.getElementById('pane-workspace'), tools: document.getElementById('pane-tools'), hilfe: document.getElementById('pane-hilfe') };
   function showTab(name) {
     if (!panes[name]) name = 'heute';
     Object.entries(panes).forEach(([k, p]) => p.hidden = k !== name);

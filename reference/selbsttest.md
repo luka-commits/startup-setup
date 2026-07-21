@@ -32,7 +32,8 @@ Der Sinn: Die gefährlichen Fehler dieses Systems sind die **stillen**. Ein Plat
 | Mail-Stil nie abgeleitet | `context/EMAIL_STYLE.md` fehlt | „Ich schreibe Entwürfe noch im Standardton. Sag ‚leite meinen Mail-Stil ab', dann klingen sie nach dir." |
 | Entwurfsweg unbekannt | `draft_method` ist leer | „Für Mail-Entwürfe habe ich noch keinen Weg. Sag Bescheid, dann finden wir den passenden." |
 | Dashboard-Weg unbekannt | `script_command` ist leer | „Das Dashboard kann ich gerade nicht bauen, das Briefing im Chat läuft normal weiter." |
-| Ausstattung nie erfasst | `inventory` ist komplett leer | „Im Tab ‚Start Here' ist deine Ausstattung noch leer. Wenn du magst, trage ich ein, was bei dir verbunden ist." |
+| Ausstattung nie erfasst | `inventory` ist komplett leer | „Im Workspace-Tab ist deine Ausstattung noch leer. Wenn du magst, trage ich ein, was bei dir verbunden ist." |
+| Routine ohne Lebenszeichen | Eine Routine steht in `inventory.routines`, aber ihre jüngste Ergebnis-Datei (z.B. `inbox/briefing-*.md` bei der Morgen-Routine) ist älter als 2 Werktage | „Deine [Routine] hat seit [X] nichts mehr abgeliefert — vermutlich ist die Verbindung in der Cloud abgelaufen. Auf claude.ai/code/routines siehst du den letzten Lauf; ‚Run now' testet sie sofort." |
 | Karteileichen | Tasks, die seit über 30 Tagen unverändert offen stehen | „Drei Aufgaben stehen seit über einem Monat unverändert. Sollen die weg, oder sind sie noch aktuell?" |
 | Ausstattung driftet | Der heutige Lauf widerspricht `config.yaml → inventory`: ein Connector antwortet, der als „nicht verbunden" geführt wird (oder umgekehrt, Wissen aus `/morning` Step 0c bzw. ToolSearch — kein Extra-Abruf), ein gelistetes CLI fehlt auf dem Rechner | Still korrigieren (inventory anpassen, Safeguard 4), danach EIN Satz nur, wenn etwas Neues auftauchte, das eine Entscheidung braucht: „Du hast inzwischen [X] verbunden — soll ich es ins Briefing einbeziehen?" |
 
