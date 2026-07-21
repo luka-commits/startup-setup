@@ -10,7 +10,7 @@ Für die zwei empfohlenen Kommandozeilen-Werkzeuge (firecrawl, playwright) siehe
 
 ### Anthropic Official Marketplace — und was davon wirklich zählt
 
-**Install:** `/plugin marketplace add anthropics/claude-plugins-official`
+**Wird beim Setup freigeschaltet** (SETUP.md Schritt 3): `/plugin marketplace add anthropics/claude-plugins-official` — das macht nur den Katalog bekannt, installiert wird einzeln und erst auf dein Ja. Im Alltag gilt: Merkt Claude bei einer Aufgabe, dass ein Plugin aus dem Katalog konkret helfen würde, empfiehlt es das in einem Satz mit dem Install-Befehl — nie ungefragt installieren, nie wiederholt nerven.
 
 Kuratiertes, geprüftes Directory von Anthropic selbst — der erste Ort, an dem man nachsieht, bevor man ein Plugin aus einer fremden Quelle installiert. Aber: Das meiste darin ist Entwickler-Werkzeug (Code-Review, Commits, Debugging) und für diesen Workspace irrelevant. **Für dich zählen zwei:**
 
@@ -29,7 +29,27 @@ Alles Weitere aus dem Marketplace nur auf konkreten Anlass installieren: Jedes P
 
 Erzwingt die einfachste, kürzeste Lösung (YAGNI). Nützlich, bevor man Skills oder das Dashboard erweitert: `/ponytail-review` nach größeren Umbauten, `/ponytail-audit` für ein ganzes Projekt. Wer dieses Paket anpasst, spart sich damit die typische Runde, in der aus einer kleinen Änderung ein Framework wird.
 
+## Nach Use Case — was wofür
+
+Die Kurz-Übersicht, aus der Claude im Alltag empfiehlt (installiert wird nur auf dein Ja):
+
+| Du willst … | Werkzeug | Wann |
+|---|---|---|
+| Wiederkehrende Abläufe zu eigenen Befehlen machen | `skill-creator` (offizieller Katalog) | Sobald der erste Ablauf zweimal gleich lief |
+| Herausfinden, was sich bei DIR lohnt zu automatisieren | `claude-code-setup` (offizieller Katalog) — analysiert deine bisherige Nutzung und schlägt Automatisierungen vor | Nach 2–4 Wochen Nutzung; vorher gibt es keine Muster zu lesen |
+| Eigenen Code reviewen lassen | Nichts installieren: `/code-review` und `/security-review` sind in Claude Code **eingebaut** | Sofort, wenn ihr Code im Workspace habt |
+| Designs / Oberflächen erstellen und verbessern | `impeccable` (unten) | Erst bei ernsthafter Frontend-Arbeit |
+| Token-Kosten sehen und senken | `codeburn` (unten, läuft ohne Installation via `npx`) | Wenn die Rechnung Fragen aufwirft |
+| Umbauten einfach halten statt aufblasen | `ponytail` (oben) | Vor jedem größeren Eigenbau |
+| Die CLAUDE.md nach Monaten aufräumen | `claude-md-management` (offizieller Katalog) | Wenn die Regeln Wildwuchs ansetzen |
+
 ## Optional (bei Bedarf)
+
+### `claude-code-setup`: Automatisierungs-Kandidaten finden
+
+**Install:** `/plugin install claude-code-setup@claude-plugins-official`
+
+Liest die eigene Claude-Code-Nutzung (lokal) und empfiehlt, welche deiner wiederkehrenden Abläufe sich als Skill, Hook oder Routine lohnen würden. Das perfekte Gespann mit `system-erweitern.md` und `routinen.md`: erst zeigt es dir WAS, dann bauen wir es. Vor Woche 2 sinnlos — es braucht Nutzungsgeschichte.
 
 ### `impeccable`: Design-Guidance für Frontends
 

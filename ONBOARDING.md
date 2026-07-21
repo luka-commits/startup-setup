@@ -30,7 +30,7 @@ dein-workspace/
 └── reference/               Nachschlagewerke: Connectors, Werkzeuge, Triage-Regeln
 ```
 
-Dasselbe als visuelle Karte mit Farbcode (was dir gehört vs. was bei Updates frisch kommt): [`ORDNERKARTE.html`](ORDNERKARTE.html) — Doppelklick, öffnet im Browser. Was in `reference/` steckt: [`mcp.md`](reference/mcp.md) (Mail- und Kalender-Connectors), [`tools.md`](reference/tools.md) (firecrawl und playwright), [`mail-triage-rules.md`](reference/mail-triage-rules.md) (wie `/morning` sortiert) und [`plugins.md`](reference/plugins.md) (optionale Erweiterungen, hier ausdrücklich erlaubt).
+Dasselbe als visuelle Karte mit Farbcode (was dir gehört vs. was bei Updates frisch kommt): [`ORDNERKARTE.html`](ORDNERKARTE.html) — Doppelklick, öffnet im Browser. Was in `reference/` steckt: [`mcp.md`](reference/mcp.md) (Mail- und Kalender-Connectors, inkl. IMAP-Ersatzweg), [`tools.md`](reference/tools.md) (firecrawl und playwright), [`mail-triage-rules.md`](reference/mail-triage-rules.md) (wie `/morning` sortiert), [`plugins.md`](reference/plugins.md) (optionale Erweiterungen, hier ausdrücklich erlaubt), [`routinen.md`](reference/routinen.md) (vorgebaute Automatik-Läufe), [`uebungen.md`](reference/uebungen.md) (die erste Woche zum Üben) und [`links.md`](reference/links.md) (alle Links an einem Ort).
 
 ### Warum drei Dateien für Projekte, und nicht eine
 

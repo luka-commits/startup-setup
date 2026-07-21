@@ -74,6 +74,25 @@ Wie ein Entwurf entsteht, hängt vom Rechner ab. Das Setup probiert die Wege dur
 
 Fällt der eingetragene Weg irgendwann aus, fällt Claude automatisch eine Stufe tiefer und sagt dir in einem Satz, was stattdessen passiert ist.
 
-## Ganz ohne Connector
+## Weg B: IMAP direkt (wenn es keinen Connector gibt)
+
+Für Postfächer, an die kein Connector kommt: kein Claude-Cowork-Zugang, Connector von der IT geblockt, oder die Mail läuft über einen eigenen Mailserver. Dann geht Mail und sogar Kalender über **IMAP direkt** — zwei kleine, read-only Skripte liegen dafür in `reference/scripts/`:
+
+- **`mail-day.py`** — listet alle Mails eines Tages (ein- und ausgehend). Damit kann Claude die Triage-Rohdaten holen, wenn der Connector fehlt.
+- **`mail-freebusy.py`** — der Trick für den Kalender: Die meisten Termine kommen als iCal-Einladung per Mail. Das Skript liest die Einladungen aus dem Postfach und baut daraus Belegt-Blöcke plus freie Termin-Vorschläge. **Kein OAuth, kein Kalender-Zugriff nötig.**
+
+**Einrichten:** Zugangsdaten einmalig in `~/.config/credentials.env` (Datei mit `chmod 600` schützen, liegt außerhalb des Repos und landet nie in Git):
+
+```
+MAIL_IMAP_HOST=imap.deine-firma.de
+MAIL_USER=du@deine-firma.de
+MAIL_PASS=app-passwort
+```
+
+**Ehrliche Voraussetzung:** Das Postfach muss IMAP mit Passwort oder App-Passwort erlauben. Eigene Mailserver und die meisten Hoster: ja. Microsoft 365 und Google Workspace: nur, wenn die IT das freigeschaltet hat — dort ist der Connector (Weg A) der vorgesehene Weg. Beides gleichzeitig braucht niemand.
+
+**Grenzen:** Nur lesen (BODY.PEEK — nichts wird verschoben, gelöscht oder als gelesen markiert), keine Dateiablage, kein Teams/Chat. Claude ruft die Skripte bei Bedarf selbst per Terminal auf, wenn der Connector fehlt und die Zugangsdaten da sind.
+
+## Ganz ohne Connector und ohne IMAP
 
 Das Paket läuft auch dann. Projekt-Tracking, Dashboard, Dokumenten-Einsortierung, Aufgabenverwaltung und Mail-Entwürfe brauchen keinen Connector. Es fehlt genau zweierlei: die Termine im Briefing und die Postfach-Triage. Das Setup prüft das selbst und sagt dir in einem Satz, was fehlt und was dadurch wegfällt.

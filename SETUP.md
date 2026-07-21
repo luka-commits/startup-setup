@@ -2,7 +2,7 @@
 
 Einmalig pro Person, etwa 20 bis 30 Minuten. Danach startest du jeden Tag nur noch Claude Code in diesem Ordner.
 
-Diese Anleitung deckt alles ab, was **vor** dem ersten Chat passieren muss: Werkzeuge installieren, Repo holen, Claude Code am richtigen Ort starten, Verbindungen herstellen. Die eigentliche Personalisierung (dein Name, deine Projekte, dein Mail-Stil) fragt Claude im ersten Chat selbst ab. Du musst hier nichts über dich eintragen.
+Diese Anleitung deckt alles ab, was **vor** dem ersten Chat passieren muss: Werkzeuge installieren, Repo holen, Claude Code am richtigen Ort starten, Verbindungen herstellen. Dieselben Schritte gibt es als visuelle Karte zum Abhaken: **`SETUP-ROADMAP.html`** (Doppelklick, öffnet im Browser, merkt sich deinen Fortschritt). Die eigentliche Personalisierung (dein Name, deine Projekte, dein Mail-Stil) fragt Claude im ersten Chat selbst ab. Du musst hier nichts über dich eintragen.
 
 **Reihenfolge zählt.** Schritt 2 ist der Punkt, an dem die meisten Setups scheitern. Nimm ihn ernst, auch wenn er trivial aussieht.
 
@@ -126,6 +126,14 @@ Claude erkennt selbst, dass dieser Ordner noch niemandem gehört, und startet di
 Rechne mit 10 bis 20 Minuten, je nachdem wie viele Projekte und Dokumente du mitbringst. Beides lässt sich später nachziehen.
 
 **Claude wartet immer auf deine erste Nachricht.** Ein leeres Eingabefeld nach dem Start ist kein Fehler.
+
+**Noch im selben Fenster, ein Befehl:** den offiziellen Plugin-Katalog von Anthropic freischalten —
+
+```
+/plugin marketplace add anthropics/claude-plugins-official
+```
+
+Das installiert nichts. Es macht den Katalog bekannt, damit Claude dir im Alltag das passende Werkzeug daraus empfehlen kann, wenn eine Aufgabe eines braucht — installiert wird nur, wenn du Ja sagst. Was aus dem Katalog wirklich zählt, steht in `reference/plugins.md`.
 
 ---
 
@@ -257,6 +265,8 @@ Claude fragt Repo, Umgebung, Modell und Connectors ab und legt die Routine an. V
 
 **Voraussetzung:** ein Abo-Login mit aktiviertem Claude Code im Web. Der kürzeste mögliche Abstand zwischen zwei Läufen ist eine Stunde.
 
+**Mehr fertige Routinen** (Wochenrückblick, Montags-Vorausblick) stehen mit Kopier-Sätzen in [`reference/routinen.md`](reference/routinen.md).
+
 ---
 
 ## Optional: Diktieren statt Tippen
@@ -276,4 +286,4 @@ Rein optional. Wer lieber tippt, lässt es weg.
 
 Jeden Tag: VS Code mit diesem Ordner öffnen, oder im Terminal `cd` in den Ordner und `claude` starten. Ein „Guten Morgen" genügt, den Rest kennt das System.
 
-Wie der Ordner aufgebaut ist, steht in `ONBOARDING.md` und in der `ORDNERKARTE.html` (Doppelklick, öffnet im Browser). Was das System liest und was es nie tut, steht in `WAS-DIESES-SYSTEM-TUT.md`.
+Wie der Ordner aufgebaut ist, steht in `ONBOARDING.md` und in der `ORDNERKARTE.html` (Doppelklick, öffnet im Browser). Was das System liest und was es nie tut, steht in `WAS-DIESES-SYSTEM-TUT.md`. **Für die erste Woche:** die Übungen in `reference/uebungen.md` — ein Szenario pro Tag, daran lernt man das Arbeiten mit dem System schneller als durch Lesen. Alle Links und Anleitungen an einem Ort: `reference/links.md`.
