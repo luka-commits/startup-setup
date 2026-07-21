@@ -23,13 +23,25 @@ Das Paket läuft auch ohne beide. Es fällt dann aber alles weg, was aus dem Int
 npm install -g firecrawl-cli
 ```
 
-Danach braucht firecrawl einen API-Key in der Umgebungsvariable `FIRECRAWL_API_KEY`. Ob der Key sitzt, zeigt:
+Danach braucht firecrawl einen API-Key. Der Key stammt aus einem **eigenen Firecrawl-Account** eurer Firma, nicht aus einem geteilten — Abrechnung und Nutzungsdaten bleiben damit bei euch. Account anlegen auf [firecrawl.dev](https://firecrawl.dev) (kostenloser Einstieg reicht zum Testen), der Key steht dort unter **API Keys**.
+
+Den Key einmal dauerhaft setzen:
+
+**Mac** (Terminal):
+```
+echo 'export FIRECRAWL_API_KEY="fc-DEIN-KEY"' >> ~/.zshrc
+```
+
+**Windows** (PowerShell):
+```
+setx FIRECRAWL_API_KEY "fc-DEIN-KEY"
+```
+
+Danach das Terminal einmal schließen und neu öffnen. Ob der Key sitzt, zeigt:
 
 ```
 firecrawl --status
-```
-
-Der Key stammt aus einem **eigenen Firecrawl-Account** eurer Firma, nicht aus einem geteilten. Abrechnung und Nutzungsdaten bleiben damit bei euch. Wer die Daten gar nicht aus dem Haus geben will, kann Firecrawl selbst hosten und `FIRECRAWL_API_URL` auf die eigene Instanz zeigen lassen.
+``` Wer die Daten gar nicht aus dem Haus geben will, kann Firecrawl selbst hosten und `FIRECRAWL_API_URL` auf die eigene Instanz zeigen lassen.
 
 ## playwright: alles, was einen echten Browser braucht
 

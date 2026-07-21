@@ -8,11 +8,16 @@ Für die zwei empfohlenen Kommandozeilen-Werkzeuge (firecrawl, playwright) siehe
 
 ## Empfohlen
 
-### Anthropic Official Marketplace
+### Anthropic Official Marketplace — und was davon wirklich zählt
 
-**Install:** `/plugin marketplace add anthropics/claude-plugins-official`, dann `/plugin` und im Discover-Bereich browsen.
+**Install:** `/plugin marketplace add anthropics/claude-plugins-official`
 
-Kuratiertes, geprüftes Directory. Enthält unter anderem `skill-creator` (neue Skills bauen und bestehende verbessern) und `claude-md-management` (CLAUDE.md-Dateien auditieren). Der erste Ort, an dem man nachsieht, bevor man ein Plugin aus einer fremden Quelle installiert.
+Kuratiertes, geprüftes Directory von Anthropic selbst — der erste Ort, an dem man nachsieht, bevor man ein Plugin aus einer fremden Quelle installiert. Aber: Das meiste darin ist Entwickler-Werkzeug (Code-Review, Commits, Debugging) und für diesen Workspace irrelevant. **Für dich zählen zwei:**
+
+- **`skill-creator`** — baut neue Skills und verbessert bestehende. Das ist das Werkzeug hinter dem Versprechen aus `VISION.md`: du beschreibst, was du jede Woche tust, und bekommst einen eigenen Befehl dafür (Ablauf: `reference/system-erweitern.md`). Install: `/plugin install skill-creator@claude-plugins-official`
+- **`claude-md-management`** — auditiert die CLAUDE.md, wenn der Workspace über Monate gewachsen ist und die Regeln Wildwuchs ansetzen. Install erst bei Bedarf.
+
+Alles Weitere aus dem Marketplace nur auf konkreten Anlass installieren: Jedes Plugin gilt für die ganze Maschine, bringt eigene Befehle mit und liest bei jeder Session mit — drei installierte Plugins, die niemand nutzt, machen `/help` unübersichtlich und jede Antwort ein bisschen teurer.
 
 ### `ponytail`: Anti-Over-Engineering
 
