@@ -75,17 +75,37 @@ Drei Versionsnummern plus ein „Logged in to github.com", dann passt es. Beim e
 
 ## 1. Repo klonen
 
-```bash
-mkdir -p ~/code && cd ~/code
-gh repo clone <REPO-URL>
-cd <ORDNERNAME>
+Das ist die Adresse:
+
+```
+https://github.com/luka-commits/startup-setup
 ```
 
-> ⚠️ **`<REPO-URL>` und `<ORDNERNAME>` sind Platzhalter.** Die echte Adresse bekommst du bei der Übergabe (sobald du deinen GitHub-Benutzernamen durchgegeben hast und freigeschaltet bist). **Zu prüfen: hier die finale Repo-URL eintragen, bevor das Dokument rausgeht.**
+Das Repo ist privat. Damit du es sehen kannst, musst du einmal freigeschaltet sein — dafür hast du in Schritt 0 deinen GitHub-Benutzernamen durchgegeben. Bekommst du beim Klonen „repository not found", ist meistens genau das der Grund, nicht ein Tippfehler.
 
-**Nicht** nach `Desktop` oder `Dokumente` klonen, wenn diese Ordner mit iCloud oder OneDrive synchronisiert werden. Die Sync-Dienste legen bei schnellen Schreibvorgängen Konfliktkopien an (`STATUS 2.md`), und das System liest irgendwann die falsche Datei. Ein eigener Ordner wie `~/code` ist der sichere Ort.
+**Weg A, in VS Code (kein Terminal nötig):**
 
-**Check:** `ls -a` zeigt unter anderem `CLAUDE.md`, `context/`, `projects/` und den versteckten Ordner `.claude`. Fehlt `.claude`, ist der Klon unvollständig und nichts Weiteres funktioniert.
+1. VS Code öffnen.
+2. `Strg+Umschalt+P` (Mac: `Cmd+Umschalt+P`), `Git: Clone` tippen, Enter.
+3. Die Adresse oben einfügen, Enter.
+4. Als Zielort einen eigenen Ordner wählen, zum Beispiel `code` in deinem Benutzerverzeichnis.
+5. Auf „Öffnen" klicken, wenn VS Code fragt, ob es den geklonten Ordner öffnen soll.
+
+Beim ersten Mal fragt VS Code nach deiner GitHub-Anmeldung und schickt dich in den Browser. Das ist normal, danach nie wieder.
+
+**Weg B, im Terminal:**
+
+```bash
+mkdir -p ~/code && cd ~/code
+gh repo clone luka-commits/startup-setup
+cd startup-setup
+```
+
+**Egal welcher Weg: nicht** nach `Desktop` oder `Dokumente` klonen, wenn diese Ordner mit iCloud oder OneDrive synchronisiert werden. Die Sync-Dienste legen bei schnellen Schreibvorgängen Konfliktkopien an (`STATUS 2.md`), und das System liest irgendwann die falsche Datei. Ein eigener Ordner wie `~/code` ist der sichere Ort.
+
+**Check:** Im VS-Code-Explorer links siehst du `CLAUDE.md`, `context/`, `projects/` und den Ordner `.claude`. Im Terminal zeigt `ls -a` dasselbe. Fehlt `.claude`, ist der Klon unvollständig und nichts Weiteres funktioniert.
+
+**Dieser Ordner bleibt nicht meiner.** Beim Einrichten in Schritt 3 legt Claude daraus dein eigenes privates Repo unter deinem GitHub-Konto an — dir gehörend, für niemanden sonst sichtbar. Von da an sichert der Tagesabschluss dorthin, und Updates von mir holst du dir bewusst mit einem Satz im Chat.
 
 ---
 
@@ -98,12 +118,12 @@ Claude Code hat kein Programm-Icon und kein Fenster, das dir sagt, wo es gerade 
 Zwei Wege, beide führen zum selben Ergebnis:
 
 **Weg A, VS Code (für die meisten der bequemste):**
-VS Code öffnen, „Datei → Ordner öffnen", den geklonten Ordner wählen, dann das Claude-Panel aufmachen (Claude-Symbol in der Seitenleiste). Links im Explorer siehst du `CLAUDE.md` und `context/`. Das ist dein Beweis, dass der richtige Ordner offen ist.
+Wenn du in Schritt 1 über VS Code geklont hast, ist der Ordner schon offen — sonst „Datei → Ordner öffnen" und den geklonten Ordner wählen. Dann das Claude-Panel aufmachen (Claude-Symbol in der Seitenleiste; fehlt es, in den Erweiterungen nach „Claude Code" suchen und installieren). Links im Explorer siehst du `CLAUDE.md` und `context/`. Das ist dein Beweis, dass der richtige Ordner offen ist.
 
 **Weg B, Terminal:**
 
 ```bash
-cd ~/code/<ORDNERNAME>
+cd ~/code/startup-setup
 claude
 ```
 
@@ -124,6 +144,8 @@ Tipp `hallo` und drücke Enter. Mehr nicht.
 Claude erkennt selbst, dass dieser Ordner noch niemandem gehört, und startet die Einrichtung: ein paar Fragen zu Name, Rolle, Standort und deinen laufenden Projekten, danach legt es deine Ordner und Dateien an. Optional kannst du dabei Dokumente einsortieren lassen und deinen Mail-Stil aus deinen eigenen gesendeten Mails ableiten.
 
 Rechne mit 10 bis 20 Minuten, je nachdem wie viele Projekte und Dokumente du mitbringst. Beides lässt sich später nachziehen.
+
+**Zwei Fragen am Ende sind wichtig, überlies sie nicht.** Claude bietet an, dir dein eigenes privates Repo anzulegen — das ist deine tägliche Sicherung, sie gehört deinem Konto. Sag hier Ja, sonst hat der Tagesabschluss nichts, wohin er sichern kann. Danach fragt es getrennt, ob der Ansprechpartner aus `VERSION.md` Zugriff auf dieses Repo bekommen soll, damit er dir bei Problemen helfen kann. Das ist eine echte Wahl: mit Zugriff kann er auch alles lesen, was mit der Zeit darin landet. Nein ist eine völlig normale Antwort, und du kannst es später jederzeit ändern.
 
 **Claude wartet immer auf deine erste Nachricht.** Ein leeres Eingabefeld nach dem Start ist kein Fehler.
 
@@ -232,6 +254,8 @@ Läuft das durch, ist das Setup fertig. Ab morgen ist `/morning` dein täglicher
 | Claude antwortet auf `hallo` wie ein normaler Chat, fragt nichts | Falscher Ordner. Zurück zu Schritt 2. Der mit Abstand häufigste Fall. |
 | `claude: command not found` | Terminal nach der Installation nicht neu geöffnet. Fenster schließen, neu öffnen. Hilft das nicht: `claude doctor` in einem Terminal, das es kennt, sonst Schritt 0 wiederholen. |
 | `ls -a` zeigt kein `.claude` | Klon unvollständig oder Ordner von Hand kopiert statt geklont. Neu klonen, Schritt 1. |
+| Beim Klonen: „repository not found" | Du bist noch nicht freigeschaltet, oder `gh auth login` fehlt. Benutzernamen durchgeben und Schritt 0 prüfen. Ein Tippfehler in der Adresse ist der seltenere Fall. |
+| Abends: „Push scheitert" oder „nichts gesichert" | Beim Setup wurde kein eigenes Repo angelegt. Sag im Chat „leg mir mein eigenes Repo an", dann wird es nachgeholt. |
 | Dashboard entsteht nicht | Node.js fehlt oder ist nicht im PATH. `node --version` prüfen, sonst Schritt 0. Briefing im Chat läuft trotzdem. |
 | Kein Kalender, keine Mail im Briefing | Connector nicht verbunden. Schritt 4 und `reference/mcp.md`. |
 | Dateien mit ` 2.` im Namen tauchen auf | Der Ordner liegt in einem Sync-Verzeichnis. Konfliktkopien löschen, Repo nach `~/code` verschieben, Schritt 1. |

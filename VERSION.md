@@ -4,11 +4,13 @@
 
 Offene Variante. Baut auf demselben Skelett wie die eingeschränkte Konzern-Fassung auf, hat aber keine Plugin- und Connector-Beschränkungen.
 
-**Fragen, Fehler, Verbesserungswünsche:** `[ANSPRECHPARTNER EINTRAGEN: Name + E-Mail]`
+**Fragen, Fehler, Verbesserungswünsche:** Luka Knieling · luka@flouence.com · GitHub-Konto `luka-commits`
 
 ## Was das heißt
 
-Dieses Paket kommt als **Repo**, das du klonst. Deine Kopie bleibt so, wie du sie bekommen hast: sie aktualisiert sich nicht von selbst, und sie wird auch nicht heimlich verändert. Neue Versionen holst du dir bewusst über das Repo, wenn du sie brauchst.
+Dieses Paket kommt als **Repo**, das du klonst. Beim Einrichten legt Claude dir daraus **dein eigenes privates Repo** an: es gehört deinem GitHub-Konto, niemand sonst kommt hinein, und der Tagesabschluss sichert deinen Stand jeden Abend dorthin.
+
+Deine Kopie bleibt so, wie du sie bekommen hast: sie aktualisiert sich nicht von selbst, und sie wird auch nicht heimlich verändert. Neue Versionen holst du dir bewusst, wenn du sie brauchst — ein Satz im Chat genügt („hol mal die neue Version"), technisch ist es ein `git pull upstream main`.
 
 Wenn etwas nicht funktioniert: **melde dich mit der Versionsnummer oben.** Es kann sein, dass es in einer neueren Version schon behoben ist.
 

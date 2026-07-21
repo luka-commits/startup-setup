@@ -129,16 +129,35 @@ Ask ONE question: *"Soll ich einmal deine gesendeten Mails der letzten Monate du
 ## Step 8: Archive This Skill + Confirm
 
 1. Move `.claude/skills/setup/` to `.claude/skills-deprecated/setup/` (its job is done — archival pattern, not deletion).
-2. Output a summary: what was written to config.yaml, what was filled in (context/ files), which projects were scaffolded, which documents were filed, whether EMAIL_STYLE.md was derived (Step 7), plus these follow-ups:
+2. **Eigenes Repo anlegen** — nur wenn der Workspace ein Git-Klon ist (`git rev-parse --is-inside-work-tree`) UND `gh auth status` eine Anmeldung meldet. Fehlt eins von beidem: still überspringen, kein Wort dazu (`/eod` überspringt seine Sicherung dann ebenfalls).
+
+   **Warum das nicht optional ist:** Der geklonte Ordner zeigt noch auf das Repo dessen, der das Paket verschickt hat. Ohne diesen Schritt pusht `/eod` die Arbeit des Users jeden Abend dorthin — oder scheitert jeden Abend. Beides fällt erst nach Tagen auf.
+
+   EINE Frage, in Klartext: _„Ich lege dir dein eigenes privates Repo auf GitHub an. Das ist deine tägliche Sicherung, sie gehört dir, und öffentlich ist davon nichts. Soll ich?"_ Bei Ja:
+
+   ```bash
+   git remote rename origin upstream
+   gh repo create <ordnername> --private --source=. --remote=origin --push
+   ```
+
+   `gh` legt das Repo unter dem **angemeldeten Konto des Users** an — er ist von Anfang an Eigentümer, es gibt keine Übertragung. `upstream` bleibt als Bezugsquelle stehen, darüber kommen später Updates (`git pull upstream main`).
+
+   Danach die **zweite Frage, getrennt gestellt und nie vorausgewählt** (Ansprechpartner-Name und GitHub-Konto aus `VERSION.md`): _„Soll <Ansprechpartner> Zugriff auf dieses Repo bekommen? Dann kann er dir bei Problemen direkt helfen und Verbesserungen einspielen. Er kann damit aber auch alles lesen, was hier mit der Zeit landet — deine Projekte, Notizen und Mail-Zusammenfassungen. Du kannst den Zugriff jederzeit wieder entziehen."_
+
+   - Ja → `gh api -X PUT repos/<user>/<repo>/collaborators/<github-konto> -f permission=push`, danach EIN bestätigender Satz inklusive Hinweis, wo man es zurücknimmt (Repo → Settings → Collaborators).
+   - Nein → kommentarlos weiter. Das ist die genauso richtige Antwort, sie wird nie nachverhandelt.
+
+   Angelegtes Repo in `context/config.yaml → inventory.repos` eintragen. Scheitert ein Befehl: nicht dramatisieren, EIN Satz im Summary plus Hilfsangebot — der Workspace läuft ohne Repo vollständig, es fehlt nur die Sicherung.
+3. Output a summary: what was written to config.yaml, what was filled in (context/ files), which projects were scaffolded, which documents were filed, whether EMAIL_STYLE.md was derived (Step 7), plus these follow-ups:
    - **`/email`-Stil** (nur falls Step 7 übersprungen): Drafts nutzen den Beispiel-Stil des Pakets — jederzeit "leite meinen Mail-Stil aus meinen Sent Items ab" sagen.
    - **Kalender-Rauschen:** wiederkehrende private Kalender-Blöcke (Gym, Lernslots, …) in `config.yaml → calendar.noise_subjects` eintragen, damit Briefings sie ignorieren.
    - **Diktieren statt tippen (EIN Satz, freundlich):** das System lebt davon, dass man ihm Dinge erzählt — Status-Updates diktieren geht schneller als tippen. Windows: `Win + H` startet das native Diktat in jedem Textfeld, auch im Claude-Code-Fenster. Mac: Diktat unter Systemeinstellungen → Tastatur aktivieren, danach startet zweimal `Ctrl` tippen das Mikrofon.
-3. **Systemcheck-Zeile (Step 2.5), EINE Zeile, freundlich:**
+4. **Systemcheck-Zeile (Step 2.5), EINE Zeile, freundlich:**
    - Alles grün → _„Alles startklar."_ Mehr nicht — kein Häkchen-Report über Dinge, die funktionieren.
    - Etwas fehlt → was fehlt, was trotzdem geht, und ein KONKRETES Hilfsangebot — nie nur ein Verweis auf Dritte. Muster Mail, **mit dem in Step 2.5 genannten System konkret eingesetzt** (Microsoft 365 bzw. Google Workspace) statt allgemein: _„Eine Mail-Anbindung finde ich noch nicht — Aufgaben, Projekte und Dashboard laufen trotzdem, nur der Mail-Teil des Briefings fehlt. Einrichten geht in Claude Cowork: Einstellungen → Connectors → <das genannte System> mit deinem Arbeits-Account verbinden; ich greife dann auf dieselbe Verbindung zu. Sag ‚prüf die Mail-Anbindung nochmal', wenn du das gemacht hast — oder ‚hilf mir dabei', dann gehen wir es Schritt für Schritt durch."_ Nimmt der User das Hilfsangebot an: durch die Einrichtung führen, danach die Anbindung erneut per ToolSearch testen und das Ergebnis in einem Satz bestätigen. (Welche Connectors es gibt und was sie dürfen: `reference/mcp.md`.)
-4. **Dashboard-Erstrender (wenn `script_command` gefunden wurde):** Einmal das Dashboard aus den frischen Daten rendern — wie `/morning` Step 7b, aber mit `mail_checked: false` (Mail-Felder ehrlich leer, Kalender erst morgen) — und öffnen. Zwei Fliegen: der User sieht sofort einen sichtbaren Erfolg („das ist dein Dashboard, ab morgen ist es gefüllt"), und der Render-Weg ist auf DIESEM Rechner bewiesen, solange du daneben sitzt. Schlägt er fehl: nicht dramatisieren — im Summary einen Satz (Briefing im Chat läuft trotzdem) + Hilfsangebot. Kein `script_command` → überspringen.
-5. **Opt-in-Testentwurf (nur wenn ein `draft_method` verfügbar ist):** EINE Frage: _„Soll ich dir einen Test-Entwurf an dich selbst öffnen, damit du siehst, wie das später aussieht?"_ Bei Ja: kurzer Willkommens-Entwurf an `user.email` (Betreff etwa „Dein Workspace ist eingerichtet ✓", 2–3 Sätze), via `draft_method` aus der Config — das ist der End-to-End-Beweis des Entwurfswegs; scheitert er, fällt es HIER auf und wird sofort repariert, nicht allein am ersten Morgen. Bei Nein: kommentarlos überspringen. Grundsatz bleibt: Entwürfe poppen nie ungefragt auf — dieser ist ausdrücklich eingeladen, geht nur an den User selbst, und gesendet wird nie.
-6. **Das Mini-Briefing — so läuft der Alltag ab jetzt.** Direkt im Chat ausgeben (das ist der Moment, in dem der User garantiert liest — eine Doku-Datei öffnet er nie). Genau diese fünf Zeilen, nicht mehr:
+5. **Dashboard-Erstrender (wenn `script_command` gefunden wurde):** Einmal das Dashboard aus den frischen Daten rendern — wie `/morning` Step 7b, aber mit `mail_checked: false` (Mail-Felder ehrlich leer, Kalender erst morgen) — und öffnen. Zwei Fliegen: der User sieht sofort einen sichtbaren Erfolg („das ist dein Dashboard, ab morgen ist es gefüllt"), und der Render-Weg ist auf DIESEM Rechner bewiesen, solange du daneben sitzt. Schlägt er fehl: nicht dramatisieren — im Summary einen Satz (Briefing im Chat läuft trotzdem) + Hilfsangebot. Kein `script_command` → überspringen.
+6. **Opt-in-Testentwurf (nur wenn ein `draft_method` verfügbar ist):** EINE Frage: _„Soll ich dir einen Test-Entwurf an dich selbst öffnen, damit du siehst, wie das später aussieht?"_ Bei Ja: kurzer Willkommens-Entwurf an `user.email` (Betreff etwa „Dein Workspace ist eingerichtet ✓", 2–3 Sätze), via `draft_method` aus der Config — das ist der End-to-End-Beweis des Entwurfswegs; scheitert er, fällt es HIER auf und wird sofort repariert, nicht allein am ersten Morgen. Bei Nein: kommentarlos überspringen. Grundsatz bleibt: Entwürfe poppen nie ungefragt auf — dieser ist ausdrücklich eingeladen, geht nur an den User selbst, und gesendet wird nie.
+7. **Das Mini-Briefing — so läuft der Alltag ab jetzt.** Direkt im Chat ausgeben (das ist der Moment, in dem der User garantiert liest — eine Doku-Datei öffnet er nie). Genau diese fünf Zeilen, nicht mehr:
 
    > **So benutzt du das ab jetzt:**
    > - **Morgens:** „Guten Morgen" sagen — ich hole Kalender und Mails, briefe dich und baue dein Dashboard.
@@ -149,7 +168,7 @@ Ask ONE question: *"Soll ich einmal deine gesendeten Mails der letzten Monate du
    > Befehle musst du dir nicht merken — schreib in eigenen Worten, was du willst.
 
    Danach EIN Verweis-Satz: „Mehr steht in `ONBOARDING.md` und später im Hilfe-Tab deines Dashboards — aber das oben ist alles, was du brauchst." Schlage `/morning` als ersten echten Lauf vor (morgen früh oder gleich jetzt).
-7. **Einmal auf `WAS-DIESES-SYSTEM-TUT.md` hinweisen** — ein Satz: _„Was das System liest und was es nie tut (senden, Termine ändern, HR-Themen anfassen), steht in `WAS-DIESES-SYSTEM-TUT.md` — die Seite ist auch die Antwort, wenn dich jemand fragt, ob du das nutzen darfst."_ Nicht ausführen, nur zeigen, dass es sie gibt.
+8. **Einmal auf `WAS-DIESES-SYSTEM-TUT.md` hinweisen** — ein Satz: _„Was das System liest und was es nie tut (senden, Termine ändern, HR-Themen anfassen), steht in `WAS-DIESES-SYSTEM-TUT.md` — die Seite ist auch die Antwort, wenn dich jemand fragt, ob du das nutzen darfst."_ Nicht ausführen, nur zeigen, dass es sie gibt.
 
 ## Quality Guidelines
 
@@ -163,5 +182,6 @@ Ask ONE question: *"Soll ich einmal deine gesendeten Mails der letzten Monate du
 3. Grep the workspace for `[DEIN NAME]` → zero hits outside `.claude/skills-deprecated/`.
 4. `context/PROJECTS.md` shows exactly the new user's real projects, dated today; ingested documents are reflected there and filed in the owning project's `projects/<slug>/inputs/` (only project-less material lands in `inbox/processed/`).
 5. `.claude/skills/setup/` no longer exists; `.claude/skills-deprecated/setup/` does.
+5b. `git remote -v` zeigt **`origin` auf das Repo des Users** und `upstream` auf die Bezugsquelle — nie umgekehrt. Der erste Push ist durch, `gh repo view` meldet `private`. Hat der User beim Zugriff Nein gesagt, steht unter Collaborators niemand außer ihm.
 6. Run `/setup` again → Step 0 detects the real name in config.yaml and asks before doing anything.
 7. Bei gefundener Script-Laufzeit steht am Ende ein gerendertes `context/today.html` (ohne Mail-Teil); bei vorhandenem `draft_method` und Ja des Users liegt ein Test-Entwurf an die eigene Adresse bereit — niemals gesendet, niemals an Dritte.

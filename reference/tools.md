@@ -69,7 +69,7 @@ Der zweite Befehl lädt den Browser herunter, den playwright steuert. Ohne ihn i
 playwright screenshot https://example.com test.png
 ```
 
-> **Zu prüfen:** In Firmen mit gemanagten Laptops kann der Browser-Download blockiert sein oder über einen internen Proxy laufen müssen. Beim ersten Aufsetzen einmal durchspielen, statt es vorauszusetzen.
+> **Auf verwalteten Firmen-Laptops** kann dieser Browser-Download blockiert sein oder über einen internen Proxy laufen müssen. Schlägt er fehl, liegt es fast nie an dir: melde dich beim Ansprechpartner aus `VERSION.md`. Der Rest des Systems läuft ohne playwright vollständig weiter.
 
 ## OpenRouter: Bilder und Spezial-Modelle (optional)
 
