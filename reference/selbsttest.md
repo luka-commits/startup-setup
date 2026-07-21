@@ -34,6 +34,7 @@ Der Sinn: Die gefährlichen Fehler dieses Systems sind die **stillen**. Ein Plat
 | Dashboard-Weg unbekannt | `script_command` ist leer | „Das Dashboard kann ich gerade nicht bauen, das Briefing im Chat läuft normal weiter." |
 | Ausstattung nie erfasst | `inventory` ist komplett leer | „Im Tab ‚Start Here' ist deine Ausstattung noch leer. Wenn du magst, trage ich ein, was bei dir verbunden ist." |
 | Karteileichen | Tasks, die seit über 30 Tagen unverändert offen stehen | „Drei Aufgaben stehen seit über einem Monat unverändert. Sollen die weg, oder sind sie noch aktuell?" |
+| Ausstattung driftet | Der heutige Lauf widerspricht `config.yaml → inventory`: ein Connector antwortet, der als „nicht verbunden" geführt wird (oder umgekehrt, Wissen aus `/morning` Step 0c bzw. ToolSearch — kein Extra-Abruf), ein gelistetes CLI fehlt auf dem Rechner | Still korrigieren (inventory anpassen, Safeguard 4), danach EIN Satz nur, wenn etwas Neues auftauchte, das eine Entscheidung braucht: „Du hast inzwischen [X] verbunden — soll ich es ins Briefing einbeziehen?" |
 
 ## Was NICHT geprüft wird
 
