@@ -1,0 +1,20 @@
+node_modules/
+.next/
+.venv/
+__pycache__/
+.DS_Store
+.env
+.env.local
+
+# Laufzeit-Artefakte dieses Workspace (kein Versionsgut)
+_tmp/*
+!_tmp/README.md
+context/.backup/
+context/.mail_cache.json
+context/.triage_ledger.json
+context/today.html
+
+# Interne Dateien, gehören nie ins ausgelieferte Repo
+AUSLIEFERUNG.md
+ROADMAP.md
+_abgeloest/

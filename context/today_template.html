@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Tages-Cockpit</title>
+<style>
+  :root {
+    --bg: #F7F8F7;
+    --card: #FFFFFF;
+    --border: #E2E6E3;
+    --border-strong: #C8CFCB;
+    --text: #0D1F1A;
+    --text-2: #3F4D47;
+    --text-3: #7A857F;
+    --brand: #177B57;
+    --brand-deep: #0B3F2D;
+    --brand-soft: #E8F1ED;
+    --sev-red: #B42318;
+    --red-soft: #FBE8E5;
+    --red-border: #F5C5BE;
+    --red-deep: #911C13;
+    --sev-amber: #B54708;
+    --amber-soft: #FEF3E2;
+    --amber-border: #F8D5A4;
+    --amber-deep: #92400E;
+    --shadow-1: 0 1px 2px rgba(13, 31, 26, 0.04);
+    --shadow-2: 0 4px 16px rgba(13, 31, 26, 0.06);
+    --ease: cubic-bezier(0.2, 0, 0, 1);
+    --gap: 14px;          /* EIN Abstand zwischen Blöcken */
+    --pad: 20px;          /* EIN Innenabstand in Karten */
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text);
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv11", "ss01", "ss03";
+    line-height: 1.5; font-size: 14px;
+  }
+  a { color: var(--brand); text-decoration: none; font-weight: 500; }
+  a:hover { text-decoration: underline; }
+  b, strong { font-weight: 600; }
+  .ev > b, .plan-count { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+  /* ── Header — editorial, white, green hairline ── */
+  header.top { background: var(--card); border-bottom: 1px solid var(--border); position: relative; }
+  header.top::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+    background: var(--brand); opacity: .85; }
+  .top-inner { max-width: 1380px; margin: 0 auto; padding: 22px 48px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 32px; }
+  .top-inner h1 { margin: 0 0 3px; font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+  .eyebrow { font-size: 11.5px; letter-spacing: .02em; text-transform: uppercase; color: var(--text-3); font-weight: 500; }
+  .meta { text-align: right; font-size: 12.5px; color: var(--text-3); line-height: 1.7; white-space: nowrap; }
+  .meta strong { color: var(--text); font-weight: 600; }
+
+  nav.tabs { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+  .tabs-inner { max-width: 1380px; margin: 0 auto; padding: 0 48px; display: flex; gap: 0; }
+  .tab { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    padding: 14px 20px 12px; font-family: inherit; font-size: 13.5px; font-weight: 500; color: var(--text-2);
+    cursor: pointer; letter-spacing: -.005em; transition: color .15s var(--ease), border-color .15s var(--ease); }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+  .tabpane { display: none; }
+  .tabpane:not([hidden]) { display: block; animation: fadeIn .18s var(--ease); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .tabpane:not([hidden]) { animation: none; } }
+
+  .wrap { max-width: 1380px; margin: 0 auto; padding: var(--gap) 48px 60px; }
+
+
+
+  /* Karten-Label: 11px Caps mit Akzent-Punkt (Taxi-Signatur) */
+  .label, .cardbox > h2, .pdetail h4 {
+    margin: 0; font-size: 11px; font-weight: 600; color: var(--text-2);
+    letter-spacing: .08em; text-transform: uppercase; display: flex; align-items: center; }
+  .label::before, .cardbox > h2::before, .pdetail h4::before {
+    content: ""; display: inline-block; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--brand); margin-right: 8px; flex: none; }
+  .cardbox > .sub { margin: 4px 0 16px; font-size: 12.5px; color: var(--text-3); }
+
+  
+
+
+  .cardbox, .pdetail { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow-1); }
+  .cardbox { padding: var(--pad) 22px; }
+
+  /* ── Morning Briefing — das Highlight: zentral, standardmäßig offen ── */
+  details.briefing { background: linear-gradient(180deg, var(--brand-soft) 0%, var(--card) 150px);
+    border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow-2); margin: 0 0 var(--gap); position: relative; overflow: hidden; }
+  details.briefing::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--brand); }
+  details.briefing summary { list-style: none; cursor: pointer; padding: 13px 24px 10px;
+    display: flex; align-items: center; gap: 14px; }
+  details.briefing summary::-webkit-details-marker { display: none; }
+  .brf-toggle { flex: none; width: 8px; height: 8px; border-right: 1.5px solid var(--text-3); border-bottom: 1.5px solid var(--text-3);
+    transform: rotate(45deg); transition: transform .18s var(--ease); margin-right: 4px; }
+  details.briefing[open] .brf-toggle { transform: rotate(-135deg); margin-top: 5px; }
+  details.briefing summary .label { flex: none; }
+  .brf-teaser { flex: 1; min-width: 0; font-size: 13px; color: var(--text-2); overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+  details.briefing[open] .brf-teaser { display: none; }
+  .brf-toggle { margin-left: auto; }
+
+  .brf-body { padding: 4px 24px 22px; display: grid; grid-template-columns: minmax(0, 74ch) 170px minmax(0, 1fr); gap: 0 40px; }
+  .brf-lead { grid-column: 1 / 3; grid-row: 1; }
+  .brf-text { grid-column: 1; grid-row: 2; min-width: 0; }
+  .brf-lead { margin: 6px 0 18px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    font-size: 21px; font-weight: 600; line-height: 1.35; letter-spacing: -.022em; color: var(--brand-deep); }
+  .brf-body p { margin: 0 0 12px; font-size: 14px; line-height: 1.75; color: var(--text);
+    letter-spacing: -.005em; }
+  .brf-body p:last-of-type { margin-bottom: 0; }
+  .brf-body strong { color: var(--brand-deep); font-weight: 600; }
+  .brf-meta { grid-column: 2; grid-row: 2; align-self: start; padding-left: 22px; border-left: 1px solid var(--border);
+    font-variant-numeric: tabular-nums; }
+  .brf-meta div { font-size: 12.5px; color: var(--text-2); padding: 4px 0; white-space: nowrap; }
+  .brf-meta div + div { border-top: 1px solid var(--border); }
+  .brf-meta b { color: var(--text); font-weight: 600; margin-right: 6px; }
+  .brf-meta:empty { display: none; }
+  details.notes-drop { background: var(--card); box-shadow: var(--shadow-1); }
+  details.notes-drop::before { display: none; }
+  details.notes-drop .brf-body { padding-top: 0; columns: 1; }
+  details.notes-drop ul.notes li:first-child { padding-top: 0; }
+
+
+  /* ── SVG-Icons statt Emojis (ruhig, stroke 1.5, getönt statt Schwarz) ── */
+  .ic { display: inline-block; width: 14px; height: 14px; vertical-align: -2px;
+    background-repeat: no-repeat; background-position: center; background-size: contain; }
+  .ic-video { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233F4D47" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m22 8-6 4 6 4V8Z"/></svg>'); }
+  .ic-bldg { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233F4D47" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M10 21v-3.5h4V21"/><path d="M8.5 7h2M8.5 11h2M13.5 7h2M13.5 11h2M8.5 15h2M13.5 15h2"/></svg>'); }
+  .ic-cal { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233F4D47" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>'); }
+
+  /* Inbox-Karte: amber gerahmt, weil sie auf eine Entscheidung wartet */
+  .inboxbox { border-color: var(--amber-border); }
+  .inboxbox > h2::before { background: var(--sev-amber); }
+
+  /* ── Heute: Task-OS ── */
+  .toolbar { display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+    padding-bottom: 14px; margin-bottom: 4px; border-bottom: 1px solid var(--border); }
+  .plan-row { display: flex; align-items: center; gap: 10px; flex: 0 1 300px; min-width: 200px; }
+  .plan-row[hidden] { display: none; }
+  .plan-row .plan-label { flex: none; }
+  .plan-count { font-size: 12px; color: var(--text-3); flex: none; }
+  .plan-bar { height: 4px; background: var(--border); border-radius: 999px; overflow: hidden; flex: 1; }
+  .plan-bar > i { display: block; height: 100%; width: 0; background: var(--brand); border-radius: 999px;
+    transition: width .3s var(--ease); }
+  .task-list li[data-plan] .t-text::before { content: ""; display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent);
+    margin-right: 9px; vertical-align: 1.5px; }
+
+  .task-list li[data-inbox] .t-text::before { content: ""; display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--sev-amber); box-shadow: 0 0 0 3px rgba(181,71,8,.15);
+    margin-right: 9px; vertical-align: 1.5px; }
+  .tag.inbox { color: var(--amber-deep); font-weight: 600; }
+
+  .pill { background: var(--card); color: var(--text-2); border: 1px solid var(--border); padding: 4px 12px;
+    font-size: 12px; border-radius: 999px; cursor: pointer; font-family: inherit; font-weight: 500; letter-spacing: -.005em;
+    transition: border-color .15s var(--ease), color .15s var(--ease), background .15s var(--ease), transform .12s var(--ease); }
+  .pill:hover { color: var(--text); border-color: var(--border-strong); }
+  .pill:active { transform: scale(.96); }
+  .pill.active { background: var(--brand-soft); color: var(--brand-deep); border-color: color-mix(in srgb, var(--brand) 35%, transparent); font-weight: 600; }
+
+  /* Filterleiste — Notion-Mechanik, Taxi-Optik */
+  .fbar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-left: auto; }
+  .fchip { position: relative; }
+  .fbtn { background: var(--card); color: var(--text-2); border: 1px solid var(--border); padding: 5px 12px;
+    font-size: 12.5px; border-radius: 999px; cursor: pointer; font-family: inherit; font-weight: 500; letter-spacing: -.005em;
+    transition: border-color .15s var(--ease), color .15s var(--ease); }
+  .fbtn::after { content: "▾"; margin-left: 6px; font-size: 9px; color: var(--text-3); }
+  .fbtn:hover { color: var(--text); border-color: var(--border-strong); }
+  .fchip.on .fbtn { background: var(--brand-soft); color: var(--brand-deep); font-weight: 600;
+    border-color: color-mix(in srgb, var(--brand) 35%, transparent); }
+  .fmenu { display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 60; min-width: 190px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-2);
+    padding: 5px; }
+  .fchip.open .fmenu { display: block; }
+  .fopt { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%;
+    background: none; border: none; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer;
+    padding: 7px 10px; border-radius: 6px; text-align: left; }
+  .fopt:hover { background: var(--bg); }
+  .fopt.selected { background: var(--brand-soft); color: var(--brand-deep); font-weight: 600; }
+  .fopt.selected::after { content: "✓"; font-size: 11px; }
+  .sortpill.active { background: var(--brand-soft); color: var(--brand-deep); font-weight: 600;
+    border-color: color-mix(in srgb, var(--brand) 35%, transparent); }
+
+  .task-cols, .task-list li { display: grid; grid-template-columns: minmax(0,1fr) 160px 120px 170px 74px;
+    gap: 14px; align-items: baseline; }
+  .task-cols { padding: 12px 4px 8px; border-bottom: 1px solid var(--border-strong); }
+  .task-cols span { font-size: 10.5px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text-3); }
+  ul.task-list { list-style: none; margin: 0; padding: 0; }
+  .task-list li { padding: 12px 4px; font-size: 13.5px; letter-spacing: -.005em; }
+  .task-list li + li { border-top: 1px solid var(--border); }
+  .task-list li .t-text { min-width: 0; }
+  .task-list li[data-note] { cursor: pointer; }
+  .task-list li[data-note] .t-text::after { content: "›"; margin-left: 8px; color: var(--text-3);
+    font-size: 13px; display: inline-block; transition: transform .18s var(--ease); }
+  .task-list li[data-note].open .t-text::after { transform: rotate(90deg); }
+  @media (hover: hover) and (pointer: fine) {
+    .task-list li[data-note]:hover { background: var(--bg); border-radius: 6px; }
+  }
+  .t-note { display: none; grid-column: 1 / -1; margin: 8px 0 2px; padding: 10px 14px;
+    background: var(--bg); border-left: 2px solid var(--border-strong); border-radius: 0 6px 6px 0;
+    font-size: 12.5px; line-height: 1.65; color: var(--text-2); max-width: 90ch; }
+  .task-list li.open .t-note { display: block; }
+  .c-proj, .c-cat { font-size: 12px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .c-status { font-size: 12px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  li[data-status="wartet"] .c-status { color: var(--sev-amber); }
+  .c-due { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; text-align: right; }
+  .c-due.late { color: var(--sev-red); font-weight: 600; }
+  .c-proj:empty::before, .c-cat:empty::before, .c-status:empty::before, .c-due:empty::before { content: "–"; color: var(--border-strong); }
+
+  .tag.inbox { color: var(--amber-deep); font-weight: 600; font-size: 11px; margin-left: 8px; }
+  .task-list a.mail { font-size: 11.5px; }
+  .hint { font-size: 11.5px; color: var(--text-3); margin: 16px 0 0; }
+
+  /* ── Kalender ── */
+  /* stretch = beide Spalten gleich hoch, damit unter der kürzeren kein Loch klafft */
+  .cal-cols { display: block; }
+
+  /* Tages-Zeitachse: echte Dauer als Blockhöhe, freie Lücken sichtbar.
+     Das JS (dayAxis) baut Stundenlinien + Lücken und positioniert die .ev absolut.
+     Kein flex/height von außen — die Höhe setzt das JS in px, sonst passt die Achse
+     nicht mehr zu den absolut positionierten Stundenlinien. */
+  ol.tl { list-style: none; margin: 10px 0 0; padding: 0; position: relative; }
+  .tl .hr { position: absolute; left: var(--gutter); right: 0; height: 0; border-top: 1px solid var(--border); }
+  .tl .hr > i { position: absolute; left: calc(-1 * var(--gutter)); top: -7px; width: calc(var(--gutter) - 10px);
+    text-align: right; font-style: normal; font-size: 10.5px; color: var(--text-3);
+    font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+  .tl .hr.half { display: none; } /* Halbstunden-Raster war reines Rauschen */
+  .tl .free { position: absolute; left: var(--gutter); right: 0; border-radius: 6px; border: none;
+    background: color-mix(in srgb, var(--brand) 3.5%, transparent);
+    display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .tl .free > span { font-size: 11px; color: var(--text-3); letter-spacing: .01em; }
+  .tl .noev { padding: 26px 0 26px var(--gutter); font-size: 13px; color: var(--text-3); }
+  /* Rückfallebene ohne Endzeiten: schlichte Terminliste statt geratener Zeitachse */
+  ol.tl.plain { height: auto !important; padding: 4px 0 0; }
+  ol.tl.plain .ev { position: relative; margin: 0 0 7px; }
+  ol.tl.plain .ev > .dur { display: none; }
+
+  /* Ein farbiger Balken links statt Rahmen plus Punkt: das ist die Kalender-Standardsprache
+     und halbiert die Linien, die auf der Achse um Aufmerksamkeit konkurrieren. */
+  .ev { position: absolute; padding: 6px 12px 6px 13px; border-radius: 6px; background: var(--card);
+    border: none; border-left: 3px solid var(--border-strong); box-shadow: 0 1px 2px rgba(15,23,42,.055);
+    overflow: hidden; font-size: 13px; letter-spacing: -.005em; }
+  .ev.p-red { border-left-color: var(--sev-red); }
+  .ev.p-amber { border-left-color: var(--sev-amber); }
+  .ev > b { font-weight: 600; font-size: 12.5px; margin-right: 8px; color: var(--text); }
+  .ev > i { display: block; font-style: normal; font-size: 11.5px; color: var(--text-2); margin-top: 3px;
+    line-height: 1.45; overflow: hidden; }
+  /* Format-Icon ist ebenfalls ein <i> im .ev — ohne diese Zeile erbt es die Kontext-Zeilen-Regel
+     darueber (display:block, Breite 0) und verschwindet oder springt in eine eigene Zeile. */
+  .ev > i.ic { display: inline-block; width: 14px; height: 14px; margin-top: 0; margin-left: 5px; }
+  .ev > .dur { float: right; font-size: 10.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  /* Meeting-Brief-Aufklapper: öffnet als Overlay-Karte unter dem Termin-Block, sprengt die Zeitachse nicht */
+  .ev details.mb { display: inline; }
+  /* Bewusst auffällig: der Knopf ist der einzige Hinweis darauf, dass zu diesem Termin
+     ein Briefing existiert. Zu dezent = wird übersehen = das Feature existiert nicht. */
+  .ev details.mb summary { display: inline-flex; align-items: center; gap: 5px; list-style: none; cursor: pointer;
+    font-size: 11.5px; font-weight: 700; letter-spacing: .01em; color: #fff; background: var(--brand);
+    border: none; border-radius: 999px; padding: 3px 11px 3px 9px; margin-left: 10px;
+    box-shadow: 0 1px 4px color-mix(in srgb, var(--brand) 34%, transparent); transition: background .12s, box-shadow .12s; }
+  .ev details.mb summary::before { content: "📋"; font-size: 10.5px; }
+  .ev details.mb summary::after { content: "▾"; font-size: 8.5px; opacity: .85; }
+  .ev details.mb[open] summary { background: var(--brand-deep); }
+  .ev details.mb[open] summary::after { content: "▴"; }
+  .ev details.mb summary:hover { background: var(--brand-deep); box-shadow: 0 2px 7px color-mix(in srgb, var(--brand) 45%, transparent); }
+  .ev details.mb summary:focus-visible { outline: 2px solid var(--brand-deep); outline-offset: 2px; }
+  .ev details.mb summary::-webkit-details-marker { display: none; }
+  /* Termine MIT Briefing tragen den Marken-Balken, damit man sie in der Achse sofort findet */
+  .ev:has(details.mb) { border-left-color: var(--brand); }
+  .ev .mbc { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 40; background: var(--card);
+    border: 1px solid var(--border-strong); border-left: 3px solid var(--brand); border-radius: 10px;
+    padding: 13px 16px; box-shadow: var(--shadow-1); font-size: 12px; line-height: 1.55; color: var(--text-2);
+    max-height: 340px; overflow-y: auto; }
+  .ev .mbc .mb-lead { margin: 0 0 11px; font-size: 13px; line-height: 1.6; color: var(--text); }
+  /* Zweispaltig, weil ein Briefing aus kurzen Blöcken besteht: nebeneinander liest es sich
+     als Übersicht, untereinander als Textwand. */
+  .ev .mbc .mb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 11px 26px; }
+  .ev .mbc section { min-width: 0; }
+  .ev .mbc h4 { margin: 0 0 4px; font-size: 10px; font-weight: 700; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--text-3); }
+  .ev .mbc p { margin: 0; }
+  .ev .mbc ul { list-style: none; margin: 0; padding: 0; }
+  .ev .mbc li { position: relative; padding-left: 12px; margin-bottom: 3px; }
+  .ev .mbc li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 4px; height: 4px;
+    border-radius: 50%; background: var(--border-strong); }
+  .ev .mbc li.due::before { background: var(--sev-amber); }
+  /* Ohne overflow:visible kappt der Termin-Block das geöffnete Panel — der Klick wirkt dann tot */
+  .ev:has(details.mb[open]) { overflow: visible; z-index: 39; }
+  /* Kurze Termine (15-30 Min) bekommen einen flachen Block — Typo muss in ~20px passen, sonst kappt
+     das overflow:hidden die Zeile mittendrin. Kontext-Unterzeile hat hier keinen Platz. */
+  .ev.tight { padding: 3px 10px 3px 12px; line-height: 1.35; font-size: 11.5px; }
+  .ev.tight > b { font-size: 11.5px; margin-right: 6px; }
+  .ev.tight > .dur { font-size: 10px; }
+  /* Kurze Termine haben vertikal keinen Platz fuer eine zweite Zeile, horizontal aber jede Menge:
+     der Kontext wandert neben den Titel statt darunter. So traegt die volle Breite Information
+     statt Leere, und der Kontext geht nicht verloren. */
+  .ev.tight > i { display: inline; margin-left: 12px; margin-top: 0; font-size: 11px; color: var(--text-3); }
+  .ev.tight > i.ic { display: inline-block; width: 14px; height: 14px; margin-left: 5px; }
+  .ev.past { opacity: .58; }
+  /* Termine mit Briefing bleiben auch nachmittags lesbar, sonst verschwindet der Knopf im Grau */
+  .ev.past:has(details.mb) { opacity: .78; }
+  .ev.past:has(details.mb[open]) { opacity: 1; }
+  .ev.next, .ev.running { background: var(--brand-soft); border-left-color: var(--brand); }
+  .ev.next::after, .ev.running::after { position: absolute; right: 11px; bottom: 5px; font-size: 9px;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--brand-deep); font-weight: 600; }
+  .ev.next::after { content: "als Nächstes"; }
+  .ev.running::after { content: "läuft"; }
+  .ev.tight.next::after, .ev.tight.running::after { display: none; }
+
+  /* Jetzt-Linie: der einzige rote Strich im Tab — deshalb liest er sich als "jetzt", nicht als Alarm */
+  .tl .nowline { position: absolute; left: var(--gutter); right: 0; height: 0;
+    border-top: 1px solid var(--sev-red); pointer-events: none; }
+  .tl .nowline > i { position: absolute; left: calc(-1 * var(--gutter)); top: -8px; width: calc(var(--gutter) - 10px);
+    text-align: right; font-style: normal; font-size: 10px; font-weight: 600; color: var(--sev-red);
+    font-variant-numeric: tabular-nums; background: var(--card); }
+
+  /* Reminder MIT Uhrzeit stehen auf der Achse (sie haben eine Zeit), müssen aber sofort vom
+     Meeting unterscheidbar sein — sonst liest sich die eigene Frist wie ein Termin mit anderen. */
+  /* Reminder: gepunkteter Balken statt durchgezogenem, damit sie sich von echten Terminen abheben */
+  .tl .ev.rem { border-left-style: dotted; border-left-width: 4px; background: var(--bg); box-shadow: none; }
+
+  /* Ganztägiges (Fristen ohne Uhrzeit) — eigene Leiste unter der Achse */
+  .rem-strip { margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--border);
+    display: flex; flex-wrap: wrap; gap: 7px; }
+  .rem-strip .ev { position: static; padding: 5px 13px; border-radius: 999px;
+    border-left: none; border: 1px solid var(--border); background: var(--card); box-shadow: none; }
+  .rem-strip .ev > b { font-size: 11.5px; margin-right: 5px; }
+  /* Eine Fälligkeit in der Zukunft ist normal, kein Alarm: neutraler Chip, Ring statt "FÄLLIG"-Label.
+     Rot bleibt allein dem Überfällig-Strip vorbehalten — sonst sagt die Farbe nichts mehr. */
+
+  /* ── Projekte: Hierarchie — Kopf, Kontext, Status, Details, Timeline-Footer ── */
+  .pgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(370px, 1fr)); gap: var(--gap); }
+  .pdetail { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+  .pdetail .head { display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    padding: 16px 20px 0; }
+  .pdetail h3 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -.015em; display: flex; align-items: center; }
+  .pdetail h3::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--text-3); margin-right: 9px; flex: none; }
+  .pdetail[data-health="green"] h3::before { background: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent); }
+  .pdetail[data-health="amber"] h3::before { background: var(--sev-amber); box-shadow: 0 0 0 3px rgba(217,119,6,.18); }
+  .pdetail[data-health="red"] h3::before   { background: var(--sev-red); box-shadow: 0 0 0 3px rgba(180,35,24,.18); }
+  .badge { font-size: 11px; font-weight: 500; letter-spacing: -.005em; padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--border-strong); background: var(--card); color: var(--text-2); flex: none; }
+  .badge.green { color: var(--brand-deep); border-color: color-mix(in srgb, var(--brand) 35%, transparent); background: var(--brand-soft); }
+  .badge.amber { color: var(--amber-deep); border-color: var(--amber-border); background: var(--amber-soft); }
+  .badge.red { color: var(--red-deep); border-color: var(--red-border); background: var(--red-soft); }
+
+  /* Übersicht = Untertitel unter dem Namen (kein eigenes Label) */
+  .pdetail .p-about { margin: 5px 20px 0; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    font-size: 12.5px; line-height: 1.5; color: var(--text-3); }
+  /* Status quo = der prominente Kern der Karte */
+  .pdetail .story { margin: 12px 20px 0; font-size: 13.5px; line-height: 1.65; color: var(--text); letter-spacing: -.005em; }
+  .pdetail .story + .story { margin-top: 8px; }
+  .pdetail .blocker-line { margin: 12px 20px 0; padding: 8px 11px; border-radius: 7px;
+    background: var(--amber-soft); border: 1px solid var(--amber-border);
+    font-size: 12.5px; line-height: 1.5; color: var(--amber-deep); }
+  .pdetail .blocker-line::before { content: "Blocker · "; font-size: 10px; letter-spacing: .08em;
+    text-transform: uppercase; font-weight: 700; }
+  /* Detail-Bausteine */
+  .pdetail h4 { margin: 14px 20px 4px; }
+  .pdetail p, .pdetail ul { margin-left: 20px; margin-right: 20px; }
+  .pdetail p { font-size: 13px; line-height: 1.55; color: var(--text-2); }
+  .pdetail ul { padding: 0; list-style: none; }
+  .pdetail ul li { font-size: 12.5px; line-height: 1.5; padding: 3px 0 3px 13px; position: relative; color: var(--text-2); }
+  .pdetail ul li::before { content: ""; position: absolute; left: 0; top: 10px; width: 4px; height: 4px;
+    border-radius: 50%; background: var(--brand); opacity: .55; }
+  /* Timeline als Fußleiste */
+  .pdetail .p-time { margin: 14px 0 0; padding: 9px 20px; background: var(--bg); border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .pdetail .p-time::before { content: "Timeline"; font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+    font-weight: 600; color: var(--text-3); margin-right: 9px; }
+  .pdetail .p-spacer { flex: 1; min-height: 8px; }
+
+  ul.notes { list-style: none; margin: 0; padding: 0; }
+  ul.notes li { padding: 10px 2px; font-size: 13px; line-height: 1.55; letter-spacing: -.005em; }
+  ul.notes li + li { border-top: 1px solid var(--border); }
+  ul.notes li > b { color: var(--text-3); font-weight: 600; font-size: 12px; margin-right: 10px; }
+
+  /* ── Werkzeuge ── */
+  .guide { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 22px 16px; box-shadow: var(--shadow-1); margin-bottom: var(--gap); }
+  .guide-steps { margin: 8px 0 0; padding: 0; list-style: none; counter-reset: g; max-width: 92ch; }
+  .guide-steps li { counter-increment: g; position: relative; padding: 5px 0 5px 28px; font-size: 13px;
+    line-height: 1.55; color: var(--text-2); letter-spacing: -.005em; }
+  .guide-steps li::before { content: counter(g); position: absolute; left: 0; top: 6px; width: 18px; height: 18px;
+    border-radius: 50%; background: var(--brand-soft); color: var(--brand-deep); font-size: 10.5px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; }
+  .guide-steps b { color: var(--text); }
+  .guide-foot { margin: 10px 0 0; padding-top: 9px; border-top: 1px solid var(--border);
+    font-size: 12.5px; color: var(--text-3); max-width: 92ch; }
+  .guide-steps code, .guide code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11.5px; background: var(--bg); border-radius: 4px; padding: 1px 5px; }
+  h3.label.sec { margin: 14px 0 4px; }
+  .sec-sub { margin: 0 0 10px; font-size: 12.5px; color: var(--text-3); max-width: 80ch; }
+  h3.label.sec + .tgrid { margin-top: 10px; }
+  .tgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(275px, 1fr)); gap: var(--gap); }
+  .tool { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; box-shadow: var(--shadow-1); }
+  .tool code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px;
+    color: var(--brand-deep); background: var(--brand-soft); border-radius: 6px; padding: 2px 8px; }
+  .tool h3 { margin: 7px 0 3px; font-size: 14px; font-weight: 600; letter-spacing: -.01em; }
+  .tool p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); }
+  .tool .say { margin-top: 6px; font-size: 12px; color: var(--text-3); font-style: italic; }
+  a.tool { display: block; text-decoration: none; color: inherit; transition: border-color .15s var(--ease); }
+  a.tool:hover { text-decoration: none; border-color: var(--border-strong); }
+
+  /* ── Ausstattung: Karten mit Icon-Feld links, Status auf einen Blick ── */
+  /* Selbsttest-Block: nur sichtbar, wenn wirklich etwas offen ist (data-collapse-empty greift ueber die ul).
+     Amber, weil es Aufmerksamkeit will, aber nichts kaputt ist. */
+  .health { margin: 18px 0 0; padding: 14px 16px; border: 1px solid var(--amber-border);
+    background: var(--amber-soft); border-radius: 10px; }
+  .health h4 { margin: 0 0 6px; font-size: 12.5px; font-weight: 700; color: var(--amber-deep); }
+  .health ul { margin: 0; padding-left: 18px; }
+  .health li { font-size: 13px; color: var(--text-2); line-height: 1.5; padding: 2px 0; }
+  .health li b { color: var(--text); font-weight: 600; }
+  .inv-cat { margin: 16px 0 8px; font-size: 12px; font-weight: 600; color: var(--text-2); letter-spacing: -.005em; }
+  .inv-cat:first-child { margin-top: 0; }
+  /* auto-fill statt auto-fit: eine einzelne Karte bleibt schmal, statt die Zeile zu füllen */
+  .invgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(275px, 1fr)); gap: var(--gap); }
+  .inv-card { display: flex; gap: 12px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 13px 15px; box-shadow: var(--shadow-1); }
+  .inv-ico { flex: none; width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--text-3); }
+  .inv-ico svg { width: 18px; height: 18px; fill: none; stroke: currentColor;
+    stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  /* Eingerichtet = farbiges Icon-Feld, offen = gedeckt grau. Aus zwei Metern unterscheidbar. */
+  .inv-card.on .inv-ico { background: var(--brand-soft); color: var(--brand); }
+  .inv-body { min-width: 0; }
+  .inv-name { margin: 1px 0 2px; font-size: 13.5px; font-weight: 600; letter-spacing: -.01em;
+    display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .inv-desc { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); overflow-wrap: anywhere; }
+  .inv-badge { font-size: 10.5px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px;
+    background: var(--amber-soft); border: 1px solid var(--amber-border); color: var(--amber-deep); }
+  .inv-card.on .inv-badge { background: var(--brand-soft); border-color: var(--brand-soft); color: var(--brand-deep); }
+  .inv-chip { display: inline-block; margin-top: 7px; font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11.5px; color: var(--brand-deep); background: var(--brand-soft); border-radius: 6px; padding: 2px 8px;
+    overflow-wrap: anywhere; }
+  .inv-empty { grid-column: 1 / -1; background: var(--card); border: 1px dashed var(--border-strong);
+    border-radius: 10px; padding: 12px 15px; font-size: 12.5px; line-height: 1.55; color: var(--text-3); }
+  .inv-empty code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px;
+    background: var(--bg); border-radius: 4px; padding: 1px 5px; }
+
+  footer.bottom { max-width: 1380px; margin: 0 auto; padding: 16px 48px 40px;
+    color: var(--text-3); font-size: 11.5px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 1100px) {
+    .brf-body { grid-template-columns: 1fr; }
+    .brf-lead { grid-column: 1; grid-row: auto; }
+    .brf-text { grid-column: 1; grid-row: auto; }
+    .brf-meta { grid-column: 1; grid-row: auto; align-self: stretch; margin-top: 12px; padding: 10px 0 0;
+      border-left: none; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 0 18px; }
+    .brf-meta div + div { border-top: none; }
+  }
+  @media (max-width: 940px) {
+    .task-cols { display: none; }
+    .task-list li { display: block; }
+    .c-proj, .c-cat, .c-status, .c-due { display: inline; margin-right: 10px; }
+    .c-proj:empty, .c-cat:empty, .c-status:empty, .c-due:empty { display: none; }
+    .top-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .meta { text-align: left; white-space: normal; }
+    .pgrid { grid-template-columns: 1fr; }
+    .wrap, .top-inner, .tabs-inner { padding-left: 20px; padding-right: 20px; }
+    .toolbar { gap: 12px; }
+    .fbar { margin-left: 0; }
+    footer.bottom { padding-left: 20px; padding-right: 20px; }
+  }
+  @media print {
+    body { background: #fff; }
+    .hint, nav.tabs, .fbar, .toolbar { display: none; }
+    .tabpane { display: block !important; animation: none; }
+    .cardbox, .pdetail { box-shadow: none; }
+    .wrap { padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div>
+      <h1>{{DATE_LONG}}</h1>
+      <div class="eyebrow">{{USER_NAME}} · Tages-Cockpit</div>
+    </div>
+    <div class="meta">
+      <div><strong>{{META_LINE}}</strong></div>
+      <div>Stand {{GENERATED_AT}} · lädt sich selbst neu</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <div class="tabs-inner">
+    <button class="tab active" data-tab="heute">Heute</button>
+    <button class="tab" data-tab="kalender">Kalender</button>
+    <button class="tab" data-tab="projekte">Projekte &amp; Notizen</button>
+    <button class="tab" data-tab="tools">Start Here</button>
+    <button class="tab" data-tab="hilfe">Hilfe</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <div class="tabpane" id="pane-heute">
+    <details class="briefing" id="briefing">
+      <summary>
+        <span class="label">Briefing</span>
+        <span class="brf-teaser" id="brf-teaser"></span>
+        <span class="brf-toggle" aria-hidden="true"></span>
+      </summary>
+      <div class="brf-body">
+        <p class="brf-lead">{{BRIEFING_LEAD}}</p>
+        <div class="brf-text">{{BRIEFING}}</div>
+        <aside class="brf-meta" id="brf-meta"></aside>
+      </div>
+    </details>
+    <details class="briefing notes-drop" id="notes-drop">
+      <summary>
+        <span class="label">Notizen</span>
+        <span class="brf-teaser" id="notes-teaser"></span>
+        <span class="brf-toggle" aria-hidden="true"></span>
+      </summary>
+      <div class="brf-body"><ul class="notes">{{NOTES}}</ul></div>
+    </details>
+    <div class="cardbox inboxbox" id="inboxbox" data-collapse-empty>
+      <h2>Inbox</h2>
+      <p class="sub">Wartet auf deine Entscheidung — im Chat: „übernimm 1 ins Projekt X" · „verwirf 2". Mail-Funde und lose Notizen, noch keine Tasks.</p>
+      <ul class="task-list inbox-list" id="inbox-list">{{INBOX_ITEMS}}</ul>
+    </div>
+    <div class="cardbox">
+      <div class="toolbar">
+        <div class="plan-row" id="plan-row" {{PLAN_STATE}} hidden>
+          <span class="label plan-label">Tagesplan</span>
+          <div class="plan-bar"><i id="plan-bar"></i></div>
+          <span class="plan-count" id="plan-count"></span>
+        </div>
+      <div class="fbar" id="fbar">
+        <div class="fchip" data-dim="project"><button class="fbtn" type="button">Projekt</button><div class="fmenu"></div></div>
+        <div class="fchip" data-dim="status"><button class="fbtn" type="button">Status</button><div class="fmenu"></div></div>
+        <div class="fchip" data-dim="cat"><button class="fbtn" type="button">Art</button><div class="fmenu"></div></div>
+        <button class="pill sortpill" id="sort-due" type="button" title="Nach Fälligkeit sortieren">↕ Fälligkeit</button>
+        </div>
+      </div>
+      <div class="task-cols" aria-hidden="true">
+        <span>Task</span><span>Projekt</span><span>Art</span><span>Status</span><span>Fällig</span>
+      </div>
+      <ul class="task-list" id="task-list">{{TASK_ITEMS}}</ul>
+      <p class="hint">Dieses Dashboard ist reine Ansicht. Alles Operative läuft über Claude: „X ist erledigt“ · „übernimm 1 ins Projekt Y“ · „verwirf 2“ · „nimm Z in den Tagesplan“.</p>
+    </div>
+  </div><!-- /pane-heute -->
+
+  <div class="tabpane" id="pane-kalender" hidden>
+    <div class="cal-cols">
+      <div class="cardbox">
+        <h2>Heute</h2>
+        <ol class="tl">{{AGENDA}}</ol>
+      </div>
+    </div>
+  </div><!-- /pane-kalender -->
+
+  <div class="tabpane" id="pane-projekte" hidden>
+    <div class="pgrid">{{PROJECT_DETAIL}}</div>
+  </div><!-- /pane-projekte -->
+
+  <div class="tabpane" id="pane-tools" hidden>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow-1)">
+      <b style="font-size:13.5px">👋 Neu hier? Das ganze System in 3 Minuten (Video)</b>
+      <video controls preload="none" src="../reference/quickstart.mp4" style="width:100%;border-radius:8px;background:#000;display:block;margin-top:10px"></video>
+      <p style="margin:8px 0 0;font-size:12.5px;line-height:1.55;color:var(--text-2)">Startet nichts? Dann liegt die Datei noch nicht bei — sie gehört in <code>reference/quickstart.mp4</code>. Kein Problem: Der Guide darunter deckt dasselbe ab.</p>
+    </div>
+
+    <div class="guide">
+      <h3 class="label">So arbeitest du damit</h3>
+      <ol class="guide-steps">
+        <li><b>Morgens</b> „Guten Morgen" sagen. Claude holt Kalender und Mails, briefed dich und baut dieses Dashboard. Optional planst du danach den Tag durch.</li>
+        <li><b>Tagsüber</b> einfach reden, kein Befehl nötig: „Kapitel 3 ist fertig", „warte auf die IT", „Termin lief gut, wir machen X". Claude sortiert es ein.</li>
+        <li><b>Dokumente</b> in den <code>inbox/</code>-Ordner legen und „lies das ein" sagen. Entscheidungen und To-dos landen im richtigen Projekt.</li>
+        <li><b>Abends</b> „Feierabend": kurzer Tagesabschluss, was war und was liegen bleibt. Was in den nächsten Tagen ansteht, fragst du einfach im Chat („was steht diese Woche an?").</li>
+        <li><b>Wenn etwas falsch ist</b>, sag es einfach: „das stimmt nicht", „hab ich längst beantwortet". Wird korrigiert, ohne Diskussion. Kommt derselbe Fehler öfter, wird die Ursache abgestellt.</li>
+        <li><b>In Eile?</b> „Guten Morgen, schnell" lässt die Postfach-Analyse weg: Kalender und Aufgaben in rund 30 Sekunden. <b>Länger weg gewesen?</b> Sag einfach „guten Morgen", du wirst gefragt, was liegengeblieben ist.</li>
+      </ol>
+      <p class="guide-foot">Du musst dir keine Befehle merken. „Was liegt heute an?" tut dasselbe wie „Guten Morgen", und eine frische Unterhaltung pro Tag reicht völlig.</p>
+    </div>
+
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+      <symbol id="i-cmd" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M8 10l2.5 2L8 14"/><path d="M13 15h4"/></symbol>
+      <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5"/><path d="M15 3v5"/><path d="M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v4"/></symbol>
+      <symbol id="i-cli" viewBox="0 0 24 24"><path d="M4 6l6 6-6 6"/><path d="M13 18h7"/></symbol>
+      <symbol id="i-puzzle" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></symbol>
+      <symbol id="i-repo" viewBox="0 0 24 24"><circle cx="7" cy="6" r="2.5"/><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="9" r="2.5"/><path d="M7 8.5v7"/><path d="M17 11.5c0 3-3 3.5-7 4"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    </defs></svg>
+
+    <h3 class="label sec">Deine Ausstattung</h3>
+    <p class="sec-sub">Was dein System kann und was davon bei dir schon eingerichtet ist. Farbiges Symbol heißt eingerichtet, graues heißt noch offen. Gepflegt wird die Liste in <code>context/config.yaml</code> unter <code>inventory</code>; die Befehle sind immer da.</p>
+    <div id="ausstattung">
+      <!-- {{AUSSTATTUNG}} — Fragment-Format (wird 1:1 an dieser Stelle eingesetzt):
+           Fünf Kategorie-Blöcke, IMMER alle fünf, IMMER in dieser Reihenfolge, jeder exakt so:
+
+             <h4 class="inv-cat">ÜBERSCHRIFT</h4>
+             <div class="invgrid" data-hint="HINWEIS-HTML">KARTEN</div>
+
+           Kategorie / Quelle in config.yaml / ÜBERSCHRIFT / Icon-Id / HINWEIS-HTML (bei leerer Liste):
+             1. connectors → "Verbindungen"  · #i-plug   · Noch keine Verbindung eingetragen. Mail, Kalender und Dateiablage verbindest du einmal in Claude Cowork unter Einstellungen &rarr; Connectors; die Anleitung steht in <code>reference/mcp.md</code>
+             2. clis       → "Werkzeuge"     · #i-cli    · Noch kein Werkzeug eingetragen. firecrawl liest Webseiten, playwright bedient einen echten Browser; die Installation steht in <code>reference/tools.md</code>
+             3. plugins    → "Plugins"       · #i-puzzle · Noch kein Plugin eingetragen. Das Paket braucht keines; welche sich lohnen, steht in <code>reference/plugins.md</code>
+             4. repos      → "Repos"         · #i-repo   · Noch kein Repo eingetragen. Trag Name und Adresse in <code>context/config.yaml</code> unter <code>inventory.repos</code> ein
+             5. routines   → "Routinen"      · #i-clock  · Noch keine Routine eingetragen. Routinen lassen Claude zeitgesteuert arbeiten, zum Beispiel das Briefing morgens um 7; siehe <code>SETUP.md</code>
+
+           KARTEN = pro Eintrag der Kategorie genau eine Karte:
+
+             <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-plug"/></svg></span><div class="inv-body"><p class="inv-name">NAME<span class="inv-badge">ABZEICHEN</span></p><p class="inv-desc">BESCHREIBUNG</p><code class="inv-chip">CHIP</code></div></div>
+
+           Regeln für die Karte:
+             - Klasse "inv-card on" wenn status: true (bzw. bei repos/routines immer), sonst "inv-card" ohne "on".
+             - <span class="inv-badge">…</span> NUR wenn es etwas zu sagen gibt, sonst ganz weglassen:
+               connectors ohne status → "nicht verbunden" · clis ohne status → "nicht installiert" · plugins ohne status → "nicht installiert".
+               Ist etwas eingerichtet, kein Abzeichen setzen; das farbige Symbol sagt es bereits.
+             - <code class="inv-chip">…</code> NUR wo eine Adresse oder ein Zeitplan dazugehört, sonst weglassen:
+               repos → url · routines → schedule. connectors/clis/plugins tragen keinen Chip.
+             - BESCHREIBUNG = purpose aus config.yaml. Fehlt purpose, Karte ohne <p class="inv-desc">.
+             - Alle Texte HTML-escapen (&amp; &lt; &gt;), keine Em-Dashes.
+             - Leere Kategorie: den Block trotzdem ausgeben, das <div class="invgrid"> einfach leer lassen.
+               Den Hinweis setzt das Template selbst aus data-hint. Wird der Platzhalter gar nicht ersetzt,
+               zeigt das Template ebenfalls einen ruhigen Hinweis statt einer Lücke. -->
+      <h4 class="inv-cat">Befehle</h4>
+      <div class="invgrid">
+        <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Tages-Briefing</p><p class="inv-desc">Kalender, Mail-Triage und Tasks zum Tagesstart. Baut auch dieses Dashboard.</p><code class="inv-chip">/morning</code></div></div>
+        <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Tagesabschluss</p><p class="inv-desc">Plan gegen Realität, was liegen bleibt, was entschieden wurde.</p><code class="inv-chip">/eod</code></div></div>
+        <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Mail-Entwurf</p><p class="inv-desc">Mail in deinem Stil, fertig zum Abschicken in deinem Mailprogramm.</p><code class="inv-chip">/email</code></div></div>
+        <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Dokumente einsortieren</p><p class="inv-desc">Dokumente, Transkripte und Notizen automatisch in deine Projekte einsortieren.</p><code class="inv-chip">/ingest</code></div></div>
+      </div>
+      <div id="inv-dyn">{{AUSSTATTUNG}}</div>
+      <div class="health" id="health" data-collapse-empty>
+        <h4>Was an deinem System noch offen ist</h4>
+        <ul>{{SELBSTTEST}}</ul>
+      </div>
+    </div>
+
+    <h3 class="label sec">Ohne Befehl, einfach sagen</h3>
+    <p class="sec-sub">Diese drei brauchen keinen Befehl. Sag es im Chat in eigenen Worten, der Rest passiert von selbst.</p>
+    <div class="tgrid">
+      <div class="tool"><code>Chat</code><h3>Mein Mail-Stil</h3><p>Einmalig: Claude liest deine gesendeten Mails (nur lesen, nichts wird gesendet) und lernt deinen Schreibstil. Danach klingen alle Entwürfe nach dir, nicht nach Vorlage.</p><p class="say">„Leite meinen Mail-Stil ab"</p></div>
+      <div class="tool"><code>Chat</code><h3>Neuer Case</h3><p>Ordner, Projekt-Steckbrief und erste Aufgaben legt Claude selbst an. Sag einfach, dass etwas Neues anfängt — den Rest macht das System.</p><p class="say">„Ich starte einen neuen Case: …"</p></div>
+      <div class="tool"><code>Chat</code><h3>Problembericht</h3><p>Etwas kaputt und nichts hilft? Claude baut eine fertige Mail an die Person, von der du das System hast — mit allem, was sie wissen muss. Du klickst nur Senden.</p><p class="say">„Schreib einen Problembericht"</p></div>
+    </div>
+
+    <h3 class="label sec">Eigene Tools</h3>
+    <p class="sec-sub">Selbst gebaute Werkzeuge deines Teams. Gepflegt wird die Liste in <code>context/config.yaml</code> unter <code>own_tools</code>: Name, Zweck, Adresse. Das Dashboard verlinkt sie nur, es führt nichts aus.</p>
+    <div class="tgrid" id="own-tools">
+      <!-- {{OWN_TOOLS}} — pro Eintrag aus config.yaml → own_tools eine Kachel:
+           <a class="tool" href="ADRESSE" target="_blank" rel="noopener">[<code>Kategorie</code>]<h3>Name</h3><p>Zweck</p><p class="say">ADRESSE</p></a>
+           Kein Eintrag (oder Platzhalter nicht ersetzt) → das Template setzt selbst einen Hinweis. -->
+      {{OWN_TOOLS}}
+    </div>
+
+    <h3 class="label sec">Zusätzlich verfügbar</h3>
+    <p class="sec-sub">Skills und Plugins, die nicht Teil dieses Pakets sind, die du dir aber dazuholen kannst. Frag Claude, wenn du etwas brauchst, das die Werkzeuge oben nicht abdecken.</p>
+    <div class="tgrid">
+      {{TOOLS_EXTRA}}
+    </div>
+  </div><!-- /pane-tools -->
+
+  <div class="tabpane" id="pane-hilfe" hidden>
+    <style>
+      .faq { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+      .faq details { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 11px 16px; box-shadow: var(--shadow-1); }
+      .faq summary { cursor: pointer; font-weight: 600; font-size: 13.5px; letter-spacing: -.01em; }
+      .faq p { margin: 8px 0 2px; font-size: 12.5px; line-height: 1.55; color: var(--text-2); }
+      .faq code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px; }
+    </style>
+
+    <h3 class="label">Es startet nicht richtig</h3>
+    <p class="guide-foot" style="margin-bottom:18px">Du musst hier nichts auswendig lernen — <b>frag einfach im Chat</b>, in eigenen Worten, jederzeit. Diese Seite ist nur dein Spickzettel für den Fall, dass etwas klemmt. Jede Antwort zeigt dir den Satz, den du dazu schreiben kannst.</p>
+    <div class="faq">
+      <details><summary>Ich sage „guten Morgen" und es passiert nichts Besonderes</summary><p>Dann läuft Claude gerade im falschen Ordner und weiß deshalb nichts von deinem System. So kommst du in den richtigen — in <b>VS Code</b>: „Datei → Ordner öffnen", deinen Workspace-Ordner wählen, dann das Claude-Panel in der Seitenleiste aufmachen. Ohne VS Code, <b>Windows</b>: den Ordner im Explorer öffnen, oben in die Adresszeile klicken, <b>cmd</b> tippen, Enter, dann <b>claude</b> tippen, Enter. <b>Mac</b>: Terminal öffnen, <b>cd</b> tippen (mit Leerzeichen), den Ordner aus dem Finder ins Fenster ziehen, Enter, dann <b>claude</b>.</p></details>
+      <details><summary>Die Befehle wie /morning gibt es bei mir nicht</summary><p>Beim Kopieren ist ein unsichtbarer Teil des Ordners verloren gegangen. Das passiert leicht und ist nicht dein Fehler. Bitte die Person, von der du den Ordner hast, um eine frische Kopie und kopiere dann den <b>ganzen Ordner</b>, nicht die Dateien einzeln.</p></details>
+      <details><summary>Das Einrichten wurde unterbrochen</summary><p>Kein Problem. Einfach wieder öffnen und <b>„hallo"</b> schreiben. Claude merkt selbst, wo es aufgehört hat, und macht genau dort weiter.</p></details>
+      <details><summary>Im Briefing fehlen Mails und Kalender</summary><p>Claude hat noch keine Verbindung zu deinem Postfach. Die stellst du einmal in der Claude-App her: Einstellungen öffnen, den Punkt „Connectors" wählen und dort den Dienst verbinden, den ihr nutzt, zum Beispiel Microsoft 365 oder Google Workspace. Danach hier schreiben: <b>„prüf die Mail-Verbindung nochmal"</b>. Unsicher? Schreib <b>„hilf mir, das Postfach zu verbinden"</b>, dann wirst du Schritt für Schritt durchgeführt.</p></details>
+      <details><summary>Es entsteht keine Dashboard-Seite</summary><p>Dafür fehlt ein kleines Hilfsprogramm (Node.js) auf deinem Rechner. Schreib im Chat: <b>„hilf mir, das Dashboard zum Laufen zu bringen"</b>. Das ist einmalig und dauert ein paar Minuten. Alles andere funktioniert auch ohne.</p></details>
+    </div>
+
+    <h3 class="label sec">Im Alltag</h3>
+    <div class="faq">
+      <details><summary>Claude behauptet etwas Falsches</summary><p>Einfach widersprechen: <b>„das stimmt nicht"</b> oder <b>„hab ich längst beantwortet"</b>. Es wird sofort korrigiert, ohne Diskussion. Und mit <b>„mach das rückgängig"</b> holst du den vorherigen Stand deiner Projekte zurück.</p></details>
+      <details><summary>Die Mail-Sortierung passt nicht zu mir</summary><p>Sag in normalen Worten, was anders sein soll: <b>„Newsletter interessieren mich nicht"</b> oder <b>„Mails von X sind immer wichtig"</b>. Claude merkt sich das dauerhaft. Mit störenden Kalender-Einträgen (Gym, private Blöcke) funktioniert es genauso.</p></details>
+      <details><summary>Der Mail-Entwurf taucht nicht im Postfach auf</summary><p>Schau zuerst, ob dein Mailprogramm auf dem Rechner geöffnet ist, es muss laufen. Dann schreib: <b>„versuch den Entwurf nochmal"</b>. Klappt es wieder nicht, beschreib Claude einfach, was du siehst.</p></details>
+      <details><summary>Das Dashboard zeigt alte Daten</summary><p>Schreib: <b>„das Dashboard ist von gestern"</b>, dann wird es neu gebaut. Oben auf der Seite steht übrigens immer, von wann sie ist. Sie tut nie so, als wäre sie aktuell.</p></details>
+      <details><summary>Es gibt plötzlich Dateien mit „ 2" im Namen</summary><p>Solche Doppelgänger legt OneDrive an, wenn zwei Programme gleichzeitig gespeichert haben. Lösch die Kopien mit der „ 2" im Namen im Explorer und arbeite am besten mit nur einem Claude-Fenster in diesem Ordner.</p></details>
+      <details><summary>Ich will ein sehr großes Dokument einlesen lassen</summary><p>Sag vorher kurz Bescheid, dass etwas Großes kommt, dann teilt Claude sich die Arbeit ein. Bei allem, was spürbar Verbrauch kostet, meldet es sich ohnehin, bevor es loslegt.</p></details>
+    </div>
+
+    <h3 class="label sec">Verbrauch im Griff</h3>
+    <div class="faq">
+      <details><summary>Was treibt den Verbrauch — und was nicht?</summary><p>Abgerechnet wird nach Menge, ähnlich wie Datenvolumen. Günstig: der normale Alltag — ein Morgen-Briefing entspricht etwa einer längeren Unterhaltung, und das Sortieren eurer Mails läuft bewusst auf dem günstigsten Modell. Spürbar wird nur: sehr große Dokumente einlesen (lange Transkripte, dicke Decks), Bilder und sehr lange Unterhaltungen. Bei allem Großen meldet sich Claude vorher, bevor es loslegt — du kannst dann nein sagen.</p></details>
+      <details><summary>Meine Unterhaltung läuft seit Tagen mit — ist das schlimm?</summary><p>Für den Verbrauch: ja. Jede neue Nachricht schleppt die ganze bisherige Unterhaltung mit, sie wird also jedes Mal teurer. Der einfache Spar-Trick: <b>eine frische Unterhaltung pro Tag</b> (oder pro neuem Thema). Du verlierst dabei nichts — alles Wichtige steht in den Dateien dieses Ordners, nicht im Chat.</p></details>
+      <details><summary>Wann lohnt sich das stärkste Modell?</summary><p>Für 95 % des Tages reicht die Standardeinstellung. Für wirklich tiefe Analysen oder große Dokument-Synthesen kann sich einmal <b>/model opus</b> lohnen — danach mit <b>/model sonnet</b> zurückschalten. Claude selbst sagt dir an der Stelle auch, wenn sich ein Wechsel lohnt bzw. wenn das starke Modell für eine Routine-Aufgabe gerade verschwendet ist.</p></details>
+    </div>
+
+    <h3 class="label sec">Gut zu wissen</h3>
+    <div class="faq">
+      <details><summary>Darf ich das überhaupt nutzen?</summary><p>Frag Claude: <b>„was liest das System eigentlich alles?"</b> Du bekommst eine Seite Klartext dazu, was gelesen wird und was nie passiert. Die ist genau für den Moment gemacht, in dem dich jemand danach fragt.</p></details>
+      <details><summary>Kann es versehentlich Mails senden oder Termine ändern?</summary><p>Nein. Claude legt nur Entwürfe in dein Postfach, den Senden-Knopf drückst immer du. An deinem Kalender ändert es nie etwas. Und gelöscht wird auch nichts: Was weg soll, wandert in einen Archiv-Ordner und lässt sich zurückholen.</p></details>
+      <details><summary>Ich war zwei Wochen beim Klienten und nichts ist gepflegt</summary><p>Das ist eingeplant. Sag <b>„guten Morgen"</b>, dann wirst du gefragt, was in der Zwischenzeit passiert ist. Zwei, drei Stichpunkte reichen, den Rest räumt Claude selbst auf, auch die längst erledigten Aufgaben.</p></details>
+      <details><summary>Ich habe den Ordner verschoben oder einen neuen Rechner</summary><p>Den ganzen Ordner mitnehmen (wieder: als Ganzes kopieren, nicht die Dateien einzeln). Dann Claude darin öffnen und schreiben: <b>„ich habe den Ordner verschoben"</b>. Den Rest erledigt es selbst.</p></details>
+      <details><summary>Was kostet die Nutzung?</summary><p>Abgerechnet wird nach Verbrauch, ähnlich wie beim Handy nach Datenvolumen. Ein Morgen-Briefing entspricht ungefähr einer längeren Chat-Unterhaltung, der Alltag fällt kaum ins Gewicht. Sparsam unterwegs: <b>„guten Morgen, schnell"</b> lässt die Postfach-Analyse weg.</p></details>
+      <details><summary>Etwas ist kaputt und nichts hier hilft</summary><p>Schreib im Chat: <b>„schreib einen Problembericht"</b>. Claude baut eine fertige Mail an die Person, von der du das System hast, mit allem, was sie wissen muss. Du klickst nur noch auf Senden. Oft ist das Problem in einer neueren Version längst behoben.</p></details>
+    </div>
+  </div><!-- /pane-hilfe -->
+
+
+</div>
+
+<footer class="bottom">
+  <span>{{EMAIL_STATUS}}</span>
+  <span>{{AUDIT_FOOTER}}</span>
+</footer>
+
+<script>
+  // Leere Sektionen komplett ausblenden
+  document.querySelectorAll('[data-collapse-empty]').forEach(el => {
+    const ul = el.querySelector('ul');
+    if (!ul || !ul.children.length) el.style.display = 'none';
+  });
+
+  // Eigene Tools: keine konfiguriert (oder Platzhalter nicht ersetzt) → ruhiger Hinweis statt Lücke
+  (function () {
+    const g = document.getElementById('own-tools');
+    if (g && !g.querySelector('.tool')) g.innerHTML = '<div class="tool"><h3>Noch kein eigenes Tool eingetragen</h3><p>Trag dein erstes Werkzeug in <code>context/config.yaml</code> unter <code>own_tools</code> ein: Name, Zweck und Adresse. Ab dem nächsten Briefing steht es hier.</p><p class="say">„Trag mir ein Tool ins Dashboard ein"</p></div>';
+  })();
+
+  // Ausstattung: leere Kategorie → ruhiger Hinweis aus data-hint statt Lücke.
+  // Platzhalter gar nicht ersetzt → ein Hinweis für den ganzen Block.
+  (function () {
+    const box = document.getElementById('inv-dyn');
+    if (!box) return;
+    // Keine einzige Kategorie da (Platzhalter nicht ersetzt) → ein Hinweis für den ganzen Block
+    if (!box.querySelector('.invgrid')) {
+      box.innerHTML = '<h4 class="inv-cat">Verbindungen, Werkzeuge, Plugins, Repos und Routinen</h4>' +
+        '<div class="invgrid"><div class="inv-empty">Hier steht noch nichts. Was du verbunden und installiert hast, trägst du in <code>context/config.yaml</code> unter <code>inventory</code> ein, dann steht es ab dem nächsten Briefing hier</div></div>';
+    }
+    box.querySelectorAll('.invgrid[data-hint]').forEach(g => {
+      if (!g.querySelector('.inv-card')) g.innerHTML = '<div class="inv-empty">' + g.dataset.hint + '</div>';
+    });
+  })();
+
+  // Tabs — aktiver Tab überlebt Auto-Reloads (sessionStorage), Deep-Link via #kalender/#projekte
+  const panes = { heute: document.getElementById('pane-heute'), kalender: document.getElementById('pane-kalender'), projekte: document.getElementById('pane-projekte'), tools: document.getElementById('pane-tools'), hilfe: document.getElementById('pane-hilfe') };
+  function showTab(name) {
+    if (!panes[name]) name = 'heute';
+    Object.entries(panes).forEach(([k, p]) => p.hidden = k !== name);
+    document.querySelectorAll('#tabs .tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    sessionStorage.setItem('cockpit-tab', name);
+  }
+  document.querySelectorAll('#tabs .tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
+  showTab(location.hash ? location.hash.slice(1) : (sessionStorage.getItem('cockpit-tab') || 'heute'));
+
+  const taskList = document.getElementById('task-list');
+  const inboxList = document.getElementById('inbox-list');
+  // Inbox lebt in einer eigenen Karte, gehoert aber zu denselben Zeilen-Mechaniken
+  // (Note aufklappen, Faellig-Rot, Kennzahlen). Ohne diesen Helper zaehlt und
+  // verdrahtet jede Abfrage nur die halbe Wahrheit.
+  const allRows = sel => [...taskList.querySelectorAll(sel), ...(inboxList ? inboxList.querySelectorAll(sel) : [])];
+  const todayISO = '{{DATE_ISO}}';
+
+  // Briefing: standardmäßig OFFEN — Zustand ist View-State (wie Tabs) und überlebt Auto-Reloads;
+  // wer es einmal zuklappt, dem bleibt es zugeklappt
+  const brf = document.getElementById('briefing');
+  if (brf) {
+    const lead = brf.querySelector('.brf-lead');
+    if (!lead || !lead.textContent.trim()) brf.style.display = 'none';
+    else {
+      document.getElementById('brf-teaser').textContent = lead.textContent.trim();
+      brf.open = sessionStorage.getItem('cockpit-brf') !== 'closed';
+      brf.addEventListener('toggle', () => sessionStorage.setItem('cockpit-brf', brf.open ? 'open' : 'closed'));
+    }
+  }
+
+  // Tagesplan-Fortschritt — vom Render mitgegeben (data-done/data-total aus STATUS.md)
+  (function planProgress() {
+    const row = document.getElementById('plan-row');
+    const total = +row.dataset.total || 0, done = +row.dataset.done || 0;
+    if (!total) { row.hidden = true; return; }
+    row.hidden = false;
+    document.getElementById('plan-count').textContent = done + ' / ' + total;
+    document.getElementById('plan-bar').style.width = (100 * done / total) + '%';
+  })();
+
+  // Notion-artige Dropdown-Filter (Projekt × Status/Zeit × Art) — Projekt-Optionen aus den Zeilen abgeleitet
+  // Lokal rechnen UND lokal zurückformatieren. toISOString() würde nach UTC konvertieren und
+  // damit östlich von Greenwich (Berlin!) einen Tag verlieren — der "Diese Woche"-Filter
+  // hätte still 6 statt 7 Tage gezeigt.
+  const isoPlus = d => {
+    const t = new Date(todayISO + 'T00:00'); t.setDate(t.getDate() + d);
+    const p = n => String(n).padStart(2, '0');
+    return t.getFullYear() + '-' + p(t.getMonth() + 1) + '-' + p(t.getDate());
+  };
+  const fState = { project: 'all', status: 'all', cat: 'all' };
+  const CAT_LABELS = { 'deep-work': 'Deep Work', 'quick-win': 'Quick Win', 'komm': 'Kommunikation', 'prep': 'Vorbereitung', 'admin': 'Admin' };
+  const DIMS = {
+    project: { label: 'Projekt', options: () =>
+      [...new Set([...taskList.querySelectorAll('li[data-id]:not([data-inbox])')].map(li => li.dataset.project))].map(v => [v, v]) },
+    status: { label: 'Status', options: () => [['plan','Tagesplan'],['inbox','Inbox'],['zu-tun','Zu tun'],['wartet','Wartet'],['overdue','Überfällig'],['today','Heute fällig'],['week','Diese Woche']] },
+    cat: { label: 'Art', options: () => Object.entries(CAT_LABELS) },
+  };
+  function matchStatus(li) {
+    const due = li.dataset.due || '';
+    switch (fState.status) {
+      case 'plan':    return li.hasAttribute('data-plan');
+      case 'inbox':   return li.hasAttribute('data-inbox');
+      case 'zu-tun':  return li.dataset.status === 'zu-tun';
+      case 'wartet':  return li.dataset.status === 'wartet';
+      case 'overdue': return due && due < todayISO;
+      case 'today':   return due === todayISO;
+      case 'week':    return due && due >= todayISO && due <= isoPlus(7);
+      default:        return true;
+    }
+  }
+  function applyFilters() {
+    taskList.querySelectorAll('li[data-id]').forEach(li => {
+      const pOk = fState.project === 'all' || li.dataset.project === fState.project;
+      const cOk = fState.cat === 'all' || li.dataset.cat === fState.cat;
+      li.style.display = (pOk && cOk && matchStatus(li)) ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('.fchip').forEach(chip => {
+    const dim = chip.dataset.dim, btn = chip.querySelector('.fbtn'), menu = chip.querySelector('.fmenu');
+    function renderMenu() {
+      const opts = [['all', 'Alle'], ...DIMS[dim].options()];
+      menu.innerHTML = '';
+      opts.forEach(([v, t]) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'fopt' + (fState[dim] === v ? ' selected' : ''); b.textContent = t;
+        b.addEventListener('click', () => {
+          fState[dim] = v;
+          btn.childNodes[0].textContent = v === 'all' ? DIMS[dim].label : DIMS[dim].label + ': ' + t;
+          chip.classList.toggle('on', v !== 'all');
+          chip.classList.remove('open');
+          applyFilters();
+        });
+        menu.appendChild(b);
+      });
+    }
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const wasOpen = chip.classList.contains('open');
+      document.querySelectorAll('.fchip.open').forEach(c => c.classList.remove('open'));
+      if (!wasOpen) { renderMenu(); chip.classList.add('open'); }
+    });
+  });
+  document.addEventListener('click', () => document.querySelectorAll('.fchip.open').forEach(c => c.classList.remove('open')));
+  const originalOrder = [...taskList.children];
+  let sortedByDue = false;
+  document.getElementById('sort-due').addEventListener('click', e => {
+    sortedByDue = !sortedByDue;
+    e.target.classList.toggle('active', sortedByDue);
+    const items = sortedByDue
+      ? [...taskList.children].sort((a, b) => (a.dataset.due || '9999').localeCompare(b.dataset.due || '9999'))
+      : originalOrder;
+    items.forEach(li => taskList.appendChild(li));
+  });
+
+  // Notizen-Dropdown: Teaser = neueste Notiz, versteckt wenn leer
+  (function notesDrop() {
+    const nd = document.getElementById('notes-drop');
+    if (!nd) return;
+    const items = nd.querySelectorAll('ul.notes li');
+    if (!items.length) { nd.style.display = 'none'; return; }
+    const newest = items[0].textContent.replace(/\s+/g, ' ').trim();
+    document.getElementById('notes-teaser').textContent =
+      items.length + (items.length === 1 ? ' Notiz · ' : ' Notizen · ') + newest;
+    if (sessionStorage.getItem('cockpit-notes') === 'open') nd.open = true;
+    nd.addEventListener('toggle', () => sessionStorage.setItem('cockpit-notes', nd.open ? 'open' : 'closed'));
+  })();
+
+  // Task-Kontext aufklappen — reine Ansicht (Mail-Links bleiben klickbar)
+  allRows('li[data-note]').forEach(li => {
+    li.addEventListener('click', e => { if (!e.target.closest('a')) li.classList.toggle('open'); });
+  });
+
+  // Briefing-Fußzeile: Kennzahlen aus dem DOM gezählt (kein Fragment nötig)
+  (function briefingMeta() {
+    const el = document.getElementById('brf-meta');
+    if (!el) return;
+    const seg = [];
+    // :not(.rem) — ein Reminder mit Uhrzeit ist ein Reminder, kein Termin. Ohne das zählt er doppelt.
+    const termine = document.querySelectorAll('#pane-kalender .ev[data-time]:not(.rem)').length;
+    const rem = document.querySelectorAll('#pane-kalender .ev.rem').length;
+    const inbox = allRows('li[data-inbox]').length;
+    const heute = allRows('li[data-due]').filter(li => li.dataset.due === todayISO).length;
+    const spaet = allRows('li[data-due]').filter(li => li.dataset.due < todayISO).length;
+    const add = (n, label) => { if (n) seg.push('<div><b>' + n + '</b>' + label + '</div>'); };
+    add(termine, termine === 1 ? 'Termin' : 'Termine');
+    add(rem, 'Reminder');
+    add(inbox, inbox === 1 ? 'neue Mail' : 'neue Mails');
+    add(heute, 'heute fällig');
+    add(spaet, 'überfällig');
+    el.innerHTML = seg.join('');
+  })();
+
+  // Fällig-Spalte: überfällige rot markieren
+  allRows('li[data-due]').forEach(li => {
+    if (li.dataset.due < todayISO) li.querySelector('.c-due')?.classList.add('late');
+  });
+
+  // Tages-Zeitachse (Kalender-Tab): Blockhöhe = echte Dauer, freie Lücken sichtbar.
+  // Quelle je .ev: data-time (Start) + data-end (Ende). Ohne data-time = ganztägig → Leiste unter der Achse.
+  const now = new Date(); const nowMin = now.getHours() * 60 + now.getMinutes();
+  (function dayAxis() {
+    const tl = document.querySelector('#pane-kalender ol.tl');
+    if (!tl) return;
+    // TARGET = Zielhöhe der Achse. Deckelt sie bei langen Tagen, damit der Tab ein One-Pager bleibt;
+    // ppm-Untergrenze .7 lässt sie erst bei >13h Spanne darüber hinauswachsen.
+    const GUTTER = 52, TARGET = 490, MIN_GAP = 45;
+    const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+    const hhmm = n => String(Math.floor(n / 60)).padStart(2, '0') + ':' + String(n % 60).padStart(2, '0');
+    const dur = n => n < 60 ? n + ' Min'
+      : (n % 60 ? Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0') : n / 60) + ' Std';
+
+    // --gutter MUSS vor jedem Return gesetzt sein: .tl .noev liest es im padding, und eine
+    // undefinierte Custom Property macht die ganze Kurzschrift ungültig (padding fiele auf 0).
+    tl.style.setProperty('--gutter', GUTTER + 'px');
+
+    // Ganztägiges (Fristen ohne Uhrzeit) raus aus der Achse, eigene Leiste darunter.
+    // Reminder MIT Uhrzeit bleiben auf der Achse — sie haben eine Zeit, also gehören sie dorthin.
+    const rems = [...tl.querySelectorAll('.ev:not([data-time])')];
+    if (rems.length) {
+      const strip = document.createElement('div');
+      strip.className = 'rem-strip';
+      rems.forEach(r => strip.appendChild(r));
+      tl.after(strip);
+    }
+    const evs = [...tl.querySelectorAll('.ev[data-time]')];
+    if (!evs.length) { tl.insertAdjacentHTML('beforeend', '<li class="noev">Kein Termin heute</li>'); return; }
+
+    // Liefert der Kalender keine Endzeiten, wären ALLE Dauern geraten und damit auch die "frei"-Blöcke.
+    // Eine falsche Lücke ist schlimmer als keine, weil sie aussieht wie eine echte: dann lieber
+    // schlichte Liste. Greift automatisch, sobald weniger als die Hälfte der Termine ein Ende hat.
+    if (evs.filter(e => e.dataset.end).length < evs.length / 2) {
+      tl.classList.add('plain');
+      return;
+    }
+
+    // Einzelne fehlende Endzeit (Ganztags-Sonderfall) → 30 Min annehmen, statt die Achse zu verlieren
+    const items = evs.map(ev => {
+      const s = toMin(ev.dataset.time);
+      const e = ev.dataset.end ? toMin(ev.dataset.end) : s + 30;
+      return { ev, s, e: Math.max(e, s + 10) };
+    }).sort((a, b) => a.s - b.s || a.e - b.e);
+
+    // FESTER Tagesrahmen (07–22), nicht die Spanne der Termine. Zwei Gründe:
+    // (1) Ein Tag mit 2 Terminen soll leerer AUSSEHEN als einer mit 8 — bei adaptiver Spanne füllen
+    //     beide die Karte randvoll, und die Achse zerstört genau das Signal, für das sie da ist.
+    // (2) Ein Rahmen, der je nach Uhrzeit wandert, ist kein Rahmen: der Tag muss morgens und
+    //     nachmittags gleich aussehen. Deshalb dehnt er sich NUR für echte Ausreißer-Termine,
+    //     nie für "jetzt"; die Jetzt-Linie erscheint einfach nur, wenn sie in den Rahmen fällt.
+    const DAY_FROM = 7 * 60, DAY_TO = 22 * 60;   // Berater-Realität, nicht Bürozeit-Fiktion
+    const from = Math.min(DAY_FROM, Math.floor(Math.min(...items.map(i => i.s)) / 60) * 60);
+    const to = Math.max(DAY_TO, Math.ceil(Math.max(...items.map(i => i.e)) / 60) * 60);
+    const span = Math.max(to - from, 120);
+    const ppm = Math.min(1.6, Math.max(0.7, TARGET / span));
+    const y = m => Math.round((m - from) * ppm);
+
+    tl.style.setProperty('--gutter', GUTTER + 'px');
+    tl.style.height = y(to) + 'px';
+
+    for (let m = from; m <= to; m += 60) {
+      const hr = document.createElement('div');
+      hr.className = 'hr'; hr.style.top = y(m) + 'px'; hr.innerHTML = '<i>' + hhmm(m) + '</i>';
+      tl.appendChild(hr);
+      if (ppm >= 1.3 && m + 30 < to) {
+        const half = document.createElement('div');
+        half.className = 'hr half'; half.style.top = y(m + 30) + 'px';
+        tl.appendChild(half);
+      }
+    }
+
+    // Freie Blöcke = Lücken zwischen den zusammengeführten Belegt-Intervallen
+    const busy = [];
+    items.forEach(i => {
+      const last = busy[busy.length - 1];
+      if (last && i.s <= last[1]) last[1] = Math.max(last[1], i.e);
+      else busy.push([i.s, i.e]);
+    });
+    for (let k = 0; k < busy.length - 1; k++) {
+      const g0 = busy[k][1], g1 = busy[k + 1][0];
+      if (g1 - g0 < MIN_GAP) continue;
+      const f = document.createElement('div');
+      f.className = 'free';
+      f.style.top = (y(g0) + 2) + 'px';
+      f.style.height = Math.max(y(g1) - y(g0) - 4, 14) + 'px';
+      f.innerHTML = '<span>' + dur(g1 - g0) + ' frei</span>';
+      tl.appendChild(f);
+    }
+
+    // Doppelbuchungen nebeneinander. Spuren werden PRO Überlappungs-Gruppe gezählt, nicht global —
+    // sonst würde ein einziger Doppeltermin am Vormittag jeden Termin des Tages auf halbe Breite drücken.
+    const groups = [];
+    items.forEach(i => {
+      const g = groups[groups.length - 1];
+      if (g && i.s < g.end) { g.items.push(i); g.end = Math.max(g.end, i.e); }
+      else groups.push({ items: [i], end: i.e });
+    });
+    groups.forEach(g => {
+      const laneEnd = [];
+      g.items.forEach(i => {
+        let l = laneEnd.findIndex(e => e <= i.s);
+        if (l === -1) { laneEnd.push(i.e); l = laneEnd.length - 1; } else laneEnd[l] = i.e;
+        i.lane = l;
+      });
+      g.lanes = laneEnd.length;
+    });
+
+    groups.forEach(g => g.items.forEach(i => {
+      const h = Math.max(y(i.e) - y(i.s) - 3, 20);
+      i.ev.style.top = y(i.s) + 'px';
+      i.ev.style.height = h + 'px';
+      i.ev.style.left = 'calc(' + GUTTER + 'px + ' + i.lane + ' * (100% - ' + GUTTER + 'px) / ' + g.lanes + ')';
+      i.ev.style.width = 'calc((100% - ' + GUTTER + 'px) / ' + g.lanes + ' - 4px)';
+      if (h < 46) i.ev.classList.add('tight');
+      const d = document.createElement('span');
+      d.className = 'dur'; d.textContent = dur(i.e - i.s);
+      i.ev.insertBefore(d, i.ev.firstChild);
+      if (i.e <= nowMin) i.ev.classList.add('past');
+    }));
+
+    // Laufender bzw. nächster Termin — ein Termin um 14:00-15:00 ist um 14:30 nicht "vorbei".
+    // Reminder sind ausgenommen: eine eigene Frist ist kein Termin, auf den man zuläuft.
+    const nxt = items.find(i => i.e > nowMin && !i.ev.classList.contains('rem'));
+    if (nxt) nxt.ev.classList.add(nxt.s <= nowMin ? 'running' : 'next');
+
+    if (nowMin >= from && nowMin <= to) {
+      const nl = document.createElement('div');
+      nl.className = 'nowline'; nl.style.top = y(nowMin) + 'px';
+      nl.innerHTML = '<i>' + hhmm(nowMin) + '</i>';
+      tl.appendChild(nl);
+    }
+  })();
+
+  // Auto-Reload: Claude schreibt diese Datei bei jedem Status-Update neu.
+  const reload = () => { sessionStorage.setItem('cockpit-scroll', String(scrollY)); location.reload(); };
+  let hiddenAt = null;
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) hiddenAt = Date.now();
+    else if (hiddenAt && Date.now() - hiddenAt > 10000) reload();
+  });
+  let lastTouch = Date.now();
+  ['pointermove','keydown','scroll'].forEach(e => addEventListener(e, () => lastTouch = Date.now(), {passive:true}));
+  setInterval(() => { if (Date.now() - lastTouch > 60000) reload(); }, 300000);
+  const sy = sessionStorage.getItem('cockpit-scroll');
+  if (sy) { scrollTo(0, +sy); sessionStorage.removeItem('cockpit-scroll'); }
+</script>
+</body>
+</html>

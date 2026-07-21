@@ -1,0 +1,101 @@
+# ============================================================
+# Persönliche Konfiguration — die EINZIGE Stelle für personenbezogene Werte.
+# Wird von /setup beim ersten Start befüllt. Alle Skills lesen diese Datei.
+# Verhaltens-Tuning (Mail-Fenster, Section-Caps, Keywords) lebt in den Skills.
+# ============================================================
+
+user:
+  name: "[DEIN NAME]"              # z.B. "Max Mustermann"
+  first_name: "[VORNAME]"          # für Mail-Signaturen ("LG Max")
+  email: "[dein.name@firma.de]"
+  role: "[Position/Rolle, Bereich]"   # z.B. "Teamleitung Vertrieb"
+
+location:
+  home_city: "[Stadt]"             # z.B. "Munich"
+  office_abbreviation: "[KRZ]"     # z.B. "MUN", "FRA", "BER"
+  office_room_patterns: ["Office"] # Raum-/Standort-Muster im Kalender, z.B. ["MUN", "L21", "Office"]
+  other_office_patterns: []        # weitere Standorte, z.B. [{prefix: "FRA", city: "Frankfurt"}]
+  office_days: []                  # z.B. ["Dienstag", "Donnerstag"] — Rest = Remote-Default
+  timezone: "Europe/Berlin"
+
+calendar:
+  # Wiederkehrende eigene Blöcke, die im Briefing nur stören (Sport, Lunch, Fokuszeit, ...).
+  # Nach den ersten Tagen ergänzen — was hier steht, taucht nirgends im Dashboard auf.
+  noise_subjects: []               # z.B. ["LUNCH", "Fokusblock", "Sport"]
+
+mail:
+  tag_processed: true              # triagierte Mails im Postfach sichtbar markieren, sofern der Weg dorthin es hergibt (Outlook unter Windows via COM; sonst still übersprungen, das Ledger bleibt der eigentliche Skip-Mechanismus)
+  processed_categories: ["KI-Triagiert"]   # Mails mit dieser Kategorie bzw. diesem Label gelten als verarbeitet und werden übersprungen
+
+# Eigene Tools — selbst gebaute Werkzeuge, die im Dashboard (Tab "Start Here") verlinkt werden.
+# Drei Zeilen pro Tool: name, purpose (wenige Worte), url. category ist optional.
+# url darf alles sein, was ein Browser öffnet: localhost, deployte Adresse oder lokaler Pfad.
+# Das Dashboard verlinkt nur, es startet und lädt nichts.
+own_tools: []
+  # - name: "Kapazitaets-Rechner"
+  #   purpose: "Auslastung pro Woche durchrechnen"
+  #   url: "http://localhost:8080"
+  #   category: "Planung"
+  # - name: "Statusbericht-Vorlage"
+  #   purpose: "Wochenbericht aus den Projektdaten bauen"
+  #   url: "./tools/statusbericht/index.html"
+
+# Ausstattung — was bei dir eingerichtet ist. Zeigt sich im Dashboard (Tab "Start Here")
+# unter "Deine Ausstattung". Wird von /setup befüllt und ist jederzeit von Hand pflegbar.
+# status: true = eingerichtet (farbiges Symbol), false = noch offen (graues Symbol).
+inventory:
+
+  # Verbindungen zu Mail, Kalender, Dateiablage, CRM. Anleitung: reference/mcp.md
+  connectors: []
+    # - name: "Microsoft 365"
+    #   purpose: "Mail und Kalender"
+    #   status: true
+    # - name: "SharePoint"
+    #   purpose: "Dateiablage"
+    #   status: false
+
+  # Kommandozeilen-Werkzeuge. Installation: reference/tools.md
+  clis: []
+    # - name: "firecrawl"
+    #   purpose: "Webseiten lesen und im Netz suchen"
+    #   status: true
+    # - name: "playwright"
+    #   purpose: "Echter Browser: Logins, Formulare, Screenshots"
+    #   status: false
+
+  # Installierte Claude-Code-Plugins. Empfehlungen: reference/plugins.md
+  plugins: []
+    # - name: "skill-creator"
+    #   purpose: "Neue Skills bauen und bestehende verbessern"
+    #   status: true
+
+  # Git-Repos, mit denen du arbeitest
+  repos: []
+    # - name: "workspace"
+    #   url: "https://github.com/beispiel/workspace"
+
+  # Zeitgesteuerte Läufe, Zeitplan im Klartext. Anleitung: SETUP.md
+  routines: []
+    # - name: "Morgen-Briefing"
+    #   schedule: "werktags 7:00 Uhr"
+
+# Eigene Domains — trennt intern von extern (steuert die Priorität im Briefing)
+company_domains: ["[deine-firma.de]"]   # alle eigenen Domains eintragen, z.B. ["firma.de", "firma.com"]
+
+# Absoluter Pfad zu diesem Workspace — von /setup berechnet, nie manuell tippen
+workspace_root: ""
+
+# Betriebssystem — von /setup erkannt ("windows" oder "mac").
+# Steuert Draft-Mechanik (PowerShell-COM vs. AppleScript) und Dashboard-Öffnen.
+os: ""
+
+# Womit das Dashboard-Fill-Script startet — von /setup ermittelt ("node", "uv run python", "python3" oder "python").
+# Node ist der Default (wird mit Claude Code mitinstalliert), Python nur Fallback.
+# Leer = keine Laufzeit gefunden; dann entsteht kein Dashboard, das Briefing im Chat läuft trotzdem.
+script_command: ""
+
+# Wie Mail-Entwürfe angelegt werden — von /setup ermittelt:
+# "mcp" (Connector hat ein Draft-Tool), "com" (Windows-Default, Outlook), "mailto" (Mac-Default, braucht keine Rechte),
+# "applescript" (Mac, opt-in), "manual" (nichts davon geht — Text kommt in den Chat).
+# Leer = /email prüft die Leiter selbst (MCP-Tool? → sonst OS-Default: Windows "com", Mac "mailto").
+draft_method: ""
