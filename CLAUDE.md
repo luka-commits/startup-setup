@@ -1,14 +1,20 @@
 # CLAUDE.md
 
+## ⚡ ALLERERSTE HANDLUNG JEDER SITZUNG
+
+**Prüfe, ob der Ordner `.claude/skills/setup/` existiert. Tu das, bevor du irgendetwas antwortest — auch auf ein blosses „hallo".**
+
+**Existiert er → begrüsse den Nutzer in höchstens zwei Sätzen (was das hier ist) und rufe SOFORT das Skill-Tool mit `skill: "setup"` auf.** Nicht fragen, ob er möchte. Nicht auf einen Befehl warten. Nicht selbst eine Einrichtung improvisieren. Der Skill erkennt allein, ob er neu anfängt oder einen Abbruch fortsetzt, und nennt die Dauer selbst.
+
+Ein „hallo", auf das eine normale Chat-Antwort kommt, ist der **häufigste Totalausfall dieses Pakets**: Der Nutzer hält das System für kaputt, weil nichts passiert, und niemand merkt, woran es lag. Deshalb steht diese Regel vor allem anderen. Alles Weitere in diesem File gilt erst nach dem Setup.
+
+Warum dieser Ordner der Marker ist: Der Skill archiviert sich am Ende selbst weg, seine Anwesenheit heisst also verlässlich „noch nicht fertig". **Nicht** am `[DEIN NAME]` in `context/config.yaml` festmachen: das schreibt der Skill schon in Step 3, lange bevor er fertig ist. Bricht die Sitzung danach ab, sähe der Workspace fertig aus und wäre es nicht.
+
+**Gegenprobe, der Marker kann selbst verloren gehen:** `.claude/` ist ein versteckter Ordner und geht beim Kopieren oder Zippen am häufigsten verloren. Fehlt `.claude/skills/setup/`, aber `context/config.yaml` enthält noch `[DEIN NAME]` (oder `.claude/skills/` fehlt ganz), dann ist der Workspace NICHT eingerichtet, sondern **unvollständig kopiert**. Dann nicht normal weiterarbeiten, sondern in zwei einfachen Sätzen sagen: _„Beim Kopieren ist ein versteckter Ordner (`.claude`) verloren gegangen, ohne den fehlen alle Befehle. Hol dir den Ordner bitte nochmal frisch von der Quelle (Repo neu klonen bzw. ZIP neu entpacken), dann richte ich alles ein."_ Kein Setup improvisieren, keine Skills nachbauen.
+
+---
+
 Guidance für Claude Code in diesem Workspace. Lean gehalten — Details in verlinkten Files. Für den menschlichen Einstieg siehe [`ONBOARDING.md`](ONBOARDING.md).
-
-## ⚡ Erster Start (Auto-Setup)
-
-**Existiert `.claude/skills/setup/` noch, ist dieser Workspace nicht fertig eingerichtet** — der Skill archiviert sich am Ende selbst weg, seine Anwesenheit ist also der verlässliche Marker. (Nicht am `[DEIN NAME]` in `context/config.yaml` festmachen: die schreibt der Skill in seinem Step 3, lange bevor er fertig ist — bricht die Session danach ab, sähe der Workspace fertig aus und wäre es nicht.)
-
-**Gegenprobe — der Marker kann selbst verloren gehen:** `.claude/` ist ein versteckter Ordner und geht beim Kopieren/Zippen am häufigsten verloren. Fehlt `.claude/skills/setup/`, aber in `context/config.yaml` steht noch `[DEIN NAME]` (oder `.claude/skills/` fehlt komplett), dann ist der Workspace NICHT eingerichtet, sondern **unvollständig kopiert**. Dann nicht normal weiterarbeiten, sondern in zwei einfachen Sätzen sagen: _„Beim Kopieren ist ein versteckter Ordner (`.claude`) verloren gegangen — ohne den fehlen alle Befehle. Hol dir den Ordner bitte nochmal frisch von der Quelle (Repo neu klonen bzw. ZIP neu entpacken), dann richte ich alles ein."_ Kein Setup improvisieren, keine Skills nachbauen.
-
-In dem Fall: den User bei seiner ersten Nachricht kurz begrüßen (2 Sätze: was das hier ist) und **sofort den `/setup`-Skill starten** — der Skill nennt die Dauer selbst und erkennt selbst, ob er neu anfängt oder einen Abbruch fortsetzt. Nicht warten, bis der User den Befehl kennt. Alles Weitere in diesem File gilt erst nach dem Setup.
 
 ## Workspace Purpose
 
@@ -87,6 +93,8 @@ Auslöser: Plan, Konzept, Analyse — alles, was gebaut wird, bevor es sich bewe
 | Text kürzen, klarer machen, KI-Klang rausnehmen | Skill `writing-clearly-and-concisely` | |
 | Datenbank, SQL, Migrationen | Skills `supabase`, `supabase-postgres-best-practices` | |
 | Eigenen Befehl bauen oder verbessern | Skill `skill-creator` | |
+| Etwas soll zeitgesteuert laufen, ohne dass jemand davor sitzt | `/schedule` (in Claude Code eingebaut, kein Zusatz nötig). Muster zum Kopieren: `reference/routinen.md` | |
+| Ein eigener Agent, der dauerhaft in der Cloud arbeitet | Skill `managed-agents` | Braucht einen **kostenpflichtigen Anthropic-API-Zugang zusätzlich zum Abo**. Das gehört gesagt, bevor jemand anfängt, nicht danach. |
 | Mail, Kalender, Dateiablage, Chat, CRM | der verbundene Connector (`reference/mcp.md`) | Slot ist offen: sagen was fehlt und was es bringen würde, dann weiterarbeiten |
 | Code eines Projekts lesen | `projects/<slug>/code/` (eigenes Repo, siehe `projects/README.md`) | |
 
@@ -238,7 +246,7 @@ Details je `.claude/skills/<name>/SKILL.md`.
 - `/checkup` — prüft auf Zuruf, ob mit dem Workspace selbst alles stimmt (Prüfliste: `reference/selbsttest.md`). Im Alltag läuft dieselbe Prüfung still in `/morning` mit. **Ist zugleich der Nachrüst-Weg**: gemeldete Lücken (Anschluss, Werkzeug, Zugang, Projekt-Repo) schliesst der Skill auf Zuruf selbst — nötig, weil `/setup` sich nach der Einrichtung wegarchiviert.
 - `/setup` — einmalige Personalisierung **plus Ausstattung** (Steps 7.1–7.4: Werkzeuge installieren, sechs Anschlüsse durchgehen, Zugänge anlegen, Projekt-Repos anbinden), archiviert sich selbst nach `.claude/skills-deprecated/`
 
-**Dazu 16 mitgelieferte Fach-Skills**, die keine Befehle sind, sondern Bedienungsanleitungen für Werkzeuge: die `firecrawl-*`-Familie (Web), `playwright-cli` (Browser), `docx`, `pdf`, `powerpoint` (Dokumente), `writing-clearly-and-concisely` (Textschliff), `skill-creator` (eigene Befehle bauen), `supabase` und `supabase-postgres-best-practices` (Datenbanken). Sie werden nicht aufgerufen, sondern greifen, wenn eine Aufgabe sie braucht — **welche Aufgabe zu welchem Werkzeug führt, steht oben unter „Werkzeug-Routing".**
+**Dazu 17 mitgelieferte Fach-Skills**, die keine Befehle sind, sondern Bedienungsanleitungen für Werkzeuge: die `firecrawl-*`-Familie (Web), `playwright-cli` (Browser), `docx`, `pdf`, `powerpoint` (Dokumente), `writing-clearly-and-concisely` (Textschliff), `skill-creator` (eigene Befehle bauen), `supabase` und `supabase-postgres-best-practices` (Datenbanken), `managed-agents` (eigene Agenten in der Cloud). Sie werden nicht aufgerufen, sondern greifen, wenn eine Aufgabe sie braucht — **welche Aufgabe zu welchem Werkzeug führt, steht oben unter „Werkzeug-Routing".**
 
 Archivierte Skills liegen in `.claude/skills-deprecated/` — bewusst AUSSERHALB von `.claude/skills/`, sonst registriert Claude Code sie wieder als aktive Commands.
 

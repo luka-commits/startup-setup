@@ -35,3 +35,12 @@ Der Blick auf die kommende Woche, bevor sie anfängt: anstehende Fälligkeiten, 
 **Verwalten:** `/schedule list` zeigt alles, `/schedule run` testet sofort, Übersicht im Browser unter [claude.ai/code/routines](https://claude.ai/code/routines). Eine Routine, die nervt, wird gelöscht statt ertragen — sag es einfach im Chat.
 
 **Eigene Routine bauen:** Beschreib im Chat, was regelmäßig passieren soll und wann — Claude formuliert den `/schedule`-Satz mit. Die Regeln aus `system-erweitern.md` § 1 gelten auch hier: Ziel sagen, Quelle sagen, Ausnahme benennen.
+
+## Die Stufe darüber: eigene Agenten
+
+Eine Routine erledigt **eine wiederkehrende Aufgabe zu einer festen Zeit**. Wenn du stattdessen etwas brauchst, das dauerhaft in der Cloud bereitsteht und auf Zuruf arbeitet (ein eigener Agent für einen abgegrenzten Bereich), geht das über den mitgelieferten Skill `managed-agents`. Sag im Chat, was der Agent können soll, dann führt Claude dich durch.
+
+**Zwei Dinge vorher wissen, weil sie später teuer oder unangenehm werden:**
+
+- **Das kostet extra.** Eigene Agenten laufen über einen kostenpflichtigen Anthropic-API-Zugang, der **neben** deinem Abo abgerechnet wird, pro Nutzung. Routinen brauchen das nicht, die laufen über dein Abo.
+- **Es lohnt sich erst später.** Ein Agent ohne Kontext ist nur ein weiterer Chat. Was ihn nützlich macht, sind deine Projekte, dein Stand und deine Ablage, also genau das, was in den ersten Wochen entsteht. Vorher gebaut, hat er nichts, womit er arbeiten könnte.

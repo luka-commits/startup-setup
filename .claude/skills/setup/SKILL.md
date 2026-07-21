@@ -176,6 +176,8 @@ Schlüssel gehören **nie ins Repo** (es wird geklont und versioniert; ein einma
 - **Firecrawl** — ohne Schlüssel kann das Werkzeug keine Webseiten lesen. Eigener Account auf firecrawl.dev, kostenloser Einstiegstarif reicht zum Ausprobieren. Der Account gehört **ihm**, nicht dem Dienstleister: so laufen Abrechnung und Nutzung bei ihm, und niemand teilt sich ein Limit.
 - **OpenRouter** — braucht es für Bilder und für Modelle, die nicht von Anthropic kommen. Ohne ihn sagt das System bei „mach mir ein Bild" ehrlich, dass ihm der Zugang fehlt.
 
+**Nicht von selbst anbieten, nur auf Nachfrage:** einen **Anthropic-API-Schlüssel**. Den braucht ausschliesslich der Skill `managed-agents` (eigene Agenten, die dauerhaft in der Cloud laufen). Wichtig und ehrlich zu sagen, wenn es zur Sprache kommt: **das ist eine zweite Rechnung neben dem Abo** und wird pro Nutzung abgerechnet. Der normale Alltag braucht ihn nie — alles, was dieses System tut, läuft über das Abo. Zeitgesteuerte Routinen (`/schedule`) brauchen ihn übrigens **nicht**, die laufen über den Abo-Zugang.
+
 **Eine weitere Frage, nur einmal:** _„Baust du auch Anwendungen, oder arbeitest du mit Datenbanken?"_
 
 - **Nein** (der Regelfall) → kommentarlos überspringen. Kein Wort über Supabase oder Vercel, das ist Werkzeug für andere Rollen.

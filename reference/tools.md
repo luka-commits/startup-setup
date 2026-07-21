@@ -14,6 +14,7 @@ Das Paket läuft auch ohne beide. Es fällt dann aber alles weg, was aus dem Int
 | playwright | `playwright-cli` |
 | OpenRouter | kein eigener Skill nötig, der Zugang genügt |
 | Supabase (nur wenn du Datenbanken nutzt) | `supabase`, `supabase-postgres-best-practices` |
+| Eigene Agenten in der Cloud | `managed-agents` (braucht einen kostenpflichtigen API-Zugang zusätzlich zum Abo) |
 
 Welche Aufgabe über welches Werkzeug läuft, steht als Tabelle in `CLAUDE.md` unter „Werkzeug-Routing". Das ist die Stelle, die dafür sorgt, dass die Ausstattung im Alltag überhaupt benutzt wird.
 
