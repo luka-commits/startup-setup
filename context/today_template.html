@@ -617,6 +617,7 @@
       <symbol id="i-puzzle" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></symbol>
       <symbol id="i-repo" viewBox="0 0 24 24"><circle cx="7" cy="6" r="2.5"/><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="9" r="2.5"/><path d="M7 8.5v7"/><path d="M17 11.5c0 3-3 3.5-7 4"/></symbol>
       <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+      <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21"/><path d="M17.5 12v3"/><path d="M20 12v2.5"/></symbol>
     </defs></svg>
 
     <h3 class="label">Deine Verbindungen</h3>
@@ -647,12 +648,14 @@
     </div>
 
     <h3 class="label sec">Befehle</h3>
-    <p class="sec-sub">Die vier festen Befehle deines Systems. Auswendig lernen musst du sie nicht, im Chat reicht auch normale Sprache.</p>
+    <p class="sec-sub">Die festen Befehle deines Systems. Auswendig lernen musst du sie nicht, im Chat reicht auch normale Sprache.</p>
     <div class="invgrid">
       <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Tages-Briefing</p><p class="inv-desc">Kalender, Mail-Triage und Tasks zum Tagesstart. Baut auch dieses Dashboard.</p><code class="inv-chip">/morning</code></div></div>
       <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Tagesabschluss</p><p class="inv-desc">Plan gegen Realität, was liegen bleibt, was entschieden wurde.</p><code class="inv-chip">/eod</code></div></div>
       <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Mail-Entwurf</p><p class="inv-desc">Mail in deinem Stil, fertig zum Abschicken in deinem Mailprogramm.</p><code class="inv-chip">/email</code></div></div>
       <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Dokumente einsortieren</p><p class="inv-desc">Dokumente, Transkripte und Notizen automatisch in deine Projekte einsortieren.</p><code class="inv-chip">/ingest</code></div></div>
+      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">System prüfen</p><p class="inv-desc">Schaut nach, ob mit deinem Workspace selbst alles stimmt. Nützlich, wenn etwas klemmt.</p><code class="inv-chip">/checkup</code></div></div>
+      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-puzzle"/></svg></span><div class="inv-body"><p class="inv-name">Mitgelieferte Fähigkeiten</p><p class="inv-desc">Claude zieht bei Bedarf selbst: PDF, Word und PowerPoint, Webseiten holen, Browser bedienen, Datenbanken abfragen, Texte straffen. Kein Befehl nötig, sag einfach, was du brauchst.</p></div></div>
     </div>
     <div class="rowlist" id="cmduse" data-collapse-empty>
       <!-- {{COMMANDS_USED}} — "Zuletzt benutzt", eine Zeile pro Befehl:
@@ -669,7 +672,7 @@
     <p class="sec-sub">Was dein System kann und was davon bei dir schon eingerichtet ist. Farbiges Symbol heißt eingerichtet, graues heißt noch offen. Gepflegt wird die Liste in <code>context/config.yaml</code> unter <code>inventory</code>.</p>
     <div id="ausstattung">
       <!-- {{AUSSTATTUNG}} — Fragment-Format (wird 1:1 an dieser Stelle eingesetzt):
-           Fünf Kategorie-Blöcke, IMMER alle fünf, IMMER in dieser Reihenfolge, jeder exakt so:
+           Sechs Kategorie-Blöcke, IMMER alle sechs, IMMER in dieser Reihenfolge, jeder exakt so:
 
              <h4 class="inv-cat">ÜBERSCHRIFT</h4>
              <div class="invgrid" data-hint="HINWEIS-HTML">KARTEN</div>
@@ -680,6 +683,7 @@
              3. plugins    → "Plugins"       · #i-puzzle · Noch kein Plugin eingetragen. Das Paket braucht keines; welche sich lohnen, steht in <code>reference/plugins.md</code>
              4. repos      → "Repos"         · #i-repo   · Noch kein Repo eingetragen. Trag Name und Adresse in <code>context/config.yaml</code> unter <code>inventory.repos</code> ein
              5. routines   → "Routinen"      · #i-clock  · Noch keine Routine eingetragen. Routinen lassen Claude zeitgesteuert arbeiten, zum Beispiel das Briefing morgens um 7; siehe <code>SETUP.md</code>
+             6. accounts   → "Zugänge"       · #i-key    · Noch kein Zugang eingetragen. Manche Werkzeuge brauchen einen eigenen Schlüssel, zum Beispiel firecrawl zum Lesen von Webseiten; wie das geht, steht in <code>reference/tools.md</code>
 
            KARTEN = pro Eintrag der Kategorie genau eine Karte:
 
@@ -688,7 +692,9 @@
            Regeln für die Karte:
              - Klasse "inv-card on" wenn status: true (bzw. bei repos/routines immer), sonst "inv-card" ohne "on".
              - <span class="inv-badge">…</span> NUR wenn es etwas zu sagen gibt, sonst ganz weglassen:
-               connectors ohne status → "nicht verbunden" · clis ohne status → "nicht installiert" · plugins ohne status → "nicht installiert".
+               connectors ohne status → "nicht verbunden" · clis ohne status → "nicht installiert" · plugins ohne status → "nicht installiert"
+               · accounts ohne status → "kein Schlüssel hinterlegt".
+               Bei accounts steht nie der Schlüssel selbst auf der Karte, nur der Name des Dienstes und wofür er da ist.
                Ist etwas eingerichtet, kein Abzeichen setzen; das farbige Symbol sagt es bereits.
                AUSNAHME repos: die Karte des Workspace-Repos trägt "gesichert vor X" (aus git log, siehe dashboard-render.md).
                AUSNAHME routines: die Karte darf zusätzlich zum Chip ein Abzeichen "zuletzt gelaufen vor X" tragen.
@@ -696,7 +702,7 @@
                  stattdessen die amber-Variante <span class="inv-badge warn">läuft evtl. nicht mehr</span> setzen.
                  Wann welches greift: siehe dashboard-render.md.
              - <code class="inv-chip">…</code> NUR wo eine Adresse oder ein Zeitplan dazugehört, sonst weglassen:
-               repos → url · routines → schedule. connectors/clis/plugins tragen keinen Chip.
+               repos → url · routines → schedule. connectors/clis/plugins/accounts tragen keinen Chip.
              - BESCHREIBUNG = purpose aus config.yaml. Fehlt purpose, Karte ohne <p class="inv-desc">.
              - Alle Texte HTML-escapen (&amp; &lt; &gt;), keine Em-Dashes.
              - Leere Kategorie: den Block trotzdem ausgeben, das <div class="invgrid"> einfach leer lassen.
@@ -707,6 +713,22 @@
         <h4>Was an deinem System noch offen ist</h4>
         <ul>{{SELBSTTEST}}</ul>
       </div>
+    </div>
+
+    <h3 class="label sec">Noch möglich</h3>
+    <p class="sec-sub">Was du zusätzlich einrichten könntest, und was es dir bringen würde. Nichts davon ist ein Fehler oder eilig. Wenn dich etwas anspricht, sag den Satz unter der Karte einfach im Chat.</p>
+    <div class="tgrid" id="offen">
+      <!-- {{OFFEN}} — pro noch nicht eingerichteter Möglichkeit eine Kachel im .tool-Format:
+             <div class="tool"><h3>WAS FEHLT</h3><p>WAS ES BRINGT</p><p class="say">„SATZ FÜR DEN CHAT"</p></div>
+           Regeln:
+             - Einladender Ton, nie mahnend: kein Rot, kein Ausrufezeichen, kein "du solltest".
+               Ein leerer Anschluss ist eine offene Möglichkeit, kein Mangel.
+             - WAS ES BRINGT ist konkret und auf den Nutzer bezogen, nicht auf die Technik.
+             - Der Satz in .say ist wörtlich das, was der Nutzer im Chat sagen kann.
+             - Alle Texte HTML-escapen (&amp; &lt; &gt;), keine Em-Dashes.
+           Welche Punkte auftauchen und wie viele: reference/dashboard-render.md
+           Nichts offen (oder Platzhalter nicht ersetzt) → das Template setzt selbst eine freundliche Zeile. -->
+      {{OFFEN}}
     </div>
 
     <h3 class="label sec">Dein Gedächtnis, live</h3>
@@ -845,7 +867,7 @@
     if (!box) return;
     // Keine einzige Kategorie da (Platzhalter nicht ersetzt) → ein Hinweis für den ganzen Block
     if (!box.querySelector('.invgrid')) {
-      box.innerHTML = '<h4 class="inv-cat">Verbindungen, Werkzeuge, Plugins, Repos und Routinen</h4>' +
+      box.innerHTML = '<h4 class="inv-cat">Verbindungen, Werkzeuge, Plugins, Repos, Routinen und Zugänge</h4>' +
         '<div class="invgrid"><div class="inv-empty">Hier steht noch nichts. Was du verbunden und installiert hast, trägst du in <code>context/config.yaml</code> unter <code>inventory</code> ein, dann steht es ab dem nächsten Briefing hier</div></div>';
     }
     box.querySelectorAll('.invgrid[data-hint]').forEach(g => {
@@ -872,6 +894,13 @@
       '<p class="slot-desc">' + desc + ' Verbinden kannst du das in Claude Cowork unter Einstellungen und Connectors.</p>' +
       '</div></div>'
     ).join('');
+  })();
+
+  // Noch moeglich: alles eingerichtet (oder Platzhalter nicht ersetzt) → freundliche Zeile statt Luecke.
+  // Bewusst kein data-collapse-empty: "nichts offen" ist eine gute Nachricht und darf sichtbar sein.
+  (function () {
+    const g = document.getElementById('offen');
+    if (g && !g.querySelector('.tool')) g.innerHTML = '<div class="inv-empty">Alles eingerichtet. Wenn du später etwas dazunehmen willst, sag im Chat einfach, was dir fehlt.</div>';
   })();
 
   // Zusaetzlich verfuegbar: nichts empfohlen (oder Platzhalter nicht ersetzt) → ruhiger Hinweis

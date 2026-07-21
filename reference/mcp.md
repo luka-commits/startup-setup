@@ -23,6 +23,12 @@ Wichtig zu wissen:
 
 ## Verbinden
 
+**Beim ersten Mal musst du das nicht selbst herausfinden.** Die Einrichtung geht deine sechs Anschlüsse einzeln mit dir durch (Postfach, Kalender, Dateiablage, Team-Chat, CRM, Entwicklung), erklärt je in einem Satz, was er dir bringt, und verbindet nur, was du bejahst. Postfach und Kalender sind dabei nicht optional, ohne sie ist das Tagesbriefing eine leere Hülle. Alles andere ist ein Angebot.
+
+Später etwas nachholen oder ändern: ein Satz im Chat („verbinde mein CRM"), oder `/checkup`, das zeigt dir, was offen ist, und richtet es auf Zuruf ein.
+
+Von Hand geht es so:
+
 1. **Claude Cowork** öffnen
 2. **Einstellungen → Connectors**
 3. Den gewünschten Connector auswählen und mit deinem Arbeits-Account anmelden
@@ -76,7 +82,7 @@ Fällt der eingetragene Weg irgendwann aus, fällt Claude automatisch eine Stufe
 
 ## Welche Connectors sich zusätzlich lohnen
 
-Alles, was in Claude Cowork verbunden ist, steht auch hier in Claude Code bereit — verbinden ist immer derselbe Weg (Einstellungen → Connectors), und das Setup inventarisiert einmal, was da ist. **Grundsatz: nach Bedarf verbinden, nicht auf Vorrat.** Jeder Connector ist Zugriff auf eure Daten, und Claude sagt von selbst, wenn ihm für eine Aufgabe eine Verbindung fehlt.
+Alles, was in Claude Cowork verbunden ist, steht auch hier in Claude Code bereit — verbinden ist immer derselbe Weg (Einstellungen → Connectors). **Grundsatz: nach Bedarf verbinden, nicht auf Vorrat.** Jeder Connector ist Zugriff auf eure Daten. Deshalb *fragt* die Einrichtung nach allen sechs Anschlüssen, *verbindet* aber nur, was ihr wirklich braucht: gefragt zu werden kostet nichts, ein unnötig offener Zugang schon.
 
 Was sich im Startup-Alltag am ehesten lohnt, in dieser Reihenfolge:
 

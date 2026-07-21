@@ -4,6 +4,19 @@ Zwei Kommandozeilen-Werkzeuge gehören in dieser Variante zur Standard-Ausstattu
 
 Das Paket läuft auch ohne beide. Es fällt dann aber alles weg, was aus dem Internet kommt oder einen echten Browser braucht.
 
+**Du musst nichts davon von Hand machen.** Die Einrichtung installiert beide Werkzeuge und richtet die Zugänge mit dir ein. Diese Seite ist zum Nachschlagen, wenn du später etwas ändern willst oder wissen möchtest, wofür das Ganze gut ist. Fehlt dir hinterher etwas, genügt ein Satz im Chat („richte mir den Firecrawl-Zugang ein"), dann führt Claude dich durch.
+
+**Die Bedienungsanleitungen liegen schon bei.** Zu jedem Werkzeug gehört ein Skill, der Claude sagt, wie es richtig benutzt wird. Die sind im Paket enthalten, du musst nichts nachladen:
+
+| Werkzeug | Mitgelieferte Skills |
+|---|---|
+| firecrawl | `firecrawl` plus `firecrawl-scrape`, `-search`, `-crawl`, `-map`, `-download`, `-agent`, `-browser` |
+| playwright | `playwright-cli` |
+| OpenRouter | kein eigener Skill nötig, der Zugang genügt |
+| Supabase (nur wenn du Datenbanken nutzt) | `supabase`, `supabase-postgres-best-practices` |
+
+Welche Aufgabe über welches Werkzeug läuft, steht als Tabelle in `CLAUDE.md` unter „Werkzeug-Routing". Das ist die Stelle, die dafür sorgt, dass die Ausstattung im Alltag überhaupt benutzt wird.
+
 ## firecrawl: Web-Inhalte und Suche
 
 **Wofür im Alltag:**

@@ -18,6 +18,23 @@ Der Nebeneingang zum Selbsttest. Im Alltag läuft die Prüfung ohnehin still bei
 4. **Nie Systemjargon.** Keine Dateinamen, Pfade, Feldnamen, Fehlertexte. Ausnahme: Der Nutzer sagt ausdrücklich, er braucht es für einen Problembericht — dann darf die technische Fassung dazu, klar abgesetzt.
 5. **Reparieren ja, heimlich nein.** Was sich gefahrlos selbst beheben lässt (fehlende abgeleitete Datei aus den Quellen regenerieren, Safeguard 4), machst du sofort und sagst in einem Satz, was du repariert hast. Alles, was eine Entscheidung braucht (fehlende Angabe, verworfene Datei, Neu-Einrichtung), wird nur vorgeschlagen.
 
+## Nachrüsten — der Weg, den es sonst nicht mehr gäbe
+
+Der Einrichtungs-Skill archiviert sich nach dem Setup selbst weg. Ohne diesen Abschnitt hätte der Nutzer für alles, was er später ergänzen will, **keinen geführten Weg mehr** — nur noch eine Meldung, dass etwas fehlt.
+
+Deshalb: Sagt der Nutzer zu einem gemeldeten Punkt „mach das" (oder direkt „verbinde mein CRM", „ich brauche einen Firecrawl-Zugang", „häng das Repo dazu"), **führst du ihn durch**, statt ihn auf eine Anleitung zu verweisen. Die Abläufe stehen in der Einrichtung und gelten unverändert:
+
+| Was fehlt | Was du tust |
+|---|---|
+| Ein Anschluss (Mail, Kalender, Ablage, Chat, CRM, Entwicklung) | Durch Claude Cowork führen: Einstellungen → Connectors → System wählen → mit dem Arbeits-Account anmelden. Danach **per ToolSearch prüfen**, ob die Werkzeuge jetzt da sind, und `inventory.connectors` mit `slot:` schreiben. Kategorien und Nutzen: `reference/mcp.md` |
+| Ein Werkzeug (firecrawl, playwright) | `npm install -g <name>`, bei playwright zusätzlich `playwright install chromium`. Danach Version prüfen, `inventory.clis` schreiben. Details: `reference/tools.md` |
+| Ein Zugang (Firecrawl, OpenRouter, Supabase, Vercel) | Registrierungsseite öffnen, er legt an und erzeugt den Schlüssel, du hängst ihn an `~/.config/credentials.env` (Rechte `600`). Dann `inventory.accounts` mit `key_env`. **Den Schlüsselwert nie in den Chat schreiben und nie wiederholen.** |
+| Ein Projekt-Repo | `git clone <url> projects/<slug>/code`, danach `inventory.repos` mit `path`. Warum getrennt: `projects/README.md` |
+
+**Die eine harte Grenze:** Befehle, die eine Anmeldung oder Eingabe verlangen (`gh auth login`, `firecrawl login`, jeder OAuth-Fluss), bleiben in deiner Bash hängen — dort ist kein Terminal, das antworten könnte. Solche Befehle **nie selbst ausführen**: die Zeile zum Einfügen geben, sagen was danach passiert, auf seine Rückmeldung warten.
+
+Und die Umkehrung gilt auch: Ein offener Anschluss ist **kein Mangel**. Fragt der Nutzer nicht danach, bleibt es bei der einen Zeile im Befund. Nichts wird zweimal angeboten.
+
 ## Ton
 
 Ein Handwerker, der kurz unter die Haube schaut und dann sagt, was Sache ist. Nicht: „Diagnose abgeschlossen, 7 von 9 Prüfungen bestanden."

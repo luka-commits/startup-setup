@@ -72,10 +72,27 @@ inventory:
     #   purpose: "Neue Skills bauen und bestehende verbessern"
     #   status: true
 
-  # Git-Repos, mit denen du arbeitest
+  # Dienste mit eigenem Zugang. Die Schlüssel selbst stehen NIE hier, sondern in
+  # ~/.config/credentials.env — hier steht nur, wie der Eintrag dort heisst.
+  # status wird nicht getippt, sondern aus der Existenz des Schlüssels abgeleitet.
+  accounts: []
+    # - name: "Firecrawl"
+    #   purpose: "Webseiten lesen und im Netz suchen"
+    #   key_env: "FIRECRAWL_API_KEY"
+    #   status: true
+    # - name: "OpenRouter"
+    #   purpose: "Bilder erzeugen und Spezial-Modelle nutzen"
+    #   key_env: "OPENROUTER_API_KEY"
+    #   status: false
+
+  # Git-Repos, mit denen du arbeitest. Projekt-Repos liegen in projects/<slug>/code/
+  # und haben eine eigene Historie (siehe projects/README.md).
   repos: []
     # - name: "workspace"
     #   url: "https://github.com/beispiel/workspace"
+    # - name: "sqanit"
+    #   url: "https://github.com/beispiel/sqanit"
+    #   path: "projects/sqanit/code"
 
   # Zeitgesteuerte Läufe, Zeitplan im Klartext. Anleitung: SETUP.md
   routines: []

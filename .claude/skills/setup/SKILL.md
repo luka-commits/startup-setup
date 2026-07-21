@@ -69,10 +69,12 @@ Fill every section of `context/config.yaml` from Step 1 + Step 2:
 - `os:` Ergebnis aus Step 2.5 (`windows` oder `mac`)
 - `script_command:` Ergebnis aus Step 2.5 (`node`, `uv run python`, `python3` oder `python`) — `/morning` nutzt genau das für den Dashboard-Fill. Leer lassen, wenn keine Laufzeit gefunden wurde.
 - `draft_method:` Ergebnis aus Step 2.5 (`mcp`, `com` oder `mailto`) — `/email` und `/morning` nutzen genau das für Mail-Entwürfe.
-- `inventory:` das Wissen aus Step 2.5 festhalten, statt es wegzuwerfen. Das Dashboard-Panel "Deine Ausstattung" liest genau diesen Block:
-  - `inventory.connectors:` je gefundenem Connector (Mail-/Kalender-Connector plus die weiteren MCPs aus Step 2.5) ein Eintrag mit `name`, `purpose` in Klartext und `status: true`. Ein System, das der User nur genannt hat, das aber nicht antwortet, bekommt `status: false`.
-  - `inventory.clis:` `firecrawl` und `playwright`, je Werkzeug `status: true`, wenn sein Versionsbefehl (`firecrawl --version` bzw. `playwright --version`) durchläuft, sonst `status: false`. `purpose` aus der Vorlage übernehmen.
-  - `inventory.plugins:`, `inventory.repos:`, `inventory.routines:`: **hier NICHT raten.** Im Abschluss (Step 8) EINE kurze Frage stellen: _„Arbeitest du mit bestimmten Git-Repos, hast du Claude-Code-Plugins installiert oder soll etwas zeitgesteuert laufen? Wenn ja, sag es kurz, dann trage ich es ein."_ Was der User nicht nennt, bleibt eine leere Liste. Der Leerfall im Dashboard fängt das ab und erklärt selbst, wie man nachträgt.
+- `inventory:` **hier nur den Stand aus Step 2.5 festhalten, nicht raten.** Den Block füllen später die Steps 7.1 bis 7.4, wenn die Ausstattung wirklich eingerichtet wird. Jetzt schon eintragen, was Step 2.5 tatsächlich gesehen hat:
+  - `inventory.connectors:` je gefundenem Connector ein Eintrag mit `name`, `purpose` in Klartext, `slot:` und `status: true`. Ein System, das der User nur genannt hat, das aber nicht antwortet, bekommt `status: false`. Step 7.2 ergänzt und korrigiert das.
+  - `inventory.clis:` `firecrawl` und `playwright` mit dem Ergebnis ihres Versionsbefehls. Step 7.1 installiert nach und aktualisiert.
+  - `inventory.accounts:` leer lassen, das macht Step 7.3.
+  - `inventory.repos:` das eigene Workspace-Repo trägt Step 8 ein, Projekt-Repos Step 7.4.
+  - `inventory.plugins:` und `inventory.routines:` bleiben leer. Beides ist nichts, was das Setup einrichtet. Im Abschluss (Step 8) EINE kurze Frage: _„Hast du Claude-Code-Plugins installiert oder soll etwas zeitgesteuert laufen?"_ Was der User nicht nennt, bleibt leer. Der Leerfall im Dashboard erklärt selbst, wie man nachträgt.
 - **Dauerhaft, nicht nur beim Setup:** kommt später etwas dazu (ein Connector, ein Plugin, ein Repo, eine Routine), gehört es sofort ins `inventory` in `context/config.yaml`, ohne dass der User darum bitten muss. Das ist derselbe Persistier-Auftrag wie bei „ab jetzt / immer" (Safeguard 10): einmal gesagt, dauerhaft verankert, in einer Zeile bestätigt.
 
 Keine anderen Datei-Rewrites. Fehlt eine Antwort, Feld leer lassen — nie einen plausiblen Wert erfinden.
@@ -125,6 +127,82 @@ Ask ONE question: *"Soll ich einmal deine gesendeten Mails der letzten Monate du
   3. Write the profile to **`context/EMAIL_STYLE.md`** (structure mirrors `/email`'s Style-Reference section). `/email` and `/morning` read this file first and fall back to their built-in example templates only if it doesn't exist.
   4. Show the derived profile in 5–8 bullets and ask for a quick sanity-check ("passt das so?") — apply corrections directly to EMAIL_STYLE.md.
 - **No / too little history:** skip silently; note in the Step 8 summary that drafts use the package's example style until the user asks Claude to derive their own (same flow as above, works any time).
+
+## Steps 7.1–7.4: Die Ausstattung (der Teil, der sonst nie passiert)
+
+Diese vier Schritte laufen **vor** dem Archivieren, weil es danach keinen geführten Weg mehr gibt. Sie sind der Unterschied zwischen „eingerichtet" und „einsatzfähig".
+
+**Eine Regel gilt in allen vieren, ausnahmslos:** Befehle, die eine Eingabe oder eine Anmeldung verlangen (`gh auth login`, `firecrawl login`, jeder OAuth-Fluss), **bleiben in deiner Bash hängen** — es gibt dort kein Terminal, auf das sie antworten könnten. Solche Befehle NIE selbst ausführen. Stattdessen: dem User die Zeile zum Einfügen geben, sagen was danach passiert, und auf seine Rückmeldung warten. Alles Nicht-Interaktive (`npm install -g`, `command -v`, `git clone` bei öffentlichen Repos) machst du selbst.
+
+**Ton in allen vieren:** je Schritt EINE Frage, Klartext, kein Fachwort ohne Erklärung. Ein „nein" ist immer eine vollständige Antwort und wird nie nachverhandelt. Was der User ablehnt, wird mit `status: false` ins `inventory` geschrieben — nicht weggelassen, sonst taucht es später nirgends als Möglichkeit auf.
+
+### Step 7.1: Werkzeuge installieren
+
+**Playwright zuerst**, bewusst: Sobald es da ist, kannst du in den folgenden Schritten Oberflächen selbst aufrufen, statt dem User aus dem Gedächtnis zu beschreiben, wo er klicken soll.
+
+```bash
+npm install -g playwright firecrawl-cli
+playwright install chromium
+```
+
+Nicht-interaktiv, also machst du das selbst. Vorher `command -v npm` prüfen: fehlt npm, ist das kein Drama — sagen, dass die beiden Werkzeuge fehlen und was ohne sie trotzdem läuft (alles ausser Web-Recherche und Browser-Aufgaben), dann weiter. Scheitert die Installation an Rechten: **niemals `sudo` vorschlagen**, stattdessen den Ansprechpartner aus `VERSION.md` nennen.
+
+Ergebnis je Werkzeug per `<name> --version` prüfen und nach `inventory.clis` schreiben. Die mitgelieferten Skills (`playwright-cli`, die `firecrawl-*`-Familie) sind bereits im Paket, es ist nichts nachzuladen — im Summary EINEN Satz dazu, dass sie da sind.
+
+### Step 7.2: Die sechs Anschlüsse durchgehen
+
+Verbindungen zu Mail, Kalender und Co. laufen über **Claude Cowork → Einstellungen → Connectors**. Das Paket bringt keine eigene Anbindung mit; Claude Code greift auf dieselbe Verbindung zu. Details und Kategorien: `reference/mcp.md`.
+
+Geh die sechs Slots **einzeln** durch, aber verbinde **nur, was der User bejaht**. Nicht auf Vorrat (das widerspräche `reference/mcp.md`), aber auch keinen Slot verschweigen — sonst bleiben CRM und Chat für immer leer, weil sie nie zur Sprache kamen.
+
+| Slot | Wie du damit umgehst |
+|---|---|
+| `mail` + `kalender` | **Nicht optional.** Ohne sie ist `/morning` eine leere Hülle. Frag nicht ob, sondern welches System: Microsoft 365 oder Google Workspace. Aus Step 2.5 weisst du oft schon, was da ist. |
+| `ablage` | Fragen. Bei Microsoft 365 kommt SharePoint/OneDrive meist mit, dann ist es ein Häkchen. |
+| `chat` | Fragen. Teams bei Microsoft 365, sonst Slack. Nutzen in einem Halbsatz: Nachrichten mitlesen, die sonst untergehen. |
+| `crm` | Fragen — **mit der ehrlichen Einschränkung aus `reference/mcp.md`**, dass `/morning` heute keine CRM-Daten ins Briefing zieht. Der Nutzen ist das gezielte Nachschlagen im Gespräch, nicht das Briefing. Das gehört gesagt, bevor jemand verbindet. |
+| `dev` | Nur ansprechen, wenn Step 7.3 „ja" ergeben hat. Sonst überspringen, kommentarlos. |
+
+Pro bejahtem Slot: den User durch Cowork führen (Einstellungen → Connectors → das System auswählen → mit dem Arbeits-Account anmelden). Die Anmeldung macht **er**, im Browser. Danach **per ToolSearch verifizieren**, ob die Werkzeuge jetzt da sind — das ist die belastbare Probe, nicht seine Selbstauskunft und auch kein Browser-Blick. Erst dann in `inventory.connectors` schreiben, mit `slot:`.
+
+Klappt es nach zwei Versuchen nicht: nicht festbeissen. Notieren mit `status: false`, sagen was ohne diesen Anschluss trotzdem geht, und weiter. Der Rest des Setups darf daran nicht scheitern.
+
+### Step 7.3: Zugänge und Schlüssel
+
+Schlüssel gehören **nie ins Repo** (es wird geklont und versioniert; ein einmal eingecheckter Schlüssel bleibt in der Historie stehen). Alle liegen in `~/.config/credentials.env`, Rechte `600`.
+
+**Zwei Zugänge bietest du immer an**, weil die Werkzeuge aus 7.1 ohne sie halb tot sind:
+
+- **Firecrawl** — ohne Schlüssel kann das Werkzeug keine Webseiten lesen. Eigener Account auf firecrawl.dev, kostenloser Einstiegstarif reicht zum Ausprobieren. Der Account gehört **ihm**, nicht dem Dienstleister: so laufen Abrechnung und Nutzung bei ihm, und niemand teilt sich ein Limit.
+- **OpenRouter** — braucht es für Bilder und für Modelle, die nicht von Anthropic kommen. Ohne ihn sagt das System bei „mach mir ein Bild" ehrlich, dass ihm der Zugang fehlt.
+
+**Eine weitere Frage, nur einmal:** _„Baust du auch Anwendungen, oder arbeitest du mit Datenbanken?"_
+
+- **Nein** (der Regelfall) → kommentarlos überspringen. Kein Wort über Supabase oder Vercel, das ist Werkzeug für andere Rollen.
+- **Ja** → durch **Supabase** (Datenbank) und **Vercel** (Veröffentlichen) führen. Beide Skills liegen im Paket. Danach Slot `dev` in 7.2 nachholen.
+
+Anlegen läuft immer gleich: Registrierungsseite aufrufen (mit Playwright aus 7.1 kannst du sie ihm direkt öffnen), er meldet sich an und erzeugt den Schlüssel, dann hängst **du** ihn an:
+
+```bash
+mkdir -p ~/.config && touch ~/.config/credentials.env && chmod 600 ~/.config/credentials.env
+echo 'FIRECRAWL_API_KEY=<sein-key>' >> ~/.config/credentials.env
+```
+
+Jeden eingerichteten Zugang nach `inventory.accounts` schreiben (`name`, `purpose`, `key_env`). **Den Schlüsselwert nie in den Chat schreiben, nie in eine Datei im Repo, nie wiederholen.** `status` nicht tippen, sondern aus der Existenz des Eintrags in `credentials.env` ableiten.
+
+### Step 7.4: Projekt-Repos anbinden
+
+Gehört zu einem der Projekte aus Step 5 ein Git-Repo (Produktcode, Website, Firmen-Repo), wird es **in das Projekt geklont**, nicht in den Workspace gemischt:
+
+```bash
+git clone <repo-url> projects/<slug>/code
+```
+
+Damit sieht Claude in einer Sitzung beides: den Projektkontext und den echten Code. Die Historien bleiben getrennt, `.gitignore` schliesst `projects/*/code/` aus — der Tagesabschluss committet also nie fremden Code in das private Workspace-Repo. Vollständige Begründung: `projects/README.md`.
+
+Ist das Repo privat, braucht es eine Anmeldung, die du nicht leisten kannst → Zeile geben, ihn machen lassen. Danach in `inventory.repos` eintragen (`name`, `url`, `path`).
+
+Frag pro Projekt **höchstens einmal** und nur dort, wo es plausibel ist. Bei einem Projekt namens „Quartalsabschluss" nicht nach einem Repo fragen.
 
 ## Step 8: Archive This Skill + Confirm
 
@@ -183,5 +261,6 @@ Ask ONE question: *"Soll ich einmal deine gesendeten Mails der letzten Monate du
 4. `context/PROJECTS.md` shows exactly the new user's real projects, dated today; ingested documents are reflected there and filed in the owning project's `projects/<slug>/inputs/` (only project-less material lands in `inbox/processed/`).
 5. `.claude/skills/setup/` no longer exists; `.claude/skills-deprecated/setup/` does.
 5b. `git remote -v` zeigt **`origin` auf das Repo des Users** und `upstream` auf die Bezugsquelle — nie umgekehrt. Der erste Push ist durch, `gh repo view` meldet `private`. Hat der User beim Zugriff Nein gesagt, steht unter Collaborators niemand außer ihm.
+5c. **Ausstattung (Steps 7.1–7.4):** `inventory.clis` spiegelt, was `command -v` wirklich findet. Alle sechs Slots kamen zur Sprache — jeder steht in `inventory.connectors`, entweder mit `status: true` oder `status: false`, keiner fehlt. Kein Schlüsselwert steht im Chat oder in einer Datei im Repo; `~/.config/credentials.env` hat Rechte `600`. Wurde ein Projekt-Repo geklont, liegt es unter `projects/<slug>/code/` und `git status` im Workspace zeigt es NICHT als zu committen.
 6. Run `/setup` again → Step 0 detects the real name in config.yaml and asks before doing anything.
 7. Bei gefundener Script-Laufzeit steht am Ende ein gerendertes `context/today.html` (ohne Mail-Teil); bei vorhandenem `draft_method` und Ja des Users liegt ein Test-Entwurf an die eigene Adresse bereit — niemals gesendet, niemals an Dritte.

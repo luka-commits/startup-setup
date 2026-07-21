@@ -159,65 +159,24 @@ Das installiert nichts. Es macht den Katalog bekannt, damit Claude dir im Alltag
 
 ---
 
-## 4. Connectors verbinden (Mail, Kalender, Ablage)
+## 4. Ausstattung: Werkzeuge, Verbindungen, Zugänge
 
-Damit das Morgen-Briefing deinen Kalender kennt und Mail-Entwürfe im richtigen Postfach landen, braucht Claude Zugriff auf deine Systeme. Das läuft über Connectors, die du **einmal in Claude Cowork** unter Einstellungen verbindest: Microsoft 365, Google Workspace, Google Drive, oder was ihr sonst nutzt. Claude Code greift danach auf dieselbe Verbindung zu, du musst hier nichts doppelt einrichten.
+**Das machst du nicht von Hand.** Die Einrichtung aus Schritt 3 geht das mit dir durch, in dieser Reihenfolge:
 
-Welche Connectors welchen Teil des Systems freischalten, was ohne sie noch läuft und wie du prüfst, ob eine Verbindung wirklich steht: **`reference/mcp.md`**.
+1. **Werkzeuge installieren** — `firecrawl` (holt Web-Inhalte) und `playwright` (steuert einen echten Browser). Claude installiert beide selbst. Nachschlagen: [`reference/tools.md`](reference/tools.md)
+2. **Verbindungen herstellen** — deine sechs Anschlüsse: Postfach, Kalender, Dateiablage, Team-Chat, CRM und Entwicklung. Verbunden wird in **Claude Cowork unter Einstellungen → Connectors**; Claude Code greift danach auf dieselbe Verbindung zu. Claude geht die sechs mit dir durch und verbindet nur, was du brauchst. Was welcher Anschluss freischaltet: [`reference/mcp.md`](reference/mcp.md)
+3. **Zugänge anlegen** — Firecrawl und OpenRouter (Bilder und Spezial-Modelle). Wer Anwendungen baut, bekommt zusätzlich Supabase und Vercel angeboten, sonst kommt das gar nicht erst zur Sprache. Die Schlüssel landen in `~/.config/credentials.env`, **nie im Repo**: das wird geklont und versioniert, und ein einmal eingecheckter Schlüssel bleibt für immer in der Historie stehen.
+4. **Projekt-Repos anbinden** — gehört zu einem deiner Projekte ein Repository, wird es nach `projects/<projekt>/code/` geklont. Eigene Historie, im selben Blickfeld. Warum getrennt: [`projects/README.md`](projects/README.md)
 
-Ohne Connector funktioniert der Rest weiter: Projekte, Aufgaben, Dashboard und Dokumenten-Einsortierung brauchen keine Anbindung. Es fehlt dann nur der Mail- und Kalender-Teil.
+Die Anmeldungen im Browser machst immer **du**, die kann Claude dir nicht abnehmen. Alles andere übernimmt es.
 
----
+**Ohne Verbindung funktioniert der Rest weiter:** Projekte, Aufgaben, Dashboard und das Einsortieren von Dokumenten brauchen keine Anbindung. Es fehlt dann nur der Mail- und Kalender-Teil.
 
-## 5. Empfohlene CLIs
-
-Zwei Kommandozeilen-Werkzeuge gehören in dieser Variante zur Standard-Ausstattung. Sie erweitern, was Claude praktisch tun kann, und werden hier gleich mitinstalliert.
-
-```bash
-npm install -g firecrawl-cli playwright
-playwright install
-```
-
-- **firecrawl** holt Web-Inhalte und durchsucht das Netz.
-- **playwright** steuert einen echten Browser: Formulare, Logins, Screenshots, Oberflächen prüfen. `playwright install` lädt die dazugehörigen Browser nach, das dauert beim ersten Mal ein paar Minuten.
-
-**Check:** `firecrawl --version` und `playwright --version` geben je eine Version aus.
-
-Wofür die beiden im Alltag konkret gut sind und welche Werkzeuge sonst noch sinnvoll sind: **`reference/tools.md`**.
+**Später etwas nachholen?** Ein Satz im Chat genügt, zum Beispiel „verbinde mein CRM" oder „richte mir den Firecrawl-Zugang ein". Oder sag `/checkup`, dann zeigt Claude, was noch offen ist, und richtet es auf Zuruf ein.
 
 ---
 
-## 6. API-Keys
-
-firecrawl braucht einen eigenen Zugang, andere Dienste später ebenfalls. Diese Schlüssel gehören **nicht ins Repo**: das Repo wird geteilt, geklont und versioniert, ein einmal committeter Schlüssel bleibt in der Git-Historie stehen, auch wenn du ihn danach löschst. Deshalb liegen alle Schlüssel in einer einzigen Datei außerhalb des Repos.
-
-**Schritt 1:** Einen **eigenen** Account auf [firecrawl.dev](https://firecrawl.dev) anlegen, unter *API Keys* einen Schlüssel erzeugen (beginnt mit `fc-`). Es gibt einen kostenlosen Einstiegs-Tarif, der zum Ausprobieren reicht.
-
-Der Account gehört euch, nicht dem Dienstleister, der euch dieses Paket eingerichtet hat. So laufen Abrechnung und Nutzungsdaten bei euch, und niemand teilt sich ein Limit.
-
-**Schritt 2:** Schlüssel lokal hinterlegen:
-
-```bash
-mkdir -p ~/.config
-cat > ~/.config/credentials.env <<'EOF'
-FIRECRAWL_API_KEY=fc-DEIN_KEY
-EOF
-chmod 600 ~/.config/credentials.env
-```
-
-`chmod 600` heißt: nur dein Benutzerkonto darf die Datei lesen. Weitere Schlüssel hängst du später einfach an:
-
-```bash
-echo 'ANDERER_KEY=wert' >> ~/.config/credentials.env
-```
-
-**Check:** `grep -c KEY ~/.config/credentials.env` gibt die Anzahl deiner Einträge zurück.
-
-Auf Windows führst du diese Befehle in Git Bash aus. Die Datei landet dann unter `C:\Users\<DU>\.config\credentials.env`. `chmod` hat auf Windows-Dateisystemen nur begrenzte Wirkung, der Ordner ist aber ohnehin nur für dein Benutzerkonto vorgesehen.
-
----
-
-## 7. Smoke-Test
+## 5. Smoke-Test
 
 Einmal alles prüfen, damit nichts halb konfiguriert bleibt.
 
@@ -226,7 +185,7 @@ Im Terminal:
 ```bash
 claude --version                    # Claude Code installiert
 node --version                      # Dashboard-Laufzeit da
-firecrawl --version                 # aus Schritt 5
+firecrawl --version                 # aus Schritt 4
 ls context/config.yaml              # Setup hat geschrieben
 ```
 
@@ -257,7 +216,7 @@ Läuft das durch, ist das Setup fertig. Ab morgen ist `/morning` dein täglicher
 | Beim Klonen: „repository not found" | Du bist noch nicht freigeschaltet, oder `gh auth login` fehlt. Benutzernamen durchgeben und Schritt 0 prüfen. Ein Tippfehler in der Adresse ist der seltenere Fall. |
 | Abends: „Push scheitert" oder „nichts gesichert" | Beim Setup wurde kein eigenes Repo angelegt. Sag im Chat „leg mir mein eigenes Repo an", dann wird es nachgeholt. |
 | Dashboard entsteht nicht | Node.js fehlt oder ist nicht im PATH. `node --version` prüfen, sonst Schritt 0. Briefing im Chat läuft trotzdem. |
-| Kein Kalender, keine Mail im Briefing | Connector nicht verbunden. Schritt 4 und `reference/mcp.md`. |
+| Kein Kalender, keine Mail im Briefing | Connector nicht verbunden. Sag im Chat „verbinde mein Postfach", dann richtet Claude es ein. Hintergrund: `reference/mcp.md`. |
 | Dateien mit ` 2.` im Namen tauchen auf | Der Ordner liegt in einem Sync-Verzeichnis. Konfliktkopien löschen, Repo nach `~/code` verschieben, Schritt 1. |
 | `npm install -g` scheitert mit Rechte-Fehler | Nicht mit `sudo` wiederholen. Auf Mac hilft eine Homebrew-Node-Installation, sonst npm-Präfix auf einen Ordner im Home-Verzeichnis setzen. |
 

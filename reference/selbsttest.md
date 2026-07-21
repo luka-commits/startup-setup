@@ -24,6 +24,7 @@ Der Sinn: Die gefährlichen Fehler dieses Systems sind die **stillen**. Ein Plat
 | Config unlesbar | Datei existiert, lässt sich aber nicht als YAML lesen | „In deinen Einstellungen ist eine Zeile verrutscht, ich arbeite gerade mit halben Angaben. Ich kann den Stand von gestern zurückholen, sag Bescheid." Dazu die betroffene Zeile nennen. |
 | Kern-Datei fehlt | Eine von `PROJECTS.md`, `STATUS.md`, `JOURNAL.md` ist weg | Still aus dem Backup wiederherstellen (Safeguard 4), danach EIN Satz, was repariert wurde. Nur wenn das nicht geht, melden. |
 | Dashboard-Vorlage fehlt | `context/today_template.html` ist weg | „Die Dashboard-Vorlage fehlt, deshalb gibt es heute nur das Briefing im Chat. Die Datei muss aus der Original-Kopie zurück." |
+| Kein Postfach, kein Kalender | In `inventory.connectors` steht kein Eintrag mit `slot: mail` oder `slot: kalender` und `status: true` | „Ich habe noch keinen Zugang zu deinem Postfach und Kalender, deshalb ist dein Briefing nur halb so nützlich. Sag ‚verbinde mein Postfach', dann richten wir das in fünf Minuten ein." Das ist ein echter Defekt, kein Komfortthema: ohne diese beiden ist der Tagesstart eine leere Hülle. |
 
 ## Stufe B — Komfort fehlt, montags melden
 
@@ -34,6 +35,8 @@ Der Sinn: Die gefährlichen Fehler dieses Systems sind die **stillen**. Ein Plat
 | Dashboard-Weg unbekannt | `script_command` ist leer | „Das Dashboard kann ich gerade nicht bauen, das Briefing im Chat läuft normal weiter." |
 | Ausstattung nie erfasst | `inventory` ist komplett leer | „Im Workspace-Tab ist deine Ausstattung noch leer. Wenn du magst, trage ich ein, was bei dir verbunden ist." |
 | Routine ohne Lebenszeichen | Eine Routine steht in `inventory.routines`, aber ihre jüngste Ergebnis-Datei (z.B. `inbox/briefing-*.md` bei der Morgen-Routine) ist älter als 2 Werktage | „Deine [Routine] hat seit [X] nichts mehr abgeliefert — vermutlich ist die Verbindung in der Cloud abgelaufen. Auf claude.ai/code/routines siehst du den letzten Lauf; ‚Run now' testet sie sofort." |
+| Werkzeug ohne Zugang | Ein CLI steht in `inventory.clis` mit `status: true`, aber der zugehörige Schlüssel fehlt in `~/.config/credentials.env` (nur der Name wird geprüft, nie der Wert gelesen) | „Firecrawl ist installiert, aber ohne Zugangsschlüssel kann es nichts holen. Sag ‚richte den Firecrawl-Zugang ein', dann machen wir das." |
+| Projekt-Repo verschwunden | Ein Eintrag in `inventory.repos` hat ein `path`, aber der Ordner existiert nicht mehr | „Der Code zu [Projekt] liegt nicht mehr da, wo er lag. Soll ich ihn neu holen?" |
 | Karteileichen | Tasks, die seit über 30 Tagen unverändert offen stehen | „Drei Aufgaben stehen seit über einem Monat unverändert. Sollen die weg, oder sind sie noch aktuell?" |
 | Ausstattung driftet | Der heutige Lauf widerspricht `config.yaml → inventory`: ein Connector antwortet, der als „nicht verbunden" geführt wird (oder umgekehrt, Wissen aus `/morning` Step 0c bzw. ToolSearch — kein Extra-Abruf), ein gelistetes CLI fehlt auf dem Rechner | Still korrigieren (inventory anpassen, Safeguard 4), danach EIN Satz nur, wenn etwas Neues auftauchte, das eine Entscheidung braucht: „Du hast inzwischen [X] verbunden — soll ich es ins Briefing einbeziehen?" |
 
