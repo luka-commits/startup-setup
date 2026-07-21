@@ -88,6 +88,14 @@ Was sich im Startup-Alltag am ehesten lohnt, in dieser Reihenfolge:
 | **Linear / Jira / Asana** | Ticket-Kontext zu Projekten | **Wichtig:** lesen für Kontext, nie zweite Aufgaben-Wahrheit — deine Tasks leben in STATUS.md, sonst gibt es zwei Listen und keine stimmt |
 | **Stripe** | Umsatz-Zahlen auf Zuruf | Auf Zuruf, nicht im täglichen Briefing |
 
+**Wenn ihr selbst Produkte baut**, lohnt zusätzlich die Entwickler-Schiene:
+
+| Connector | Was er bringt | Zaun |
+|---|---|---|
+| **GitHub Integration** | Issues, Pull Requests und Repo-Stände direkt im Gespräch | Unabhängig vom Workspace-Repo aus Schritt 1 — das läuft über `gh` und braucht diesen Connector nicht |
+| **Supabase** | Datenbank ansehen und ändern per Gespräch (Tabellen, Abfragen, Migrationen) | Bei Produktions-Datenbanken: erst ansehen lassen, Änderungen bewusst freigeben |
+| **Vercel** | Deploys, Logs und Projekt-Config | Kein fertiger Katalog-Eintrag — über „Add" als eigener MCP-Server (`mcp.vercel.com`) hinzufügen |
+
 **Für Routinen gilt extra:** Ein lokal verbundener Connector reicht der Cloud-Routine nicht — er muss der Routine beim Anlegen angehängt werden (der Assistent fragt das ab, siehe `SETUP.md` § Briefing automatisch).
 
 ## Weg B: IMAP direkt (wenn es keinen Connector gibt)
