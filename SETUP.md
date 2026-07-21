@@ -299,7 +299,7 @@ Dieses System läuft über Text im Chat. Genau da sitzt die Bremse: Wer den Kont
 
 **Wispr Flow** wandelt Sprache in sauberen Text um, in jedem Eingabefeld, auch auf Deutsch. Statt drei Sätze zu tippen, sagst du sie. Für längere Prompts, Meeting-Notizen und Mail-Entwürfe ist der Unterschied deutlich.
 
-- Download: [wisprflow.ai](https://wisprflow.ai)
+- Download: [wisprflow.ai](https://wisprflow.ai/r?LUKA20150)
 - Der erste Monat ist kostenlos.
 
 Rein optional. Wer lieber tippt, lässt es weg.
