@@ -74,6 +74,22 @@ Wie ein Entwurf entsteht, hängt vom Rechner ab. Das Setup probiert die Wege dur
 
 Fällt der eingetragene Weg irgendwann aus, fällt Claude automatisch eine Stufe tiefer und sagt dir in einem Satz, was stattdessen passiert ist.
 
+## Welche Connectors sich zusätzlich lohnen
+
+Alles, was in Claude Cowork verbunden ist, steht auch hier in Claude Code bereit — verbinden ist immer derselbe Weg (Einstellungen → Connectors), und das Setup inventarisiert einmal, was da ist. **Grundsatz: nach Bedarf verbinden, nicht auf Vorrat.** Jeder Connector ist Zugriff auf eure Daten, und Claude sagt von selbst, wenn ihm für eine Aufgabe eine Verbindung fehlt.
+
+Was sich im Startup-Alltag am ehesten lohnt, in dieser Reihenfolge:
+
+| Connector | Was er bringt | Zaun |
+|---|---|---|
+| **Slack** | Mentions und Direktnachrichten als Briefing-Kontext, Thread-Nachschlagen („was war da nochmal?") | Wie Mail: nur lesen, nur mit Erlaubnis pro Session |
+| **Notion** (o.ä. Firmen-Wiki) | „Was steht bei uns dazu?" — Claude liest die Doku als Kontext, statt dass du sie zusammenkopierst | Lesen für Kontext, kein zweiter Ablage-Ort |
+| **CRM** (HubSpot, Salesforce, …) | Pipeline-Stand im Briefing, Kunden-Historie beim Mail-Entwurf | Nur lesen; CRM-Pflege bleibt im CRM |
+| **Linear / Jira / Asana** | Ticket-Kontext zu Projekten | **Wichtig:** lesen für Kontext, nie zweite Aufgaben-Wahrheit — deine Tasks leben in STATUS.md, sonst gibt es zwei Listen und keine stimmt |
+| **Stripe** | Umsatz-Zahlen auf Zuruf | Auf Zuruf, nicht im täglichen Briefing |
+
+**Für Routinen gilt extra:** Ein lokal verbundener Connector reicht der Cloud-Routine nicht — er muss der Routine beim Anlegen angehängt werden (der Assistent fragt das ab, siehe `SETUP.md` § Briefing automatisch).
+
 ## Weg B: IMAP direkt (wenn es keinen Connector gibt)
 
 Für Postfächer, an die kein Connector kommt: kein Claude-Cowork-Zugang, Connector von der IT geblockt, oder die Mail läuft über einen eigenen Mailserver. Dann geht Mail und sogar Kalender über **IMAP direkt** — zwei kleine, read-only Skripte liegen dafür in `reference/scripts/`:
