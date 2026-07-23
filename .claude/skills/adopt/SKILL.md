@@ -9,6 +9,20 @@ Bringt einen gewachsenen Ordner in die Workspace-Struktur. **Fertig ist es, wenn
 
 **Der Unterschied zu `/setup`:** `/setup` richtet einen frisch kopierten, leeren Workspace ein und darf alles anlegen. `/adopt` trifft auf fremde Arbeit und darf fast nichts anfassen, ohne zu fragen. Das ist kein Detailunterschied, das ist die ganze Schwierigkeit.
 
+## Das Ziel ist die Struktur dieses Pakets, nicht ein Kompromiss mit der vorgefundenen
+
+**Vorsicht gilt den Inhalten, nie dem Schema.** Was in den Dateien steht, gehört dem Nutzer, da wird nichts geraten und nichts stillschweigend bewegt. Aber **wie die Ordner heißen, ist keine Verhandlungssache** — es ist das, was er gekauft hat.
+
+Der Grund ist mechanisch, nicht ästhetisch: `/ingest` schreibt nach `inputs/`, `/eod` liest aus `work/`, `projects/README.md` beschreibt genau diese drei Ordner, und das Audit prüft dagegen. Ein Workspace, der `docs/` behält, hat kein zweites gültiges Schema, sondern Werkzeuge, die ins Leere greifen. Und zwar still, was die schlimmere Sorte ist.
+
+Deshalb, ohne Ausnahme:
+
+- **`inputs/`, `work/`, `outputs/` sind die Namen.** Ein vorgefundener `docs/`, `notizen/`, `material/` wird umbenannt, nicht als gleichwertig geführt.
+- **Gefragt wird, was wohin gehört, nicht ob umbenannt wird.** „Ist `docs/` bei dir eigene Arbeit oder Erhaltenes?" ist die Frage. „Wollen wir `docs/` behalten?" ist keine.
+- **Bleibt ein fremder Name doch stehen**, weil der Nutzer ausdrücklich darauf besteht, ist das seine Entscheidung und sie wird respektiert. Aber sie kommt in den Bericht aus Schritt 5, mit dem Satz, was dadurch nicht funktioniert. Eine bewusste Ausnahme ist tragbar, eine unbemerkte ist eine Zeitbombe.
+
+**Der Selbsttest:** Wenn am Ende jemand `/ingest` sagt und die Datei landet nicht in `inputs/`, war der Umbau nicht fertig, egal wie aufgeräumt es aussieht.
+
 ## Warum das der heikelste Ablauf im ganzen System ist
 
 Ein Umbau ist unumkehrbar, wenn man ihn nicht umkehrbar baut. Drei Wege in den Schaden, alle drei real erlebt:
@@ -47,7 +61,7 @@ Der Plan zeigt dazu vier Dinge. Aus jedem wird eine Frage, nie eine Bewegung:
 
 | Was der Plan zeigt | Die Frage dazu |
 |---|---|
-| **Ein Ordnername in vielen Projekten**, den das Schema nicht kennt (`docs/`, `notizen/`) | Ist das dasselbe wie `work/`? Wenn ja: einmal umbenennen, überall gleich — oder den Namen behalten und im Schema als gleichwertig führen. Beides ist richtig, gemischt ist falsch. **Nur nicht projektweise verschieden.** |
+| **Ein Ordnername in vielen Projekten**, den das Schema nicht kennt (`docs/`, `notizen/`) | **Was liegt da drin — eigene Arbeit oder Erhaltenes?** Danach wird umbenannt: eigene Arbeit → `work/`, Erhaltenes → `inputs/`, Rausgegangenes → `outputs/`. Einmal entschieden, dann überall gleich. Liegt beides gemischt darin, ist das die Trennung aus dem Abschnitt unten, nicht ein Grund, den alten Namen zu behalten. **Die Frage ist wohin, nie ob.** |
 | **Ein Projekt ohne Änderung seit über 90 Tagen** | Ruht es oder ist es zu Ende? Antwort „zu Ende" → der Ablauf aus `projects/README.md` § „Projekt archivieren", **mit** der Frage nach den offenen Aufgaben. Ein Projekt still wegzuräumen und seine Tasks stehen zu lassen ist die schlimmere Unordnung. |
 | **Lose Dateien direkt im Projektordner** | Ist das eigene Arbeit (`work/`) oder etwas Erhaltenes (`inputs/`)? Bei mehr als fünf Dateien nicht einzeln fragen, sondern einmal pro Projekt. |
 | **Versionsspuren im Dateinamen** (`final`, `v2`, `Kopie`, ` 2.`) | Welche gilt? Der Umbau ist die eine Gelegenheit, das zu klären, danach fragt es nie wieder jemand. Antwort → die geltende bleibt in `work/`, die anderen nach `_archive/` im Projekt. **Nie raten, nie stillschweigend löschen.** |
@@ -111,7 +125,20 @@ Den Ist-Stand liefert das Inventar, ohne Raten:
 node reference/scripts/inventory.js
 ```
 
-Dagegen halten, was dieses Paket vorsieht: `reference/plugins.md` (welche Plugins wofür), `reference/tools.md` (`firecrawl`, `playwright`), `reference/mcp.md` (die sechs Verbindungen). Was fehlt, **einzeln anbieten mit einem Satz wozu es gut ist** — nicht stumm nachinstallieren. Ein Werkzeug, dessen Zweck der Nutzer nicht kennt, wird nie benutzt und ist dann genau der Ballast, den `/audit` später meldet.
+### Erst die Gegenüberstellung zeigen, dann anbieten
+
+**Der Nutzer sieht als Erstes eine Liste in zwei Spalten, nicht eine Reihe von Einzelfragen.** Wer schon zehn Dinge hat und drei nicht, will das auf einen Blick sehen — und nicht zehnmal „hast du schon…" beantworten, um am Ende nicht zu wissen, was jetzt eigentlich fehlt.
+
+Gegenzuhalten ist gegen: `reference/plugins.md` (die sieben Plugins), `reference/tools.md` (`firecrawl`, `playwright`, Node.js, die `claude`-Kommandozeile), `reference/mcp.md` (die sechs Verbindungen).
+
+> **Ist schon da:** Node.js, firecrawl, GitHub-Login, Postfach verbunden, 3 von 7 Plugins
+> **Fehlt noch:** playwright (Claude kann keine Webseiten bedienen) · 4 Plugins · Kalender · kein eigenes Repo, also kein Backup
+
+Jede Zeile in „fehlt noch" trägt in Klammern, **was dadurch heute nicht geht** — nicht den Namen des Werkzeugs. „playwright fehlt" sagt niemandem etwas, „Claude kann keine Webseiten für dich bedienen" schon.
+
+Danach **einzeln anbieten, nicht stumm nachinstallieren.** Ein Werkzeug, dessen Zweck der Nutzer nicht kennt, wird nie benutzt und ist dann genau der Ballast, den `/audit` später meldet. Ausnahme sind die sieben Plugins und Node.js: die gehören zur Grundausstattung und werden wie im Setup ohne Einzelfrage installiert.
+
+**Was hier nicht passieren darf:** dass am Ende niemand sagen kann, was der Ordner jetzt hat und was nicht. Die Gegenüberstellung geht deshalb auch in den Bericht aus Schritt 5, mit dem Stand nach dem Umbau.
 
 **Das eigentliche Einrichten nicht hier nachbauen.** Die Schritte 7.1 bis 7.4 des `/setup`-Skills machen genau das (Werkzeuge installieren, die sechs Verbindungen durchgehen, Zugänge anlegen, Projekt-Repos anhängen). Von hier aus dorthin verweisen und sie ausführen, statt eine zweite, schlechtere Fassung zu schreiben.
 
@@ -124,10 +151,19 @@ node reference/scripts/workspace-audit.js --root <pfad>
 node reference/scripts/inventory.js
 ```
 
-**Die Abnahme, beide Hälften:**
+**Die Abnahme, drei Hälften:**
 
 1. **Struktur** — das Audit darf keine `act`-Dimension melden, die durch den Umbau entstanden ist. Besonders `Erreichbarkeit`: tote Verweise sind die typische Umbau-Narbe.
-2. **Ausstattung** — die Setup-Kachel im Dashboard zeigt die Pflichtschritte auf 100 %.
+2. **Schema** — kein Projekt führt mehr einen Ordnernamen, den das System nicht kennt. Dafür **denselben Planer noch einmal laufen lassen**, der den Umbau eröffnet hat:
+
+   ```
+   node reference/scripts/adopt-plan.js --root <pfad>
+   ```
+
+   Er kennt die erlaubten Namen (`inputs`, `work`, `outputs`, `code`, `_archive`) und zählt die Projekte gegen sie. Die Zeile am Ende muss aufgehen: **so viele Projekte wie „mit work/" wie „mit inputs/"**. Klafft da noch etwas, ist der Umbau nicht fertig.
+
+   Was übrig bleibt, ist entweder eine bewusste, im Bericht benannte Ausnahme oder ein vergessener Umbau. Ein drittes gibt es nicht.
+3. **Ausstattung** — die Setup-Kachel im Dashboard zeigt die Pflichtschritte auf 100 %.
 
 Erst wenn beides steht, ist der Ordner ununterscheidbar von einem frisch aufgesetzten. Bleibt etwas offen, gehört es benannt statt weggelächelt: welcher Punkt, warum er offen ist, und was ihn schließen würde.
 

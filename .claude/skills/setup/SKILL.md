@@ -11,6 +11,21 @@ description: "One-time first-run personalization of a freshly copied workspace. 
 
 **And: the user must never wait into the void.** After their answers you work for several minutes straight. Before every longer block, one short line in the chat — `⚙️ Creating your project folders …`, `📄 Filing your documents …`, `✉️ Looking through your sent mail …`. One line, not a status report.
 
+### Every step happens. Skipping is a decision the user makes, never one you make for them.
+
+This skill contains a lot of "skip", "without comment", "don't offer by yourself". **Every single one of those refers to what you SAY, never to whether you ASK.** They exist so the setup does not turn into a sales pitch — not so that steps quietly disappear.
+
+Measured on a real run (2026-07-23): Supabase and Vercel never came up, the plugins were never installed, and the person only noticed afterwards that a third of the equipment was missing. Nobody had decided that. The steps were simply gone, and a step that is gone never asks to come back.
+
+So, in order:
+
+1. **Run every step from 0 to 8, in order.** None gets left out because it "probably isn't relevant". You do not know that. The person in front of you does.
+2. **Question or offer skipped because of a rule?** Then it is a rule about the WORDING, and the step still happens.
+3. **Something genuinely does not apply** (no npm, no Git repo, no mail connection)? Then it is skipped **and named in the closing summary**, one line, with what it would have done. Never silently.
+4. **The closing summary in Step 8 lists all of it** — done, declined, not possible. That list is the proof that this ran completely. Without it, neither of you can tell a deliberate no from a forgotten step.
+
+**The test:** if the user asks afterwards "was X part of this?", they must be able to find the answer in the summary. Every "sorry, that never came up" is a bug in this skill, not user error.
+
 ## Say what is happening, and why it matters
 
 The person in front of you has never seen this system and cannot tell a necessary step from a decorative one. So **before every step that asks something of them — a question, a sign-in, a decision — one sentence saying what happens now and what it buys them.** Not what you are technically doing. What it changes for them.
@@ -23,6 +38,25 @@ Three things make the difference between explaining and lecturing:
 - **The benefit, not the mechanism.** "So that drafts sound like you and not like a template" beats "deriving your writing style from your Sent folder".
 - **One sentence, then act.** A second sentence of justification turns into a lecture, and a lecture is what makes people click away.
 - **Only where something is being asked of them.** Steps that run by themselves need the one-line progress note above, nothing more. Explaining something the user does not have to decide costs their attention for the moment when they really do.
+
+### This is a conversation, not a form being filled in
+
+Someone sitting through this has handed over half an hour and has no idea how long it lasts or what is still coming. Without that, every question feels like an interruption instead of a step. So:
+
+**Say where you are, at every step.** One short line, before the content: _"Step 4 of 8 — your projects."_ That single habit is the difference between "this is going somewhere" and "how much longer is this".
+
+**Open every step with what and why, close it with what it just bought them.** Two sentences, not a paragraph:
+
+> *"Now the mailbox and the calendar. That's what turns tomorrow's briefing from a list into something that actually knows your day."*
+> … *"Done — from tomorrow morning I can see your appointments."*
+
+**Answers get picked up, not just recorded.** Someone who said in Step 1 that they work with Notion hears in Step 7.2 _"you mentioned Notion — let's connect that"_, not a generic question about six categories. That is the difference between being listened to and being surveyed.
+
+**When something takes longer, say what is happening.** Installations and mail analysis run for minutes. Silence in those minutes reads as a crash.
+
+**And at the end of each larger block, a real handover:** _"That's the equipment done. What's left is the summary, then you're ready."_ People need to know that the end is in sight — otherwise they quit two steps before it.
+
+**Never techspeak without a translation.** "MCP connector", "runtime", "marketplace" mean nothing to the person in front of you. Say the thing, then the word once if it matters later: _"a connection to your mailbox — that's what's called a connector here"_.
 
 **Why this is a rule and not a matter of style:** someone who does not understand why a step matters skips it — and the steps that get skipped are the equipment ones at the end, the ones that decide whether this stays a folder of notes or becomes a system that reaches into the tools they actually work in.
 
@@ -96,16 +130,40 @@ Don't over-explain each question.
 
 Derive the absolute path from the actual current working directory Claude Code is running in — **do not ask the user to type this**. (This package may have been moved/renamed after being received — compute fresh, never assume from any file's existing content.)
 
+## Step 2.4: Is the Folder Sitting in a Cloud-Synced Directory? (say this immediately, not at the end)
+
+**Do this before anything else is written**, because the answer can move the whole folder — and moving it after the setup means every path, every scheduled job and the Git remote have to be redone.
+
+Check the workspace root path for the usual suspects:
+
+```bash
+pwd | grep -Ei 'onedrive|dropbox|google ?drive|pcloud|library/mobile documents|synology ?drive|nextcloud'
+```
+
+**No hit → say nothing, move on.** This is the only check in this whole skill that gets reported while it runs, and only when it fires.
+
+**Hit → say it right away, plainly, and let them decide:**
+
+> *"One thing before we start: this folder is inside your <OneDrive/iCloud/Dropbox>. That works, but it causes real trouble later. The sync service copies files while I'm writing them, and then you get duplicates like `STATUS 2.md` — and at some point I read the wrong one. It also tends to break the Git backup.*
+>
+> *My recommendation: move the folder somewhere local first, for example `~/workspace` or `~/Documents-local`. Your daily backup then runs through GitHub instead of the sync service, which is the safer route anyway. Shall we move it, or do you want to leave it where it is?"*
+
+- **Move it** → move the folder, then **recompute the root from scratch** (Step 2) and carry on. Do not carry the old path forward anywhere.
+- **Leave it** → a full answer, respected without a second attempt. But it goes into the closing summary as one line, so it is a documented decision and not a surprise in three weeks: _"Your folder is in <service> — if duplicates like `STATUS 2.md` show up, that's where they come from."_
+
+**Why this is worth its own step:** the ` 2.` duplicates in the check below are the symptom. This is the cause, and it is the one thing that gets massively more expensive the later you fix it.
+
 ## Step 2.5: System Check (silently, while the user answers the questions)
 
-Four checks. **Do NOT report the results individually** — they flow into ONE line in the closing summary (Step 8). The user should not be the audience of a self-test.
+Four checks. **Do NOT report the results individually** — they flow into ONE line in the closing summary (Step 8). The user should not be the audience of a self-test. (The sync-location check in Step 2.4 is the deliberate exception: it can change where the folder lives, so it cannot wait for the summary.)
 
 | Check | How | If it's missing |
 |---|---|---|
 | **Skills there?** | does `.claude/skills/morning/SKILL.md` exist? | **Critical.** The `.claude` folder is hidden and tends to get lost when copying/zipping. Say it plainly: _"A hidden part of the folder got lost during copying — without it the commands don't work. Please get a fresh copy (see VERSION.md) and copy it as a whole, not the individual files inside it."_ Then abort the setup — without skills everything else is pointless. |
 | **Which OS?** | `uname -s` → `Darwin` = mac, `MINGW*/MSYS*` = windows | Don't guess. Controls the draft mechanics (PowerShell vs. AppleScript) and how the dashboard is opened — record it in Step 3 as `os:`. |
 | **Mail/calendar connector?** | First find out what is connected at all: broad `ToolSearch query:mail` and `ToolSearch query:calendar`. With Microsoft 365 you get back `mcp__claude_ai_Microsoft_365__outlook_email_search` and `mcp__claude_ai_Microsoft_365__outlook_calendar_search`; with another provider take the tool names actually returned, never guess a name. | Not a blocker. **If the search finds nothing, ask ONCE: "Do you work with Microsoft 365 (Outlook) or with Google Workspace?"** (third option: something else). Remember the answer for Step 8, so the offer of help there names the right connector instead of staying generic. Don't keep digging if the user doesn't know: then it stays with the generic path. Remember for Step 8: the mail part is missing, the rest runs. |
-| **Script runtime?** | `node --version` (default — ships with Claude Code), then `uv run python -c "print(1)"`, `python3`, `python` | Not a blocker. Record the working variant in Step 3 as `script_command:`. If none works: dashboard rendering falls away, the briefing in the chat still runs. |
+| **Script runtime?** | `node --version` (the default), then `uv run python -c "print(1)"`, `python3`, `python` | Record the working variant in Step 3 as `script_command:`. **Nothing found is not a result you accept — Step 7.1 installs Node.** Only if that installation genuinely fails does the dashboard fall away, and then it is named in the summary. |
+| **`claude` on the PATH?** | `command -v claude` | Needed for the plugins in Step 7.1. Missing → Step 7.1 installs it. Being inside Claude Code does not prove the command line is there. |
 | **Draft path?** | `ToolSearch query:draft` — does the connected connector return a draft tool? (nothing found → try `ToolSearch query:create` as well) | **Yes → `mcp`** (platform- and provider-independent, best path). **No → OS default:** Windows `com` (assumes classic Outlook installed locally), Mac `mailto` (needs no permissions, no MDM risk, works with any mail program). Record it in Step 3 as `draft_method:`. Don't create test drafts — nothing may pop up in the mail program during setup. **Only the DRAFT tool counts:** if the connector also offers a send tool, it is NOT used and NOT mentioned — nothing is ever sent here. Note for Step 8: the first draft via MCP asks for permission once — click "always allow" once and it's quiet after that. |
 | **Other MCPs connected?** | Broad `ToolSearch` queries (e.g. `query:people`, `query:transcript`, `query:search`) — what answers besides the mail connector? | Not a blocker, not mandatory. Remember for Step 8: ONE line _"Also connected: [names] — I can use those too, just say what you need."_ Nothing found → don't mention it. |
 | **Sync duplicates?** | Files with ` 2.` in the name (`STATUS 2.md`) — OneDrive conflict copies | Remember for Step 8: _"OneDrive created duplicates while syncing ([names]) — I'll leave them alone, but delete them in Explorer, otherwise I'll read the wrong one at some point."_ Never delete them yourself (Safeguard 2). |
@@ -133,12 +191,13 @@ Fill every section of `context/config.yaml` from Step 0.5 + Step 1 + Step 2:
   - `inventory.clis:` `firecrawl` and `playwright` with the result of their version command. Step 7.1 installs what's missing and updates this.
   - `inventory.accounts:` leave empty, Step 7.3 does that.
   - `inventory.repos:` Step 8 enters the workspace's own repo, Step 7.4 the project repos.
-  - `inventory.plugins:` and `inventory.routines:` stay empty. Neither is something the setup sets up. In the closing summary (Step 8) ONE short question: _"Do you have any Claude Code plugins installed, or should something run on a schedule?"_ Whatever the user doesn't name stays empty. The empty state in the dashboard explains by itself how to add things later.
+  - `inventory.plugins:` leave empty **now** — but not because nothing happens. **Step 7.1 installs the curated set**, and plugins are read live from the machine afterwards, so there is nothing to type in by hand. Do not conclude from this line that plugins are optional.
+  - `inventory.routines:` stays empty. That is the one the setup really does not set up. In the closing summary (Step 8) ONE short question: _"Should something run on a schedule?"_ No answer stays empty; the empty state in the dashboard explains by itself how to add one later.
 - **Permanently, not just during setup:** if something is added later (a connector, a plugin, a repo, a routine), it belongs in the `inventory` in `context/config.yaml` immediately, without the user having to ask. That's the same order-to-persist as with "from now on / always" (Safeguard 10): said once, anchored permanently, confirmed in one line.
 
 No other file rewrites. If an answer is missing, leave the field empty — never invent a plausible value.
 
-**No script runtime found (Step 2.5):** say ONE sentence in the Step 8 summary: *"For the dashboard I need a small runtime (Node.js) — everything else works without it, only the dashboard file won't be created. Say the word and we'll set it up together, takes a few minutes."* No unsolicited installation guide — but if the user takes the offer, walk them through the installation step by step and repeat the check afterwards. Never write the dashboard HTML yourself (see CLAUDE.md).
+**No script runtime found (Step 2.5):** that is not an outcome, it is a task — **Step 7.1 installs Node.js.** Only if that installation genuinely fails does this become a summary line, under "not possible right now": *"Node.js wouldn't install, so there's no dashboard file — the briefing in the chat works, and we can fix this any time."* Then say what blocked it. Never write the dashboard HTML yourself (see CLAUDE.md).
 
 ## Step 3.5: Set the Main Model
 
@@ -231,22 +290,40 @@ npm install -g playwright firecrawl-cli
 playwright install chromium
 ```
 
-Non-interactive, so you do it yourself. Check `command -v npm` beforehand: if npm is missing, that's no disaster — say that the two tools are missing and what still runs without them (everything except web research and browser tasks), then move on. If the installation fails on permissions: **never suggest `sudo`**, name the contact person from `VERSION.md` instead.
+Non-interactive, so you do it yourself. If the installation fails on permissions: **never suggest `sudo`**, name the contact person from `VERSION.md` instead.
 
-**Then the three plugins that belong to the setup**, the same way — non-interactive, no question:
+#### Before that: the two things everything else stands on
+
+Check both first. Neither is optional, and neither gets waved away with "it works without it".
+
+**1. Node.js.** Without it there is no dashboard, no inventory, no audit, no adopt plan — a third of the package. `node --version` says whether it's there. Missing → install it, don't just mention it:
+
+```bash
+# Mac
+brew install node
+# Windows
+winget install OpenJS.NodeJS.LTS
+```
+
+No Homebrew on the Mac? Then that first (`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`), and say in one sentence what it is: the tool that installs other tools on a Mac. If the installation genuinely fails, that is the one case where the package really runs reduced — then it goes into the closing summary under "not possible right now", with what it would have unlocked. Never silently.
+
+**2. The `claude` command line.** Step 7.1 installs plugins with `claude plugin …`, and that only works if `claude` is on the PATH — being inside Claude Code is not proof of it. Check `command -v claude`. Missing → `npm install -g @anthropic-ai/claude-code`, then check again.
+
+Only once both answer do the two CLIs and the plugins below make sense.
+
+**Then the seven plugins that belong to the setup**, the same way — non-interactive, no question. These are not optional and they are not a recommendation; they are equipment, exactly like the two CLIs above:
 
 ```bash
 claude plugin marketplace add DietrichGebert/ponytail
 claude plugin marketplace add pbakaus/impeccable
-claude plugin marketplace add obra/superpowers-marketplace
 
 claude plugin install skill-creator@claude-plugins-official
 claude plugin install claude-code-setup@claude-plugins-official
 claude plugin install code-review@claude-plugins-official
 claude plugin install claude-md-management@claude-plugins-official
+claude plugin install superpowers@claude-plugins-official
 claude plugin install ponytail@ponytail
 claude plugin install impeccable@impeccable
-claude plugin install superpowers@superpowers-marketplace
 ```
 
 **Why the setup does this instead of recommending it:** new plugins appear almost daily, and telling this week's real thing from the noise is a job of its own. That selection is the actual product here. Handing the user a list to install themselves gives them back exactly the work they were meant to be spared. What each one is for: `reference/plugins.md`.
@@ -307,10 +384,12 @@ Keys never belong **in the repo** (it gets cloned and versioned; a key checked i
 
 **Don't offer this by yourself, only on request:** an **Anthropic API key**. That is needed exclusively by the `managed-agents` skill (your own agents that run permanently in the cloud). Important and honest to say when it comes up: **that is a second invoice next to the subscription** and is billed per use. Everyday work never needs it — everything this system does runs through the subscription. Scheduled routines (`/schedule`) incidentally do **not** need it, they run through the subscription access.
 
-**One more question, only once:** _"Do you also build applications, or do you work with databases?"_
+**One more question — you ask it, you never answer it for them:** _"Do you also build applications, or do you work with databases?"_
 
-- **No** (the normal case) → skip without comment. Not a word about Supabase or Vercel, that's tooling for other roles.
+**Never infer the answer from anything they said earlier.** Someone who described themselves as a consultant in Step 1 may still run a website with a database. Guessing "no" here is how Supabase and Vercel silently disappear from a setup without the person ever learning they exist.
+
 - **Yes** → walk them through **Supabase** (database) and **Vercel** (publishing). Both skills are in the package. Afterwards catch up slot `dev` in 7.2.
+- **No** → nothing gets installed, and that is a full answer. But it goes into the closing summary as ONE line under "not set up, available any time": _"Supabase and Vercel (databases and publishing your own pages) — say the word if that ever comes up."_ A no means "not now", never "you never learn this exists".
 
 Setting one up always works the same way: open the sign-up page (with Playwright from 7.1 you can open it for them directly), they register and generate the key, then **you** append it:
 
@@ -357,14 +436,22 @@ Ask **at most once** per project, and only where it's plausible. For a project c
    - No → move on without comment. That is exactly as correct an answer, and it is never renegotiated.
 
    Enter the created repo in `context/config.yaml → inventory.repos`. If a command fails: don't dramatize it, ONE sentence in the summary plus an offer of help — the workspace runs fully without a repo, only the backup is missing.
-3. Output a summary: what was written to config.yaml, what was filled in (context/ files), which projects were scaffolded, which documents were filed, whether EMAIL_STYLE.md was derived (Step 7), plus these follow-ups:
+3. Output a summary: what was written to config.yaml, what was filled in (context/ files), which projects were scaffolded, which documents were filed, whether EMAIL_STYLE.md was derived (Step 7), plus these follow-ups.
+
+   **First, the equipment balance — three columns, nothing left out.** This is what makes a complete run distinguishable from a run that quietly lost half its steps. Every item from Steps 7.1 to 7.4 appears in exactly one column:
+
+   > **Set up:** playwright, firecrawl, the 7 plugins, mailbox, calendar …
+   > **You said no:** claude-mem (remembers across sessions), test draft …
+   > **Not possible right now:** Node.js missing, so no dashboard file — here is what would fix it …
+
+   Read the real state, do not write it from memory: `claude plugin list` for the plugins, `<name> --version` for the CLIs, `inventory.connectors` for the connections. **If a line cannot be filled because the step never ran, that is not a gap in the summary — it is a step you skipped, and you go back and do it now.**
    - **`/email` style — this line is mandatory, in every outcome.** Derived → say so with the date. Declined, no history, or no mail connector → say that drafts use the package's example style for now, name the reason in half a sentence, and give the sentence that starts it later ("derive my mail style from my sent mail"). Never leave it out: an undiscovered gap here means weeks of drafts that don't sound like the user.
    - **Calendar noise:** put recurring private calendar blocks (gym, study slots, …) into `config.yaml → calendar.noise_subjects` so briefings ignore them.
    - **Dictate instead of typing (ONE sentence, friendly):** the system lives off being told things — dictating status updates is faster than typing. Windows: `Win + H` starts native dictation in any text field, including the Claude Code window. Mac: enable dictation under System Settings → Keyboard, after that pressing `Ctrl` twice starts the microphone.
 4. **System-check line (Step 2.5), ONE line, friendly:**
    - All green → _"Everything's ready."_ Nothing more — no checkmark report about things that work.
    - Something missing → what's missing, what works anyway, and a CONCRETE offer of help — never just a pointer to someone else. Mail pattern, **with the system named in Step 2.5 concretely filled in** (Microsoft 365 or Google Workspace) instead of staying generic: _"I can't find a mail connection yet — tasks, projects and dashboard still work, only the mail part of the briefing is missing. You can set it up in Claude Cowork: Settings → Connectors → connect <the named system> with your work account; I'll then use that same connection. Say 'check the mail connection again' once you've done it — or 'help me with it' and we'll go through it step by step."_ If the user takes the offer: walk them through the setup, then test the connection again via ToolSearch and confirm the result in one sentence. (Which connectors exist and what they're allowed to do: `reference/mcp.md`.)
-5. **First dashboard render (if a `script_command` was found):** render the dashboard once from the fresh data — following `reference/dashboard-render.md` (the render contract; do NOT load the `/morning` skill for this, it costs a multiple), with `mail_checked: false` (mail fields honestly empty, calendar starting tomorrow) — and open it. **Write `context/.mail_cache.json` with today's date and `mail_checked: false` while you are at it.** Without that stamp every mid-day update for the rest of the first day silently skips (the render contract refuses to render without a cache from today), and the dashboard the user was just shown freezes at the moment they start working. Two birds: the user immediately sees a visible success ("that's your dashboard, from tomorrow it'll be filled"), and the render path is proven on THIS machine while you're still sitting next to them. If it fails: don't dramatize — one sentence in the summary (the briefing in the chat still works) + offer of help. No `script_command` → skip.
+5. **First dashboard render — this happens, it is not conditional.** Step 7.1 made sure Node is there, so `script_command` exists; if it does not, go back and finish 7.1 instead of skipping this. **Then open it and walk them through it in two sentences, starting with the Start Here tab** — that page is the entire onboarding, and someone who never sees it on day one never finds it. _"That's your dashboard. The first tab, Start Here, is your map — everything else fills up as you work."_ Render the dashboard once from the fresh data — following `reference/dashboard-render.md` (the render contract; do NOT load the `/morning` skill for this, it costs a multiple), with `mail_checked: false` (mail fields honestly empty, calendar starting tomorrow) — and open it. **Write `context/.mail_cache.json` with today's date and `mail_checked: false` while you are at it.** Without that stamp every mid-day update for the rest of the first day silently skips (the render contract refuses to render without a cache from today), and the dashboard the user was just shown freezes at the moment they start working. Two birds: the user immediately sees a visible success ("that's your dashboard, from tomorrow it'll be filled"), and the render path is proven on THIS machine while you're still sitting next to them. If it fails: don't dramatize — one sentence in the summary (the briefing in the chat still works) + offer of help.
 6. **Opt-in test draft (only if a `draft_method` is available):** ONE question: _"Should I open a test draft to yourself, so you can see what that looks like later?"_ If yes: a short welcome draft to `user.email` (subject something like "Your workspace is set up ✓", 2–3 sentences), via the `draft_method` from the config — that's the end-to-end proof of the draft path; if it fails, it fails HERE and gets fixed right away, not alone on the first morning. If no: skip without comment. The principle stands: drafts never pop up unasked — this one is explicitly invited, goes only to the user themselves, and nothing is ever sent.
 7. **The mini-briefing — how daily life works from now on.** Output it directly in the chat (this is the moment the user is guaranteed to read — they'll never open a documentation file). Exactly these five lines, no more:
 

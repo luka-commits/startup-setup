@@ -1,6 +1,6 @@
 # Version
 
-**v1.5-open** · as of 2026-07-22
+**v1.6-open** · as of 2026-07-23
 
 Open variant. Built on the same skeleton as the restricted corporate edition, but without plugin and connector restrictions.
 
@@ -26,6 +26,14 @@ If something doesn't work: **get in touch with the version number above.** It ma
 Everything else (`.claude/`, `CLAUDE.md`, the documentation) is interchangeable and comes fresh from the new version. So this holds: your own changes belong in these four folders, not in the machinery.
 
 ## Changes
+
+**v1.6-open** — Steps can no longer quietly disappear from the setup. On a real run a third of the equipment was missing without anyone deciding that: databases and publishing never came up, the plugins were never installed, and because of that there was no dashboard and no Start Here page either. Three causes, all in the skill itself. It contradicted itself, saying in one place that plugins were not something the setup installs and in another installing seven of them. The question about databases came pre-answered with "no, the normal case", so it was never actually asked. And fifteen separate instructions told it to skip, not to offer, to move on without comment — together they taught it to leave things out, and a step that is gone never asks to come back.
+
+Now every step runs, skipping is your decision and never a silent one, and the setup ends with a balance in three columns: what was set up, what you said no to, and what was not possible right now. If you ask afterwards whether something was included, the answer is in that list.
+
+Node.js is installed instead of mentioned — without it there is no dashboard, no inventory and no audit, a third of the package. The `claude` command line is checked for the same reason. New right at the start: a check whether your folder sits inside OneDrive, iCloud or Dropbox, because sync services create duplicate files and break the Git backup — said immediately rather than at the end, since moving the folder later means redoing every path. And the setup talks you through it properly now: where you are, what each block is for, what it just bought you, in your words instead of technical terms.
+
+`/adopt` no longer lets itself be talked into the folder structure it finds. Care applies to your content, never to the schema: `inputs/`, `work/` and `outputs/` are the names the tools expect, and a folder that keeps its own names has tools reaching into nothing. It also shows you a plain two-column list of what is already there and what is missing, before it offers anything, with what each missing piece means in practice rather than what it is called.
 
 **v1.5-open** — The setup now starts by asking whether this is a fresh start or a folder you already have. An existing one is taken over instead of a second system being set up next to it. It also asks early which tools you work with every day and what for, and connects those by name instead of walking six abstract categories fifteen minutes later. If a system is not in the Cowork catalogue, that is no longer the end of it: its own MCP server gets added directly, and Claude runs that step, you only fetch a token. Every step that asks something of you now says in one sentence what happens and why it is worth it.
 
