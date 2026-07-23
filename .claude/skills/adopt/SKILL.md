@@ -129,16 +129,20 @@ node reference/scripts/inventory.js
 
 **Der Nutzer sieht als Erstes eine Liste in zwei Spalten, nicht eine Reihe von Einzelfragen.** Wer schon zehn Dinge hat und drei nicht, will das auf einen Blick sehen — und nicht zehnmal „hast du schon…" beantworten, um am Ende nicht zu wissen, was jetzt eigentlich fehlt.
 
-Gegenzuhalten ist gegen: `reference/plugins.md` (die sieben Plugins), `reference/tools.md` (`firecrawl`, `playwright`, Node.js, die `claude`-Kommandozeile), `reference/mcp.md` (die sechs Verbindungen).
+Gegenzuhalten ist gegen: `reference/plugins.md` (die sechs Plugins), `reference/tools.md` (`firecrawl`, `playwright`, Node.js, die `claude`-Kommandozeile), `reference/mcp.md` (die sechs Verbindungen).
 
 > **Ist schon da:** Node.js, firecrawl, GitHub-Login, Postfach verbunden, 3 von 7 Plugins
 > **Fehlt noch:** playwright (Claude kann keine Webseiten bedienen) · 4 Plugins · Kalender · kein eigenes Repo, also kein Backup
 
 Jede Zeile in „fehlt noch" trägt in Klammern, **was dadurch heute nicht geht** — nicht den Namen des Werkzeugs. „playwright fehlt" sagt niemandem etwas, „Claude kann keine Webseiten für dich bedienen" schon.
 
-Danach **einzeln anbieten, nicht stumm nachinstallieren.** Ein Werkzeug, dessen Zweck der Nutzer nicht kennt, wird nie benutzt und ist dann genau der Ballast, den `/audit` später meldet. Ausnahme sind die sieben Plugins und Node.js: die gehören zur Grundausstattung und werden wie im Setup ohne Einzelfrage installiert.
+Danach **anbieten, nicht stumm nachinstallieren** — und zwar nach derselben Regel wie im Setup (Schritt 7.1): **eine Frage pro Gruppe**, mit dem was sie tut und was sie kostet, nie sechs Fragen hintereinander und nie ungefragt installieren. Ein Werkzeug, dessen Zweck der Nutzer nicht kennt, wird nie benutzt und ist genau der Ballast, den `/audit` später meldet. Die einzige Ausnahme sind Node.js und die `claude`-Kommandozeile: ohne die existiert ein Drittel des Pakets nicht, die werden angesagt und installiert, nicht erfragt.
 
-**Was hier nicht passieren darf:** dass am Ende niemand sagen kann, was der Ordner jetzt hat und was nicht. Die Gegenüberstellung geht deshalb auch in den Bericht aus Schritt 5, mit dem Stand nach dem Umbau.
+**Und was schon da ist, wird nicht nochmal angeboten.** Die Gegenüberstellung ist genau dafür da: sie wird EINMAL am Anfang erhoben, aus der Maschine gelesen (`claude plugin list` mit `Status: ✔ enabled`, `<name> --version`, `ToolSearch` für die Verbindungen), nicht aus dem, was in irgendeiner Datei behauptet wird. Danach wird nur noch die rechte Spalte abgearbeitet, Gruppe für Gruppe, in fester Reihenfolge.
+
+**Kein Schritt fällt still weg** — dieselbe Regel wie im Setup, und aus demselben Grund. Jede Zeile aus „fehlt noch" hat am Ende genau einen von drei Zuständen: **eingerichtet**, **abgelehnt** (der Nutzer hat Nein gesagt — das ist eine vollständige Antwort und wird mit `status: false` notiert) oder **nicht möglich** (mit dem Grund und dem, was es gebracht hätte). Was keinen dieser drei Zustände hat, wurde nicht entschieden, sondern vergessen: dann geh zurück und hol es nach, statt es im Bericht wegzulassen. Eine Gruppe, die nie gefragt wurde, ist kein Nein.
+
+**Was hier nicht passieren darf:** dass am Ende niemand sagen kann, was der Ordner jetzt hat und was nicht. Die Gegenüberstellung geht deshalb auch in den Bericht aus Schritt 5, mit dem Stand nach dem Umbau — in denselben drei Spalten, damit sich Anfang und Ende direkt vergleichen lassen.
 
 **Das eigentliche Einrichten nicht hier nachbauen.** Die Schritte 7.1 bis 7.4 des `/setup`-Skills machen genau das (Werkzeuge installieren, die sechs Verbindungen durchgehen, Zugänge anlegen, Projekt-Repos anhängen). Von hier aus dorthin verweisen und sie ausführen, statt eine zweite, schlechtere Fassung zu schreiben.
 

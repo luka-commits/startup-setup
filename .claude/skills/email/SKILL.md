@@ -5,7 +5,7 @@ description: "Helps write business emails in the user's personal style, in Engli
 
 # Email Skill — Draft in the User's Personal Style
 
-> **Config:** first name / name / role / city for signature + closer come from `context/config.yaml` (`user.*`, `location.home_city`). `{FirstName}` below = `user.first_name`.
+> **Config:** first name / name / role for signature + closer come from `context/config.yaml` (`user.*`). `{FirstName}` below = `user.first_name`. No city — the workspace does not hold one.
 >
 > **Draft language — the one exception to the working language.** Everywhere else, output follows `config.yaml → language` (canonical rule: `CLAUDE.md` § Working language). Mail drafts do not: a draft follows **the language of the thread it answers** — reply to a German mail → German draft, reply to an English mail → English draft. Only when there is no thread to follow does it fall back to `config.yaml → language`.
 >
@@ -95,7 +95,7 @@ __
 {user.role}
 ```
 
-Optional line after the role: `{location.home_city}, Germany` (only on first contact with externals).
+Nothing after the role. No city, no address — the workspace deliberately does not hold a home location.
 
 ## Mail-Type Templates (Common Patterns)
 

@@ -362,7 +362,7 @@ function scheduledJobs() {
   // Auf einem fremden Ordner wurden geplante Jobs bewusst NICHT gelesen (sie beschreiben
   // die Maschine). Das gehoert gesagt statt als "0 Jobs" behauptet — nicht geprueft und
   // nicht vorhanden sind zwei verschiedene Dinge, so steht es oben im Kommentar.
-  dim('automation', 'Anbindung', 'Automatisierungsgrad',
+  dim('automation', 'Anbindung', 'Automatisierung',
     USAGE.available ? worst(findings) : 'unknown',
     `${inv.routines.length} Routinen, ${FOREIGN_ROOT ? 'geplante Jobs nicht geprueft (fremder Ordner)' : jobs.length + ' geplante Jobs'}, ${repeats.length} Wiederholungsmuster`,
     findings);
@@ -414,14 +414,30 @@ function scheduledJobs() {
       { files: hits }));
   }
 
-  // Was darf der Agent ohne Rückfrage?
-  const settings = read('.claude/settings.json') || read('.claude/settings.local.json');
-  const DANGER = /"Bash\((rm|sudo|curl[^"]*\|\s*(ba)?sh|git push --force|dd)\b/;
-  if (settings && DANGER.test(settings)) {
+  // Was darf der Agent ohne Rückfrage? NUR die allow-Liste zaehlt, und was in deny steht,
+  // ist geschuetzt, nicht gefaehrlich. Vorher durchsuchte die Regex den ganzen settings-Text
+  // inklusive deny-Block — `Bash(rm:*)` in deny (das dich SCHUETZT) loeste den Alarm aus, den
+  // es verhindert. Ein Befund ohne Beleg, ausgeloest von der Schutzregel. 23.07.
+  // Nur echte destruktive Binaries. Breite Wildcards wie Bash(python3:*) sind hier
+  // bewusst NICHT dabei — sie sind fuer den Workspace noetig, und jede zu melden waere
+  // das Rauschen, gegen das der ganze Audit gebaut ist.
+  const DANGER = /^Bash\((rm|sudo|dd|git push (--force|-f)|curl.*\|\s*(ba)?sh)/;
+  let allow = [], deny = [];
+  for (const f of ['.claude/settings.json', '.claude/settings.local.json']) {
+    try {
+      const p = JSON.parse(read(f) || '{}').permissions || {};
+      allow = allow.concat(p.allow || []);
+      deny = deny.concat(p.deny || []);
+    } catch { /* keine oder kaputte Datei */ }
+  }
+  const denySet = new Set(deny);
+  const risky = allow.filter((r) => DANGER.test(r) && !denySet.has(r));
+  if (risky.length) {
     findings.push(finding('security', 'medium', 0.8,
-      'Die Allowlist erlaubt destruktive Kommandos ohne Rückfrage',
-      'Ein Fehlgriff läuft dann ohne Bestaetigung durch.',
-      'Die betroffene Regel enger fassen oder streichen.'));
+      `${risky.length} Allow-Regel${risky.length === 1 ? '' : 'n'} lässt destruktive Kommandos ohne Rückfrage zu`,
+      'Ein Fehlgriff läuft dann ohne Bestätigung durch, und deny greift für genau diese Regel nicht.',
+      'Die betroffene Regel enger fassen, streichen oder eine deny-Regel dagegensetzen.',
+      { rules: risky }));
   }
   dim('security', 'Anbindung', 'Sicherheit', worst(findings),
     `${tracked.length} getrackte Dateien geprüft`, findings);
@@ -462,7 +478,12 @@ function scheduledJobs() {
       // genau eine Datei mit dem Namen, ist das gemeint und kein toter Verweis.
       if (!hit) hit = byBase.get(path.posix.basename(target));
       if (!hit) {
-        const looksLikePath = target.includes('/');
+        // Ein Befehl ist kein Verweis. `open context/today.html` und
+        // `cmd //c start "" context/today.html` stehen in der Doku als AUSFUEHRBARE Zeile,
+        // nicht als Link — wer sie als Pfad liest, meldet drei tote Verweise, die keine
+        // sind. Und ein Pruefwerkzeug, das dauerhaft falsch meckert, wird ignoriert:
+        // der Fehlalarm ist teurer als der Befund. Gefunden am 23.07. im eigenen Paket.
+        const looksLikePath = target.includes('/') && !/\s/.test(target);
         // Ein Journal beschreibt die Vergangenheit, ein Archiv ebenso. Dass dort Genanntes
         // heute nicht mehr existiert, ist der Normalfall und kein Befund.
         const isChronicle = /(JOURNAL|CHANGELOG|HISTORY)/i.test(path.basename(cur)) || ARCHIVE.test('/' + cur);
@@ -503,13 +524,28 @@ function scheduledJobs() {
       'Ziele prüfen, Verweise nachziehen.',
       { examples: dead.slice(0, 8) }));
   }
-  const brokenLinks = FILES.filter((f) => f.symlink && f.broken && !ARCHIVE.test('/' + f.rel));
-  if (brokenLinks.length) {
+  // Ein toter Symlink ist nicht gleich ein toter Symlink — die Schwere haengt am ORT.
+  // In .claude/skills/ ist es ein still totes Kommando (hoch). Anderswo ist es ein
+  // kaputter Verweis auf Material, eine fehlende Datei: aergerlich, aber nicht dringend.
+  // Vorher wurde alles als high/0.95 mit Skill-Begruendung gemeldet, auch fuenf fehlende
+  // Uni-PDFs — genau der Fehlbefund, gegen den dieses Script sonst gebaut ist. 23.07.
+  const allBroken = FILES.filter((f) => f.symlink && f.broken && !ARCHIVE.test('/' + f.rel));
+  const SKILL_LINK = /(^|\/)\.claude\/skills\//;
+  const deadSkills = allBroken.filter((f) => SKILL_LINK.test('/' + f.rel));
+  const deadOther = allBroken.filter((f) => !SKILL_LINK.test('/' + f.rel));
+  if (deadSkills.length) {
     findings.push(finding('reach', 'high', 0.95,
-      `${brokenLinks.length} tote Symlinks`,
-      'Ein toter Symlink meldet keinen Fehler, er tut einfach nichts. Bei einem Skill heißt das: das Kommando existiert scheinbar und passiert nie.',
+      `${deadSkills.length} tote Skill-Verknüpfungen`,
+      'Ein toter Symlink in .claude/skills/ meldet keinen Fehler, er tut einfach nichts: das Kommando existiert scheinbar und passiert nie.',
       'Ziel wiederherstellen oder den Link entfernen.',
-      { examples: brokenLinks.slice(0, 6).map((b) => b.rel) }));
+      { examples: deadSkills.slice(0, 6).map((b) => b.rel) }));
+  }
+  if (deadOther.length) {
+    findings.push(finding('reach', 'low', 0.8,
+      `${deadOther.length} kaputte Datei-Verweise`,
+      'Symlinks, die ins Leere zeigen — meist eine Quelldatei, die verschoben oder gelöscht wurde. Wird sie gebraucht, ist sie nicht da; ein Kommando bricht dadurch nicht.',
+      'Bei Gelegenheit prüfen: Datei wieder herbringen oder den toten Link entfernen.',
+      { examples: deadOther.slice(0, 6).map((b) => b.rel) }));
   }
   // Ohne Dokumente gibt es kein Erreichbarkeitsproblem. Vorher meldete ein Ordner ohne
   // jede Doku "0 von 0 Dokumenten erreichbar" als Handlungsbedarf — ein Alarm ueber eine
@@ -857,22 +893,91 @@ function renderFragment() {
   if (!data || !data.dimensions) {
     return '<div class="ivempty">Noch kein Audit gelaufen. Sag <code>/audit</code> im Chat, dann steht hier der Stand.</div>';
   }
+  // Elf gleich grosse Kacheln behandeln "alles in Ordnung" und "hier musst du ran"
+  // als gleich wichtig, und eine geoeffnete Kachel sprengt die Rasterordnung. Beides
+  // war derselbe Denkfehler: das hier sind Textbefunde, keine Zahlen zum Ueberfliegen.
+  // Jetzt eine Liste nach Dringlichkeit — und was in Ordnung ist, bekommt EINE ruhige
+  // Zeile statt fuenf Karten, weil es niemand einzeln lesen will. 23.07.
+  const esc2 = esc;
+  const samples = (f) => {
+    const s = f.evidence && f.evidence.samples;
+    if (!Array.isArray(s) || !s.length) return '';
+    // Roh-Signaturen sind der Beleg. "5 Handgriffe" ohne die Handgriffe ist die generische
+    // Aussage, die Luka zu Recht nicht will — hier stehen sie konkret, mit Zaehler.
+    return '<ul class="audsamples">' + s.map((x) =>
+      `<li><code>${esc2(String(x.pattern || x).slice(0, 78))}</code><span>${esc2(String(x.count || ''))}${x.count ? '×' : ''}</span></li>`
+    ).join('') + '</ul>';
+  };
+  const findingRows = (d) => d.findings.length
+    ? d.findings.map((f) => `<div class="audfind"><b>${esc2(f.what)}</b>`
+        + `<p>${esc2(f.why)}</p>${samples(f)}<p class="audfix">${esc2(f.fix)}</p></div>`).join('')
+    : `<div class="audfind"><p>${esc2(d.note || 'Nichts gefunden.')}</p></div>`;
+  const row = (d) => `<details class="audrow lvl-${esc2(d.level)}"><summary>`
+    + `<span class="audlvl">${d.level === 'act' ? 'handeln' : 'beobachten'}</span>`
+    + `<span class="audname">${esc2(d.label)}</span>`
+    + `<span class="audmetric">${esc2(d.metric)}</span>`
+    + `<span class="audcount">${d.findings.length}</span></summary>`
+    + `<div class="audbody">${findingRows(d)}</div></details>`;
   const cls = { ok: 'ok', watch: 'part', act: 'part', unknown: 'none' };
-  const tiles = data.dimensions.map((d) => {
+  // Die grosse Zahl war die ANZAHL DER BEFUNDE und las sich wie eine Note: "1 Sicherheit"
+  // sah schlechter aus als ein Haken, hiess aber nur "ein Befund". Jetzt fuehrt die Stufe,
+  // die Befundzahl steht als Abzeichen daneben. 23.07.
+  const lvl = { ok: 'in Ordnung', watch: 'beobachten', act: 'handeln', unknown: 'nicht messbar' };
+  // Handlungsbedarf zuerst, "nicht messbar" zuletzt. Eine alphabetische oder zufaellige
+  // Reihenfolge zwingt jeden dazu, elf Kacheln zu lesen, um die eine zu finden, die zaehlt.
+  const rank = { act: 0, watch: 1, ok: 2, unknown: 3 };
+  const tiles = [...data.dimensions].sort((a, b) => (rank[a.level] ?? 9) - (rank[b.level] ?? 9)).map((d) => {
     const body = d.findings.length
       ? d.findings.map((f) => `<div class="ivrow"><div class="ivname"><b>${esc(f.what)}</b>`
           + `<span class="inv-badge${f.severity === 'high' ? '' : ' xref'}">${esc(f.severity)}</span></div>`
           + `<p>${esc(f.why)}</p><p><b>${esc(f.fix)}</b></p></div>`).join('')
       : `<div class="ivempty">${esc(d.note || 'Nichts gefunden.')}</div>`;
     return `<details class="kpi ${cls[d.level] || 'none'}" id="aud-${esc(d.id)}"><summary>`
-      + `<span class="kpi-num">${d.findings.length || '✓'}</span>`
+      + `<span class="kpi-num">${d.level === 'ok' ? '✓' : d.level === 'unknown' ? '–' : d.findings.length}</span>`
       + `<span class="kpi-lab">${esc(d.label)}</span>`
-      + `<span class="kpi-sub">${esc(d.metric)}</span></summary>`
+      + `<span class="kpi-sub">${esc(lvl[d.level] || d.level)}${d.metric ? ' · ' + esc(d.metric) : ''}</span></summary>`
       + `<div class="kpi-body">${body}</div></details>`;
   }).join('');
+
+  // Der Gesamtstand als EINE Zahl, und zwar eine zaehlbare: wie viele der bewerteten
+  // Dimensionen stehen auf "in Ordnung". Keine erfundene Note, keine Gewichtung, die
+  // niemand nachrechnen kann — "nicht messbar" faellt aus dem Nenner, sonst wuerde ein
+  // fehlender Beleg wie ein Mangel aussehen.
+  const judged = data.dimensions.filter((d) => d.level !== 'unknown');
+  const good = judged.filter((d) => d.level === 'ok').length;
+  const act = judged.filter((d) => d.level === 'act').length;
+  const unknown = data.dimensions.length - judged.length;
+  const pct = judged.length ? Math.round((good / judged.length) * 100) : 0;
+  const scoreSub = `${good} von ${judged.length} bewerteten Dimensionen in Ordnung`
+    + (act ? `, ${act} mit Handlungsbedarf` : '')
+    + (unknown ? `, ${unknown} nicht messbar` : '');
+  const score = `<details class="kpi ${pct === 100 ? 'ok' : 'part'} wide" id="aud-score"><summary>`
+    + `<span class="kpi-num">${pct}%</span>`
+    + `<span class="kpi-lab">Gesamtstand</span>`
+    + `<span class="kpi-sub">${esc(scoreSub)}</span>`
+    + `<span class="kpi-bar" aria-hidden="true"><i style="width:${pct}%"></i></span></summary>`
+    + `<div class="kpi-body"><div class="ivempty">Die Zahl ist eine Auszählung, keine Note: wie viele Dimensionen auf „in Ordnung" stehen. Was zu tun ist, steht in den Kacheln darunter — die mit Handlungsbedarf zuerst.</div></div></details>`;
+
+  const byLevel = (lv) => data.dimensions.filter((d) => d.level === lv);
+  const acts = byLevel('act');
+  const watches = byLevel('watch');
+  const oks = byLevel('ok');
+  const unknowns = byLevel('unknown');
+
+  const group = (title, sub, rows) => rows.length
+    ? `<h4 class="audgrp">${esc(title)}<span>${esc(sub)}</span></h4><div class="audlist">${rows}</div>` : '';
+
+  const quiet = (title, dims, hint) => dims.length
+    ? `<div class="audquiet"><b>${esc(title)}</b> ${dims.map((d) => esc(d.label)).join(' · ')}`
+      + `<p>${esc(hint)}</p></div>` : '';
+
   const stamp = new Date(data.generatedAt).toLocaleDateString('de-DE');
   return `<p class="sec-sub">Stand ${esc(stamp)}, läuft nicht automatisch mit. Neuer Lauf: <code>/audit</code> im Chat.</p>`
-    + `<div class="kpigrid">${tiles}</div>`;
+    + `<div class="kpigrid">${score}</div>`
+    + group('Hier musst du ran', `${acts.length} von ${data.dimensions.length}`, acts.map(row).join(''))
+    + group('Im Auge behalten', `${watches.length} von ${data.dimensions.length}`, watches.map(row).join(''))
+    + quiet('In Ordnung:', oks, 'Nichts zu tun. Aufgeklappt stünde hier nur, dass alles passt.')
+    + quiet('Nicht messbar:', unknowns, 'Kein Beleg vorhanden — das ist eine Einschränkung des Audits, kein Mangel deines Ordners.');
 }
 
 // --- Selbstpruefung:  node reference/scripts/workspace-audit.js --selftest

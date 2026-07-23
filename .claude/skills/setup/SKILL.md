@@ -1,6 +1,6 @@
 ---
 name: setup
-description: "One-time first-run personalization of a freshly copied workspace. Runs AUTOMATICALLY on first start (the CLAUDE.md rule detects the unfilled context/config.yaml) — or manually via /setup, 'set this up for me', 'first-run setup', 'new user', 'richte das für mich ein', 'ersteinrichtung', 'neuer nutzer'. Asks first which language to work in (English or German), then in one go: name, email, role, location/office days, ALL running projects, the tools they work with every day, and their Claude plan. Asks first whether this is a fresh start or an existing folder to take over. Writes the answers into context/config.yaml (the single config source — skill files are never edited), fills the empty context/ templates, creates one folder per project, files any documents the user brought along, and on request derives their personal mail style from their own Sent Items. Archives itself afterwards. NOT for daily use — runs once."
+description: "One-time first-run personalization of a freshly copied workspace. Runs AUTOMATICALLY on first start (the CLAUDE.md rule detects the unfilled context/config.yaml) — or manually via /setup, 'set this up for me', 'first-run setup', 'new user', 'richte das für mich ein', 'ersteinrichtung', 'neuer nutzer'. Asks first which language to work in (English or German), then in one go: name, email, role, office/office days, ALL running projects, the tools they work with every day, and their Claude plan. Asks first whether this is a fresh start or an existing folder to take over. Writes the answers into context/config.yaml (the single config source — skill files are never edited), fills the empty context/ templates, creates one folder per project, files any documents the user brought along, and on request derives their personal mail style from their own Sent Items. Archives itself afterwards. NOT for daily use — runs once."
 ---
 
 # Setup Skill — One-Time Workspace Personalization
@@ -115,9 +115,11 @@ Never promise "2 minutes". Whoever starts with the wrong expectation quits in mi
 
 1. **Name + work email address**
 2. **Position/role + area** (e.g. "Consultant, PIPE" or "Project Leader, TMT")
-3. **Location:** home city, office abbreviation (e.g. "MUN", "FRA", "BER"), and which weekdays they typically go into the office (rest = remote by default)
+3. **Office:** the office abbreviation (e.g. "MUN", "FRA", "BER") and which weekdays they typically go in (rest = remote by default). **Never ask where they live** — a home city or address is private, the workspace has no use for it, and asking for it in an onboarding interview costs trust for nothing.
 4. **Running projects/workstreams — ALL of them:** per project the name, a one-sentence purpose, the key stakeholders, the current state/next milestone (as far as known). This is the most important question of the setup — the system is only as good as this initial state. Bullet points are enough, the details come out of the documents in Step 6.
 5. **Which tools do you work with every day, and what for each one?** Mailbox, calendar, where files live, where customer contact happens, what you bill with. Bullet points are enough: _"Outlook for mail, HubSpot for customers, WhatsApp for enquiries"_. **The "what for" is the point of the question**, not the list of names.
+
+   **Then one follow-up, always, and it is the valuable one:** _"And is there a system your work actually runs through every day that we haven't named — bookings, patients, projects, orders, stock?"_ People answer "mail and calendar" to the first question and forget the software their whole business sits on, because to them it is not a "tool", it is just the job. That system is usually the most valuable connection there is, and it never comes up on its own. Whatever comes back goes into `tools_in_use` with its purpose — **also when there is no way in.** A named gap can be closed later (the catalogue grows, see `reference/mcp.md`); an unnamed one never comes up again. Step 7.2 decides the route, not this question.
 6. **Which Claude plan do you have?** — Pro (€20), Max 5x (€100), Max 20x (€200), or Team/Enterprise through the company. One sentence on why that matters: _"It determines how generously I can work without your quota being empty by lunchtime."_
 
 **Why the tools are asked about this early:** Step 7.2 connects the systems, and it does that fifteen minutes later. Without this answer it has to ask abstractly, slot by slot, _"do you have a CRM?"_ — a question with no context, which people answer with "no" out of uncertainty far more often than it is actually true. With the answer in hand it stops asking and starts working: it knows the systems by name, checks what can be reached and how, and only comes back with the bits that need the user's hands. The list also goes into `config.yaml`, so `/checkup` and `/audit` never ask it again.
@@ -176,7 +178,7 @@ Fill every section of `context/config.yaml` from Step 0.5 + Step 1 + Step 2:
 
 - `language:` result from Step 0.5 (`en` or `de`) — controls everything the user sees from now on: briefings, dashboard text, mail drafts, entries written into `context/` files, chat.
 - `user:` name, first_name (from the name), email, role
-- `location:` home_city, office_abbreviation, office_room_patterns (the abbreviation plus "Office"), other_office_patterns (only if mentioned), office_days, timezone (default Europe/Berlin)
+- `location:` office_abbreviation, office_room_patterns (the abbreviation plus "Office"), other_office_patterns (only if mentioned), office_days, timezone (default Europe/Berlin)
 - `calendar:` `noise_subjects` stays empty (it fills up once the user notices calendar noise — mention it in the Step 8 summary)
 - `mail:` leave unchanged (`tag_processed: true`, `processed_categories: ["AI-Triaged"]`) — only touch it if the user rejects the category tag in their mailbox. On Mac feel free to leave `tag_processed` on `true` — `/morning` skips the tag there by itself.
 - `company_domains:` **derive it from the email address in Step 1** — enter the domain behind the `@`, e.g. `anna@examplecompany.com` → `["examplecompany.com"]`. NEVER leave the placeholder standing: the internal/external prioritization in the briefing depends on it. Only with private providers (gmail.com, web.de, outlook.com, gmx…) ask ONE short question instead: _"Do you have a company mail domain? Then I'll sort mail from colleagues and from outsiders differently."_ — no answer/no domain → `[]` (empty is honest, a placeholder is a silent error).
@@ -226,7 +228,7 @@ a → `sonnet`, b → `opus`, no answer → `sonnet`.
 
 These ship blank with placeholder tokens (`[YOUR NAME]`, `[YYYY-MM-DD]`):
 
-- **`context/PERSONAL.md`** — name, email, position, **area of expertise**, location from Step 1; leave the stakeholder table empty (it fills in as real projects/people show up).
+- **`context/PERSONAL.md`** — name, email, position, **area of expertise**, office + office days from Step 1 (no home location); leave the stakeholder table empty (it fills in as real projects/people show up).
 - **`context/PROJECTS.md`** — ONE block per project from Step 1 #4 (Purpose/Status/Phase/Stakeholder/Timeline/Blocker — gaps honestly as `[open]`, never invented). **No to-dos here** — those belong in STATUS.md. Stamp "Last updated". **Writing rules (the template shows the example):** short, concrete sentences in the user's language — purpose = one sentence on why the project exists, the way you'd say it to a colleague ("The client suspects money is sitting in their pricing — we're checking where and how much"), never abstractions without the concrete thing behind them ("potential identification"). Status = what happened last + what's coming next. These blocks later feed the project cards in the dashboard — form-speak here becomes form-speak there.
 - **`context/STATUS.md`** — this is where the first tasks land, but **not unasked and not all of them.** Two steps, no direct writing:
   1. **Filter yourself before you show anything.** From the answers, only what passes the Rule 4 intake filter comes along (CLAUDE.md): nothing under 15 minutes, no pure FYI chunks, no milestones/deadlines — **those belong as `Timeline:` in the project block in PROJECTS.md, not as a task** (a date is not work). What should be left: 1–3 real, concretely actionable next steps per project.
@@ -311,13 +313,30 @@ No Homebrew on the Mac? Then that first (`/bin/bash -c "$(curl -fsSL https://raw
 
 Only once both answer do the two CLIs and the plugins below make sense.
 
-**Then the seven plugins that belong to the setup**, the same way — non-interactive, no question. These are not optional and they are not a recommendation; they are equipment, exactly like the two CLIs above:
+### How things get installed here: announce, ask per group, then do it yourself
+
+**Three rules, and they hold for every install in this step.**
+
+**Nothing is installed silently.** Before anything lands on their machine, they hear what it is and what it does for them — in one sentence, in plain language, without the tool's name doing the explaining. Someone whose laptop quietly grows six new things has learned that this system does things behind their back, and that is the opposite of what it is for.
+
+**One question per group, not per tool.** Six questions in a row is a wall, and a wall gets answered with "yes, yes, yes" — which is not consent, it is surrender. So: the web-and-browser tools are ONE question, the working tool set is ONE question, memory across sessions is ONE question. Each with what it does and what it costs them (usually: nothing, a minute).
+
+**After a yes, you do it — all of it.** No list to work through, no "run this command", no dashboard for them to click through. The choice is theirs, the work is yours. That difference is the whole product: whoever hands the list back has given them exactly the job they were meant to be spared.
+
+A no is a complete answer, gets recorded in `inventory` with `status: false`, and is never renegotiated. It goes into the closing summary as one line under "not set up, available any time" — a no means "not now", never "you never learn this exists".
+
+**Prerequisites are the exception, and only they:** Node.js and the `claude` command line are not a choice, because without them a third of the package does not exist. Those get announced in one sentence and installed, not asked about.
+
+**Group: the working tool set (six plugins).** ONE question, roughly like this — then install all six:
+
+> *"There's a set of tools that make me noticeably better at the work you'll actually give me: building your own commands, reviewing code, keeping things simple instead of over-built, design feedback, and tidying up these rules once they grow. Costs nothing, takes a minute. Shall I set them up?"*
+
+On a yes:
 
 ```bash
 claude plugin marketplace add DietrichGebert/ponytail
 claude plugin marketplace add pbakaus/impeccable
 
-claude plugin install skill-creator@claude-plugins-official
 claude plugin install claude-code-setup@claude-plugins-official
 claude plugin install code-review@claude-plugins-official
 claude plugin install claude-md-management@claude-plugins-official
@@ -440,11 +459,11 @@ Ask **at most once** per project, and only where it's plausible. For a project c
 
    **First, the equipment balance — three columns, nothing left out.** This is what makes a complete run distinguishable from a run that quietly lost half its steps. Every item from Steps 7.1 to 7.4 appears in exactly one column:
 
-   > **Set up:** playwright, firecrawl, the 7 plugins, mailbox, calendar …
+   > **Set up:** playwright, firecrawl, the 6 plugins, mailbox, calendar …
    > **You said no:** claude-mem (remembers across sessions), test draft …
    > **Not possible right now:** Node.js missing, so no dashboard file — here is what would fix it …
 
-   Read the real state, do not write it from memory: `claude plugin list` for the plugins, `<name> --version` for the CLIs, `inventory.connectors` for the connections. **If a line cannot be filled because the step never ran, that is not a gap in the summary — it is a step you skipped, and you go back and do it now.**
+   Read the real state, do not write it from memory: `claude plugin list` for the plugins, `<name> --version` for the CLIs, `inventory.connectors` for the connections. **On plugins, only `Status: ✔ enabled` counts.** `claude plugin list` shows installed AND switched-off ones, and a disabled plugin does nothing while looking present. Measured on a real machine (23.07.): three of seven were silently off for weeks — the balance had shown seven ticks for four working plugins. Anything `✘ disabled` goes into the summary as such, with the line that fixes it: `claude plugin enable <name>@<marketplace>`. **If a line cannot be filled because the step never ran, that is not a gap in the summary — it is a step you skipped, and you go back and do it now.**
    - **`/email` style — this line is mandatory, in every outcome.** Derived → say so with the date. Declined, no history, or no mail connector → say that drafts use the package's example style for now, name the reason in half a sentence, and give the sentence that starts it later ("derive my mail style from my sent mail"). Never leave it out: an undiscovered gap here means weeks of drafts that don't sound like the user.
    - **Calendar noise:** put recurring private calendar blocks (gym, study slots, …) into `config.yaml → calendar.noise_subjects` so briefings ignore them.
    - **Dictate instead of typing (ONE sentence, friendly):** the system lives off being told things — dictating status updates is faster than typing. Windows: `Win + H` starts native dictation in any text field, including the Claude Code window. Mac: enable dictation under System Settings → Keyboard, after that pressing `Ctrl` twice starts the microphone.

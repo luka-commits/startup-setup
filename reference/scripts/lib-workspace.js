@@ -41,11 +41,34 @@ const installed = (name) => {
 
 // Locally registered MCP servers. Connectors wired up in Claude Cowork do NOT show up
 // here, they only live in config.yaml, so both sources are merged.
+// Gemessen am 23.07.: `claude mcp list` braucht 4,45 s, ALLE Datei-Leser dieser Datei
+// zusammen 0,15 s. Es ist die einzige teure Stelle, weil der Befehl jeden Server wirklich
+// anspricht. Deshalb wird nur SIE zwischengespeichert — alles andere bleibt live, damit
+// das Dashboard den Ausstattungs-Stand genauso frisch zeigt wie die Aufgaben. Frisch geholt
+// wird beim vollen Lauf (MCP_FRESH=1, gesetzt von /morning) oder wenn der Cache fehlt.
 function mcpServers() {
+  // root ist hier nicht in Reichweite (es ist Parameter der Fabrik weiter unten); die
+  // Aufrufer starten node mit cwd = Workspace-Wurzel, das genuegt.
+  const cache = path.join(process.cwd(), 'context', '.mcp_cache.json');
+  const fresh = process.env.MCP_FRESH === '1';
+  if (!fresh) {
+    try {
+      const d = JSON.parse(fs.readFileSync(cache, 'utf8'));
+      if (Array.isArray(d.servers)) return d.servers;
+    } catch { /* kein Cache: dann eben doch abfragen */ }
+  }
   let out;
   try {
     out = execSync('claude mcp list', { stdio: ['ignore', 'pipe', 'ignore'], timeout: 15000 }).toString();
   } catch (e) { out = (e && e.stdout ? e.stdout.toString() : ''); }
+  const parsed = parseMcp(out);
+  try {
+    fs.writeFileSync(cache, JSON.stringify({ at: new Date().toISOString(), servers: parsed }));
+  } catch { /* nicht schreibbar: dann laeuft es eben jedes Mal, nur langsamer */ }
+  return parsed;
+}
+
+function parseMcp(out) {
   // one line per server:  <name>: <command or url> - ✔ Connected | ! Needs authentication
   return out.split(/\r?\n/).reduce((acc, line) => {
     const colon = line.indexOf(': ');
@@ -198,7 +221,80 @@ function skills() {
 
 // Installed plugins, read from Claude Code's own registry instead of the config.
 
+// Routinen waren die letzte Kachel, die NUR aus der config.yaml gelesen wurde — und
+// stand deshalb auf 0, waehrend auf der Maschine der Dashboard-Waechter, ein
+// Morgen-Digest und ein Crontab-Eintrag liefen. Dieselbe Blindstelle wie bei den
+// Plugins: eine Liste, die von Hand gepflegt wird, veraltet still. Gefunden am 23.07.
+// Cloud-Routinen (claude.ai) sieht die Maschine nicht, die kommen weiter aus der
+// config und werden hier nur ergaenzt, nie ersetzt.
+function machineRoutines() {
+  const out = [];
+  const run = (cmd) => {
+    try {
+      return execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 }).toString();
+    } catch { return ''; }
+  };
+  if (process.platform === 'darwin' || process.platform === 'linux') {
+    for (const line of run('crontab -l').split(/\r?\n/)) {
+      const t = line.trim();
+      if (!t || t.startsWith('#')) continue;
+      const parts = t.split(/\s+/);
+      out.push({ name: parts.slice(5).join(' ').slice(0, 60) || t.slice(0, 60),
+                 purpose: `crontab, ${parts.slice(0, 5).join(' ')}`, status: true, machine: true });
+    }
+  }
+  if (process.platform === 'darwin') {
+    // Eine Schwarzliste gegen Zoom, Docker und jeden kuenftigen Updater zu pflegen ist
+    // aussichtslos. Es zaehlt nicht, WER den Job angelegt hat, sondern ob er DIESEN
+    // Workspace anfasst: nur Agents, deren plist auf den Ordner zeigt. Alles andere ist
+    // fremde Software auf derselben Maschine und gehoert nicht in die Ausstattung.
+    const dir = path.join(require('os').homedir(), 'Library', 'LaunchAgents');
+    let files = [];
+    try { files = fs.readdirSync(dir).filter((f) => f.endsWith('.plist')); } catch { files = []; }
+    for (const f of files) {
+      let body = '';
+      try { body = fs.readFileSync(path.join(dir, f), 'utf8'); } catch { continue; }
+      if (!body.includes(process.cwd())) continue;
+      const label = f.replace(/\.plist$/, '');
+      const every = body.match(/<key>StartInterval<\/key>\s*<integer>(\d+)/);
+      const cal = /StartCalendarInterval/.test(body);
+      const watch = /WatchPaths/.test(body);
+      const how = watch ? 'launchd, reagiert auf Datei-Aenderungen'
+        : cal ? 'launchd, nach Zeitplan'
+        : every ? `launchd, alle ${Math.round(Number(every[1]) / 60)} Minuten`
+        : 'launchd, laeuft im Hintergrund';
+      out.push({ name: label, purpose: how, status: true, machine: true });
+    }
+  }
+  if (process.platform === 'win32') {
+    for (const line of run('schtasks /query /fo csv /nh').split(/\r?\n/)) {
+      const m = line.match(/^"([^"]+)","([^"]*)","([^"]*)"/);
+      if (!m || /\\Microsoft\\/.test(m[1])) continue;
+      out.push({ name: m[1].replace(/^\\/, ''), purpose: `Aufgabenplanung, ${m[3]}`, status: /Bereit|Ready/i.test(m[3]), machine: true });
+    }
+  }
+  return out;
+}
+
+// Installiert und eingeschaltet sind zwei verschiedene Dinge, und die Registry kennt nur
+// das erste: installed_plugins.json listet jedes je installierte Plugin, der Ein/Aus-Zustand
+// steht in settings.json unter enabledPlugins (nur die aktiven, alle auf true). Ohne diese
+// Unterscheidung meldet das Dashboard 14 Plugins, von denen neun laufen — genau der stille
+// Fehler, gegen den der Rest dieser Datei gebaut ist. Gefunden am 23.07.
+function enabledPlugins() {
+  const home = require('os').homedir();
+  const out = new Set();
+  for (const f of ['settings.json', 'settings.local.json']) {
+    try {
+      const d = JSON.parse(fs.readFileSync(path.join(home, '.claude', f), 'utf8'));
+      for (const [k, v] of Object.entries(d.enabledPlugins || {})) if (v) out.add(k);
+    } catch { /* Datei fehlt oder ist kaputt: dann zaehlt sie eben nicht mit */ }
+  }
+  return out;
+}
+
 function plugins() {
+  const enabled = enabledPlugins();
   try {
     const reg = JSON.parse(fs.readFileSync(
       path.join(require('os').homedir(), '.claude', 'plugins', 'installed_plugins.json'), 'utf8'));
@@ -209,7 +305,7 @@ function plugins() {
       // eine Uebersetzungstabelle aus inventory.js, die es in dieser Bibliothek nie gab: die
       // Funktion warf, der catch schluckte es, und das Dashboard meldete 0 Plugins, waehrend
       // vierzehn installiert waren. Ein stiller Totalausfall, gefunden am 22.07.
-      return { name, market: market || '?', scope: i.scope || 'user', status: true };
+      return { name, market: market || '?', scope: i.scope || 'user', status: enabled.has(key) };
     }).sort((a, b) => a.name.localeCompare(b.name));
   } catch { return []; }
 }
@@ -308,7 +404,8 @@ function audit() {
 
   return { root, lang, esc, norm, firstSentence, installed, mcpServers, hasKey, prettyMcp,
     WORK_CLIS, BASE_CLIS, KNOWN_CLIS,
-    readInventory, skillDirs, skills, plugins, projectRepos, originUrl, lastCommit, fileHere };
+    readInventory, skillDirs, skills, plugins, machineRoutines, projectRepos, originUrl,
+    lastCommit, fileHere };
 };
 
 module.exports.esc = esc;

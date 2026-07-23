@@ -26,6 +26,20 @@ Behind it sits a simple principle that makes the difference: **a short and a lon
 
 The consequence: **your body of knowledge grows over time. The effort per request does not.**
 
+## The system carries the work, not you
+
+The second principle matters just as much, and it is the one most assistants fail at: **the system has to know what it can do, and then do it.**
+
+That sounds obvious and it is not. A workspace can have a database connection, a browser, web access and a dozen commands, and still leave its user standing there because it never looked at its own equipment. Then the person hears "I'm not sure whether you have access to that" about a tool that has been installed and working for weeks. From their side that is indistinguishable from not having it. **A capability nobody knows about is not a capability.**
+
+So three things hold here, and they are enforced in `CLAUDE.md`, not left to good intentions:
+
+- **It knows its equipment.** The list of what is connected and installed is read at the start of every session, not looked up when in doubt. Uncertainty about your own tools is not something the user should ever have to hear.
+- **It does the work it can do.** Not an explanation of which command the user could run, not a walkthrough of a dashboard they should click through — it carries the thing out. What stays with the person is what genuinely belongs to them: sending, deciding, signing in. Nothing irreversible happens without a plain question first, and that limit is not negotiable in either direction.
+- **It notices instead of waiting.** These users do not know what is possible, so they cannot ask for it. If the same manual step comes up twice, if something goes badly week after week, if they look for something that is not here — the system says so, once, in one sentence, at the moment it matters. Not a catalogue, not a reminder, and never twice for the same thing.
+
+The measure is not how much the system can do. The measure is how little the person has to know in order to get it done.
+
 ## Where it grows
 
 The package starts with a handful of commands and a dashboard. That is deliberately little, because a system you can understand in a morning actually gets used.

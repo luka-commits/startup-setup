@@ -10,11 +10,12 @@ The package also runs without either. But then everything that comes from the in
 
 | Tool | Included skills |
 |---|---|
-| firecrawl | `firecrawl` plus `firecrawl-scrape`, `-search`, `-crawl`, `-map`, `-download`, `-agent`, `-browser` |
+| firecrawl | `firecrawl` — one skill for all of it (search, scrape, map, crawl, agent, browser, download) |
 | playwright | `playwright-cli` |
 | OpenRouter | no skill of its own needed, the access is enough |
 | Supabase (only if you use databases) | `supabase`, `supabase-postgres-best-practices` |
 | Your own agents in the cloud | `managed-agents` (needs a paid API access on top of the subscription) |
+| Turning your own documents into something you can listen to or study | `notebooklm` (optional, see below) |
 
 Which task runs through which tool is in `CLAUDE.md` as a table under "Tool Routing". That is the part that makes sure the kit actually gets used day to day.
 
@@ -105,3 +106,20 @@ Both belong to the standard kit in this variant and are installed during the set
 ## Optional: gws (Google Workspace CLI)
 
 Only relevant on Google Workspace, and only as the **advanced route** — the normal route to mail and calendar is the Cowork connector (`reference/mcp.md`). `gws` adds the full API surface (write to Sheets, upload to Drive, scripted routines without a Cowork session) at the price of a one-time Google Cloud Console setup. Guide: [`reference/gws-cli.md`](gws-cli.md).
+
+## Optional: notebooklm (documents you listen to instead of read)
+
+**What it is for:** it turns your own material — a stack of PDFs, transcripts, notes on one subject — into something you can take in differently: an audio version two people talk through, a briefing, a study guide, an FAQ. The point is not summarizing. The point is that a folder of documents you never get around to reading becomes thirty minutes in the car.
+
+**Install (only when there is a concrete occasion, not on spec):**
+```bash
+pip install notebooklm-py
+notebooklm login    # opens the browser for a Google sign-in, the user does that themselves
+notebooklm list     # proves it worked
+```
+
+On Windows plain `python`/`pip` is often the Store stub — use `uv run python -m pip install notebooklm-py` there.
+
+**Two things belong said before someone starts:** it needs a Google account and a browser sign-in, and it talks to NotebookLM through an interface Google does not officially publish. It works well and it can break when Google changes something. That is a fair trade for what it does, but it is not the kind of tool you build a weekly routine on without a fallback.
+
+**The manual is in the package:** skill `notebooklm`, nothing to look up.

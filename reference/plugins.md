@@ -12,9 +12,9 @@ For the two recommended command-line tools (firecrawl, playwright) see [`tools.m
 
 **Enabled during setup** (SETUP.md step 3): `/plugin marketplace add anthropics/claude-plugins-official` — that only makes the catalogue known, installing happens one by one and only on your yes. In everyday use: if Claude notices during a task that a plugin from the catalogue would concretely help, it recommends it in one sentence with the install command — never install unasked, never nag repeatedly.
 
-A curated, reviewed directory from Anthropic itself — the first place to look before installing a plugin from a foreign source. But: most of it is developer tooling (code review, commits, debugging) and irrelevant for this workspace. **Two of them count for you:**
+A curated, reviewed directory from Anthropic itself — the first place to look before installing a plugin from a foreign source. But: most of it is developer tooling (code review, commits, debugging) and irrelevant for this workspace. **Two things count for you here — one of which you already have:**
 
-- **`skill-creator`** — builds new skills and improves existing ones. This is the tool behind the promise from `VISION.md`: you describe what you do every week and get your own command for it (procedure: `reference/extending-the-system.md`). Install: `/plugin install skill-creator@claude-plugins-official`
+- **`skill-creator` is already in the package as a skill, not as a plugin** — it builds new skills and improves existing ones, the tool behind the promise from `VISION.md`: you describe what you do every week and get your own command for it (procedure: `reference/extending-the-system.md`). Deliberately bundled rather than installed: building your own commands is a core promise, and a core promise must not depend on a marketplace being reachable. Do not install the plugin of the same name on top — that gives you the same skill twice under one name.
 - **`claude-md-management`** — audits the CLAUDE.md once the workspace has grown over months and the rules start sprawling. Install only when needed.
 
 Everything else from the marketplace only on a concrete occasion: every plugin applies to the whole machine, brings its own commands and reads along in every session — three installed plugins that nobody uses make `/help` cluttered and every answer a little more expensive.
@@ -35,7 +35,7 @@ The short overview Claude recommends from in everyday use (installing happens on
 
 | You want to … | Tool | When |
 |---|---|---|
-| Turn recurring procedures into your own commands | `skill-creator` (official catalogue) | As soon as the first procedure ran the same way twice |
+| Turn recurring procedures into your own commands | `skill-creator` (already bundled, nothing to install) | As soon as the first procedure ran the same way twice |
 | Find out what is worth automating for YOU | `claude-code-setup` (official catalogue) — analyses your usage so far and suggests automations | After 2–4 weeks of use; before that there are no patterns to read |
 | Have your own code reviewed | Install nothing: `/code-review` and `/security-review` are **built into** Claude Code | Right away, if you have code in the workspace |
 | Create and improve designs / interfaces | `impeccable` (below) | Only for serious frontend work |

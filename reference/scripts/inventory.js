@@ -29,6 +29,8 @@ const T = {
     skills: 'Skills', connections: 'MCP', tools: 'CLI', repos: 'Repos',
     plugins: 'Plugins', routines: 'Routines', keys: 'API-Keys',
     notConnected: 'not connected', notInstalled: 'not installed', noKey: 'no key stored',
+    switchedOff: 'switched off',
+    skillsFor: (n) => `${n} skill${n === 1 ? '' : 's'} for it`, noSkill: 'no manual',
     mcp: 'MCP server, registered on this machine',
     pluginFrom: (m, sc) => `Plugin from ${m}, installed for ${sc === 'project' ? 'one project' : 'you'}`,
     projectRepo: 'Repo of a project in this workspace',
@@ -88,6 +90,8 @@ const T = {
     skills: 'Skills', connections: 'MCP', tools: 'CLI', repos: 'Repos',
     plugins: 'Plugins', routines: 'Routinen', keys: 'API-Keys',
     notConnected: 'nicht verbunden', notInstalled: 'nicht installiert', noKey: 'kein Key hinterlegt',
+    switchedOff: 'abgeschaltet',
+    skillsFor: (n) => `${n} Skill${n === 1 ? '' : 's'} dafür`, noSkill: 'keine Anleitung',
     mcp: 'MCP-Server, auf dieser Maschine registriert',
     pluginFrom: (m, sc) => `Plugin aus ${m}, installiert fuer ${sc === 'project' ? 'ein Projekt' : 'dich'}`,
     projectRepo: 'Repo eines Projekts in diesem Workspace',
@@ -147,7 +151,7 @@ const T = {
 
 // ---------- shared readers ----------
 const L = require('./lib-workspace.js')(root);
-const { readInventory, skillDirs, skills, plugins, projectRepos, originUrl, lastCommit,
+const { readInventory, skillDirs, skills, plugins, machineRoutines, projectRepos, originUrl, lastCommit,
         firstSentence, installed, mcpServers, hasKey, prettyMcp,
         WORK_CLIS, BASE_CLIS, KNOWN_CLIS } = L;
 
@@ -196,7 +200,11 @@ function audit() {
   const findings = [];
 
   // dead reference: the routing table names a skill or CLI that is not here
-  const have = new Set([...skills().map((x) => x.name), ...KNOWN_CLIS.filter(installed)]);
+  // Plugin-Namen gehoeren dazu: die Routing-Tabelle nennt sie wie Skills (`| Signal | `ponytail` |`),
+  // aber ein Plugin bringt seine Skills unter eigenem Namensraum mit. Ohne diese Zeile meldet
+  // der Audit jedes geroutete Plugin als toten Verweis. Gefunden am 23.07.
+  const have = new Set([...skills().map((x) => x.name), ...KNOWN_CLIS.filter(installed),
+                        ...plugins().filter((p) => p.status).map((p) => p.name)]);
   const named = new Set();
   for (const m of md.matchAll(/skills?\s+`([\w-]+)`/g)) named.add(m[1]);
   for (const m of md.matchAll(/^\|\s*[^|]+\|\s*`([\w-]+)`/gm)) named.add(m[1]);
@@ -241,13 +249,16 @@ const backedUp = origin ? lastCommit() : '';
 // One pager: seven KPI tiles, closed. Each tile says at a glance how much of that category
 // is actually active; clicking it opens the detail list. Nothing scrolls until you ask for it.
 
+// Ausstattung als Liste mit Aufklapp-Zeilen (Luka, 23.07.): eine geoeffnete Kachel im
+// Raster sprang auf volle Breite und verschob die Nachbarn. Als Zeile klappt sie an Ort
+// auf, nichts springt. Layout: Icon · Zahl · Label · Stand rechts · Pfeil.
 function kpi(id, icon, num, label, sub, state, body) {
-  return `<details class="kpi ${state}" id="kpi-${id}"><summary>`
-    + `<span class="kpi-ico"><svg><use href="#${icon}"/></svg></span>`
-    + `<span class="kpi-num">${esc(num)}</span>`
-    + `<span class="kpi-lab">${esc(label)}</span>`
-    + `<span class="kpi-sub">${esc(sub)}</span></summary>`
-    + `<div class="kpi-body">${body}</div></details>`;
+  return `<details class="invrow ${state}" id="kpi-${id}"><summary>`
+    + `<span class="invrow-ico"><svg><use href="#${icon}"/></svg></span>`
+    + `<span class="invrow-num">${esc(num)}</span>`
+    + `<span class="invrow-lab">${esc(label)}</span>`
+    + `<span class="invrow-sub">${esc(sub)}</span></summary>`
+    + `<div class="invrow-body">${body}</div></details>`;
 }
 
 const state = (n, all) => (all === 0 ? 'none' : n === all ? 'ok' : 'part');
@@ -306,16 +317,39 @@ const allRepos = [...repos, ...projectRepos().filter((r) => !repos.some((x) => x
   .map((r) => ({ ...r, purpose: T.projectRepo }))];
 const machinePlugins = plugins();
 const pluginList = machinePlugins.length
-  ? machinePlugins.map((p) => ({ name: p.name, status: true, purpose: T.pluginFrom(p.market, p.scope) }))
+  ? machinePlugins.map((p) => ({ name: p.name, status: p.status, purpose: T.pluginFrom(p.market, p.scope) }))
   : inv.plugins.map((x) => ({ name: x.name, status: x.status === true, purpose: x.purpose }));
-const pluginNames = new Set(machinePlugins.map((p) => norm0(p.name)));
+// nur die eingeschalteten zaehlen — ein abgeschaltetes Plugin erfuellt keinen Setup-Schritt
+const pluginNames = new Set(machinePlugins.filter((p) => p.status).map((p) => norm0(p.name)));
+// Cloud-Routinen (claude.ai) sieht die Maschine nicht, die stehen in der config.
+// Lokale Jobs (launchd, crontab, Aufgabenplanung) sieht nur die Maschine. Erst beides
+// zusammen ist der ehrliche Stand — vorher meldete die Kachel 0, waehrend drei liefen.
+const routineList = [
+  ...inv.routines,
+  ...machineRoutines().filter((m) => !inv.routines.some((r) => norm0(r.name) === norm0(m.name))),
+];
 const keyList = inv.accounts.map((a) => ({ ...a, on: hasKey(a.key_env) || a.status === true }));
+
+// Ein CLI ohne Bedienungsanleitung wird geraten statt benutzt: Claude kennt den Befehl,
+// aber nicht seine Unterbefehle, und faellt auf --help oder aufs Erfinden zurueck. Die
+// Zeile sagt deshalb, wie viele Skills zu diesem Werkzeug gehoeren — firecrawl hat einen,
+// gws sieben, und wo null steht, fehlt die Anleitung.
+const skillsPerCli = new Map();   // gefuellt weiter unten, sobald norm() existiert
 // firecrawl is a CLI, an API key and a family of skills. Technically three things, but for
 // the reader it is ONE service — so each entry points at its siblings instead of pretending
 // to be an unrelated fourth item.
 const norm = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const keyNames = new Set(keyList.filter((a) => a.on).map((a) => norm(a.name)));
 const cliNames = new Set(cliList.filter((c) => c.on).map((c) => norm(c.name)));
+
+for (const c of cliList) {
+  const cn = norm(c.name);
+  const n = skillList.filter((s) => {
+    const sn = norm(s.name);
+    return sn === cn || sn.startsWith(cn);
+  }).length;
+  if (n) skillsPerCli.set(cn, n);
+}
 const skillsPerPlugin = new Map(groups
   .filter(([scope]) => scope.startsWith('plugin:'))
   .map(([scope, items]) => [norm(scope.replace(/^plugin:/, '')), items.length]));
@@ -356,6 +390,18 @@ const slotFilled = (re, clis) =>
   connectors.some((c) => c.status === true && !c.machine && (re.test(c.name) || re.test(c.purpose || '')))
   || clis.some((x) => cliNames.has(norm(x)));
 
+// "CRM: erreichbar" beantwortet die falsche Frage. Wer hinschaut, will wissen WELCHE
+// Verbindung den Platz fuellt — HubSpot oder GoHighLevel ist ein Unterschied, und ohne
+// den Namen kann niemand pruefen, ob da das Richtige haengt. Gibt die konkreten Namen
+// zurueck, die diesen Schritt erfuellen.
+const slotWho = (re, clis) => {
+  const names = connectors
+    .filter((c) => c.status === true && !c.machine && (re.test(c.name) || re.test(c.purpose || '')))
+    .map((c) => c.name);
+  for (const x of clis) if (cliNames.has(norm(x))) names.push(x);
+  return [...new Set(names)].join(', ');
+};
+
 // Kommt die Abdeckung NUR ueber ein installiertes CLI, ist das ein schwaecherer Beleg:
 // ein Binary auf der Platte heisst nicht, dass es angemeldet ist. Der Schritt gilt als
 // erledigt, sagt aber dazu, worauf er sich stuetzt.
@@ -387,8 +433,10 @@ const missingPlugins = SETUP_PLUGINS.filter((n) => !pluginNames.has(norm0(n)));
 const SETUP_STEPS = [
   { req: true,  ok: configClean(),                                        lab: T.stConfig },
   { req: true,  ok: slotFilled(/mail|gmail|outlook|365/i, ['gws']),       lab: T.stMail,
+    who: slotWho(/mail|gmail|outlook|365/i, ['gws']),
     via: cliOnly(/mail|gmail|outlook|365/i, ['gws']) ? 'gws' : null },
   { req: true,  ok: slotFilled(/calendar|kalender|365/i, ['gws']),        lab: T.stCal,
+    who: slotWho(/calendar|kalender|365/i, ['gws']),
     via: cliOnly(/calendar|kalender|365/i, ['gws']) ? 'gws' : null },
   { req: true,  ok: cliNames.has(norm('firecrawl')) && keyNames.has(norm('firecrawl')), lab: T.stFirecrawl },
   { req: true,  ok: cliNames.has(norm('playwright')),                     lab: T.stPlaywright },
@@ -397,11 +445,15 @@ const SETUP_STEPS = [
   { req: true,  ok: installed('node'),                                    lab: T.stDashboard },
   { req: true,  ok: missingPlugins.length === 0,                          lab: T.stPlugins,
     note: missingPlugins.join(', ') },
-  { req: false, ok: slotFilled(/drive|sharepoint|storage|ablage/i, ['gws']), lab: T.stStore },
-  { req: false, ok: slotFilled(/slack|teams|chat/i, []),                  lab: T.stChat },
-  { req: false, ok: slotFilled(/hubspot|salesforce|crm|pipedrive/i, []),  lab: T.stCrm },
-  { req: false, ok: slotFilled(/github|supabase|vercel/i, ['gh', 'supabase', 'vercel']), lab: T.stDev },
-  { req: false, ok: inv.routines.length > 0,                              lab: T.stRoutine },
+  { req: false, ok: slotFilled(/drive|sharepoint|storage|ablage/i, ['gws']), lab: T.stStore,
+    who: slotWho(/drive|sharepoint|storage|ablage/i, ['gws']) },
+  { req: false, ok: slotFilled(/slack|teams|chat/i, []),                  lab: T.stChat,
+    who: slotWho(/slack|teams|chat/i, []) },
+  { req: false, ok: slotFilled(/hubspot|salesforce|crm|pipedrive|gohighlevel|ghl/i, []), lab: T.stCrm,
+    who: slotWho(/hubspot|salesforce|crm|pipedrive|gohighlevel|ghl/i, []) },
+  { req: false, ok: slotFilled(/github|supabase|vercel/i, ['gh', 'supabase', 'vercel']), lab: T.stDev,
+    who: slotWho(/github|supabase|vercel/i, ['gh', 'supabase', 'vercel']) },
+  { req: false, ok: routineList.length > 0,                               lab: T.stRoutine },
 ];
 
 const reqSteps = SETUP_STEPS.filter((x) => x.req);
@@ -413,7 +465,8 @@ const stepRow = (x) => `<div class="ivrow ivstep${x.ok ? ' done' : ''}">`
   + `<div class="ivname"><span class="ivtick" aria-hidden="true">${x.ok ? '✓' : '○'}</span>`
   + `<b>${esc(x.lab.t)}</b>`
   + (x.req ? '' : `<span class="inv-badge xref">${esc(T.optional)}</span>`) + `</div>`
-  + `<p>${esc((x.ok ? x.lab.done : x.lab.open).replace('{n}', x.note || ''))}${x.ok && x.via ? ' (' + T.coveredVia(x.via) + ')' : ''}</p></div>`;
+  + `<p>${x.ok && x.who ? '<b>' + esc(x.who) + '</b> — ' : ''}`
+  + `${esc((x.ok ? x.lab.done : x.lab.open).replace('{n}', x.note || ''))}${x.ok && x.via ? ' (' + T.coveredVia(x.via) + ')' : ''}</p></div>`;
 
 const setupTile = `<details class="kpi ${pct === 100 ? 'ok' : 'part'} wide" id="kpi-setup"><summary>`
   + `<span class="kpi-ico"><svg><use href="#i-open"/></svg></span>`
@@ -435,6 +488,8 @@ const out = [
   `<div id="inv-i18n" data-filter="${esc(T.filter)}" data-copied="${esc(T.copied)}" hidden></div>`,
   `<div class="kpigrid">`,
   setupTile,
+  `</div>`,
+  `<div class="invlist">`,
 
   kpi('skills', 'i-cmd', skillList.length, T.skills, T.fromSources(groups.length),
     skillList.length ? 'ok' : 'none',
@@ -454,9 +509,14 @@ const out = [
   kpi('cli', 'i-cli', cliList.filter((c) => c.on).length, T.tools, T.subCli,
     state(cliOn, cliList.length),
     cliList.length
-      ? cliList.map((c) => itemRow(c.name, c.purpose,
-          c.on ? (keyNames.has(norm(c.name)) ? T.xrefKey : '') : T.notInstalled,
-          '', c.on)).join('')
+      ? cliList.map((c) => {
+          if (!c.on) return itemRow(c.name, c.purpose, T.notInstalled, '', false);
+          const bits = [];
+          if (keyNames.has(norm(c.name))) bits.push(T.xrefKey);
+          bits.push(skillsPerCli.has(norm(c.name))
+            ? T.skillsFor(skillsPerCli.get(norm(c.name))) : T.noSkill);
+          return itemRow(c.name, c.purpose, bits.join(' · '), '', true);
+        }).join('')
         + (baseList.length
             ? `<div class="ivrow ivbase"><div class="ivname">${esc(T.baseLab)}</div>`
               + `<p>${esc(baseList.map((c) => c.name).join(', '))}</p></div>` : '')
@@ -469,19 +529,25 @@ const out = [
           i === 0 && backedUp ? T.backedUp(backedUp) : '', r.url)).join('')
       : emptyRow(T.hRepos)),
 
-  kpi('plugins', 'i-puzzle', pluginList.length, T.plugins, T.installedLab,
+  // Die Zahl ist der EINGESCHALTETE Stand, nicht der installierte. Ein abgeschaltetes
+  // Plugin ist weiter gelistet und tut nichts; "14 installiert" waere deshalb eine Zahl,
+  // die beruhigt statt zu informieren. Gefunden am 23.07.: 14 gemeldet, 9 liefen.
+  kpi('plugins', 'i-puzzle', plugOn, T.plugins, T.active(plugOn, pluginList.length),
     state(plugOn, pluginList.length),
     pluginList.length
+      // Der Aus-Zustand schlaegt jeden anderen Hinweis. Vorher gewann das
+      // Skill-Abzeichen, wenn ein Plugin Skills mitbringt — ausgerechnet bei den
+      // groessten Plugins blieb "abgeschaltet" damit unsichtbar. 23.07.
       ? pluginList.map((x) => itemRow(x.name, x.purpose,
-          skillsPerPlugin.has(norm(x.name)) ? T.xrefSkills(skillsPerPlugin.get(norm(x.name)))
-            : (x.status === true ? '' : T.notInstalled),
-          '', skillsPerPlugin.has(norm(x.name)))).join('')
+          x.status !== true ? T.switchedOff
+            : (skillsPerPlugin.has(norm(x.name)) ? T.xrefSkills(skillsPerPlugin.get(norm(x.name))) : ''),
+          '', x.status === true && skillsPerPlugin.has(norm(x.name)))).join('')
       : emptyRow(T.hPlugins)),
 
-  kpi('routines', 'i-clock', inv.routines.length, T.routines, inv.routines.length ? T.scheduled : T.subNone,
-    inv.routines.length ? 'ok' : 'none',
-    inv.routines.length
-      ? inv.routines.map((r) => {
+  kpi('routines', 'i-clock', routineList.length, T.routines, routineList.length ? T.scheduled : T.subNone,
+    routineList.length ? 'ok' : 'none',
+    routineList.length
+      ? routineList.map((r) => {
           const age = routineAge(r.name);
           return itemRow(r.name, r.purpose, age ? (age.days > 2 ? T.mayNotRun : age.label) : '', r.schedule);
         }).join('')

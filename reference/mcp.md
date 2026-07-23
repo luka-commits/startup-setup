@@ -52,6 +52,10 @@ The order, and it matters:
 
 **One rule holds throughout:** a route is only offered once it has been checked that it exists. Not "there is bound to be an MCP server for that". Looked it up, or not offered.
 
+**And checking means actually looking, not remembering.** For anything beyond the household names — an industry system, a practice or property management tool, a CRM nobody outside the trade has heard of — the model's memory is the wrong source: these tools ship connectors quietly and the knowledge is stale within months. So search for it (`firecrawl search "<product> MCP server"`, plus the vendor's own docs and integrations page) and read what you find before you say a word to the user. Three outcomes, and each one gets said plainly: there is an MCP server (then set it up, they only fetch the token), there is an API but no MCP server (then say what that would mean — a piece of work, not a five-minute step), or there is genuinely nothing (then that system stays manual, and that is an honest answer, not a failure).
+
+**Ask about the industry system, do not wait for it to come up.** The six slots cover what everyone has; what actually runs a business is often the seventh thing — the practice software, the booking system, the ERP, the tool the whole team lives in. It rarely gets mentioned when someone is asked about "mail and calendar", and it is usually the most valuable connection of all. So it gets its own question, once, in their language: *"Is there a system your work runs through every day that we haven't talked about — bookings, patients, projects, orders?"* Whatever comes back goes into `tools_in_use` with its purpose, even when no route exists — a named gap can be closed later, an unnamed one never comes up again.
+
 ## Which connectors this package uses
 
 ### Mail

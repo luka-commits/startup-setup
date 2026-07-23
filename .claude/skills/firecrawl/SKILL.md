@@ -54,7 +54,7 @@ Follow this escalation pattern:
 | Interact with a page        | `browser`  | Content requires clicks, form fills, pagination, or login |
 | Download a site to files    | `download` | Save an entire site as local files                        |
 
-For detailed command reference, use the individual skill for each command (e.g., `firecrawl-search`, `firecrawl-browser`) or run `firecrawl <command> --help`.
+For the detailed reference of a command, run `firecrawl <command> --help` — that is the authoritative source and always matches the installed version.
 
 **Scrape vs browser:**
 

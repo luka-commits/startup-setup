@@ -15,6 +15,7 @@ _tmp/*
 !_tmp/README.md
 context/.backup/
 context/.mail_cache.json
+context/.mcp_cache.json
 context/.triage_ledger.json
 context/today.html
 # /audit writes this — it is a result about ONE machine and must never

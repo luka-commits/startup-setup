@@ -7,7 +7,7 @@ description: "Daily briefing and mail triage — the start of the day. Use whene
 
 ## ⚙️ Config
 
-**Person-specific values come from `context/config.yaml`** (always read it first): `user.email` (→ `user_email`), `user.name`, `user.first_name`, `location.*` (→ `home_city`, `office_abbreviation`, `office_room_patterns`, `other_office_patterns`, `office_days`, `timezone`), `calendar.noise_subjects`, `mail.tag_processed` + `mail.processed_categories`, `company_domains`, `workspace_root`. `language` controls the language of everything the user sees (see "Output language" below).
+**Person-specific values come from `context/config.yaml`** (always read it first): `user.email` (→ `user_email`), `user.name`, `user.first_name`, `location.*` (→ `office_abbreviation`, `office_room_patterns`, `other_office_patterns`, `office_days`, `timezone`), `calendar.noise_subjects`, `mail.tag_processed` + `mail.processed_categories`, `company_domains`, `workspace_root`. `language` controls the language of everything the user sees (see "Output language" below).
 
 **Behavior tuning** (system, not person — lives here):
 

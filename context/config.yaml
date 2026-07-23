@@ -16,7 +16,8 @@ user:
   role: "[Position/Role, Area]"    # e.g. "Head of Sales"
 
 location:
-  home_city: "[City]"              # e.g. "Munich"
+  # Work location only — the office, not where you live. Drives the calendar's
+  # office/remote detection, nothing else. Never ask for a home address.
   office_abbreviation: "[ABBR]"    # e.g. "MUN", "FRA", "BER"
   office_room_patterns: ["Office"] # room/location patterns in the calendar, e.g. ["MUN", "L21", "Office"]
   other_office_patterns: []        # further locations, e.g. [{prefix: "FRA", city: "Frankfurt"}]

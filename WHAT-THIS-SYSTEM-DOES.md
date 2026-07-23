@@ -34,7 +34,7 @@ Concretely that means: **if your Claude Code use is fine, this package changes n
 - **Never send mails.** It writes drafts that sit in your mail program. You always press "send" yourself.
 - **Never create, change or cancel appointments.** The calendar is read only.
 - **Never touch files that have nothing to do with this folder.** Writing happens in four places: into this folder, into your **drafts folder in the mail program** (the draft you check), as a **tag on mails gone through** (see the table above, can be switched off), and for the draft mechanism itself into the subfolder **`_tmp/`** — that is where Claude puts the short script that opens the draft in the mail program. Always the same file name, overwritten with every draft: never more than one such script is left lying around. Anything beyond that Claude asks about first.
-- **Never delete files.** "Gone" here always means "moved to the archive".
+- **Nothing of yours is deleted behind your back.** "Gone" means moved to the archive, and you can always go back. If you genuinely want something deleted, you say so and get asked once with the consequence spelled out. Only its own leftovers (temporary scripts, failed attempts) does the system tidy away by itself.
 - **Never upload data to outside services.** No export, no database of its own, no service run by the package author. The ONE exception, which you set up yourself: at the end of the day the system backs up the state of this folder into **your own private GitHub repo** — created during the setup, under your account, your access, switchable off at any time (remove the repo connection). Nowhere else.
 - **Never look into your mailbox unasked.** Without your yes in this session, nothing happens there.
 

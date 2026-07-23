@@ -56,7 +56,12 @@ Aus den Befunden **das Setup entwerfen, das dieser Ordner haben sollte**. Drei S
 
 Je Vorschlag: was er löst, was er kostet, was man sich einhandelt. **Nie eine Einzelempfehlung** — zwei bis drei Wege nebeneinander, einer markiert mit Begründung. Format: `references/report.md`.
 
-**Nicht selbst ausdenken, was es schon gibt.** Für die Frage „welche Claude-Automatisierung passt zu dieser Codebasis" existiert der Skill `claude-automation-recommender` (aus dem Plugin `claude-code-setup`). Der kennt den vollständigen Katalog — Hooks, Subagenten, Skills, Plugins, MCP-Server — und leitet aus Codebase-Mustern ab, was sich lohnt. Ihn aufrufen und sein Ergebnis übernehmen, statt eine eigene, schmalere Liste zu erfinden.
+**Nicht selbst ausdenken, was es schon gibt.** Für die Frage „welche Claude-Automatisierung passt hierher" existiert der Skill `claude-automation-recommender` (aus dem Plugin `claude-code-setup`). Der kennt den vollständigen Katalog — Hooks, Subagenten, Skills, Plugins, MCP-Server. Ihn aufrufen und sein Ergebnis übernehmen, statt eine eigene, schmalere Liste zu erfinden. Ist er nicht installiert (`claude plugin list`), sag das in einem Halbsatz und leite selbst ab — dann fehlt nur der Katalog, nicht das Urteil.
+
+**Reichweite zuerst klären, das ist der Haken:** der Recommender ist für EINE Codebasis gebaut, ein Workspace hat oft viele Repos. Deshalb vor dem Aufruf entscheiden, worauf er zielt:
+- **Workspace-weite Automatisierung** (Hooks, die für alle Arbeit greifen; eigene Kommandos; Routinen) → auf die Workspace-Wurzel ansetzen. Das ist der Normalfall für dieses Paket, denn hier entstehen die wiederkehrenden Handgriffe aus den Session-Logs.
+- **Code-Automatisierung für ein bestimmtes Projekt** (Test-Hooks, API-Doku, Migrations-Skills) → auf `projects/<slug>/code/` ansetzen, nicht auf die Wurzel. Ein Vorschlag für „diese React-App" ist wertlos, wenn er über zwanzig gemischte Repos gemittelt wird.
+- **Unklar, welches Repo gemeint ist** → eine kurze Frage, nicht raten. „Für den ganzen Workspace, oder ein bestimmtes Projekt?" kostet einen Satz und verhindert einen Report, der auf nichts zielt.
 
 **Was er nicht hat, haben wir:** er liest nur die Codebasis, nicht die Session-Logs. Die Wiederholungsmuster aus `audit.json` (`dimensions[automation].findings[].evidence.samples`) sind der Beleg, den seine Vorschläge nicht liefern können — „diesen Ablauf hast du 40-mal getippt" schlägt jede Katalog-Empfehlung. Beides zusammenführen: sein Katalog, unsere Belege.
 
