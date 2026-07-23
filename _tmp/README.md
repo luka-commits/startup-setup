@@ -1,5 +1,6 @@
-# _tmp — flüchtige Laufzeit-Dateien
+# _tmp
 
-Hier legt Claude die kurzen Skripte ab, mit denen es Outlook-Entwürfe öffnet oder das Dashboard baut. Immer dieselben Dateinamen — jeder Lauf überschreibt, es bleibt nie mehr als ein Skript pro Zweck liegen.
-
-**Hier gehört nichts von dir rein, und hier bleibt nichts Dauerhaftes.** Projektmaterial lebt in `projects/`, eigene Werkzeuge und Vorlagen in `reference/scripts/`.
+Ephemeral. Scripts and intermediate files that a run produces and the next run overwrites.
+Fixed file names on purpose, so nothing piles up here. Nothing in this folder is ever
+backed up, and nothing here is worth keeping: what matters goes to `context/`,
+`projects/` or `reference/`.

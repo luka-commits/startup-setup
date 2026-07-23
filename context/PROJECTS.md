@@ -1,24 +1,24 @@
 # PROJECTS — Master Tracker
 
-_Single source of truth für Projekt-Stati. Updaten bei jeder Statusänderung._
+_Single source of truth for project status. Update on every status change._
 
-**Letzte Aktualisierung:** [YYYY-MM-DD] (Ersteinrichtung via /setup)
+**Last updated:** [YYYY-MM-DD] (initial setup via /setup)
 
 ---
 
-## [Erstes Projekt — Name]
+## [First project — Name]
 
-**Zweck:** [Ein Satz, warum es das Projekt gibt — so, wie du es einem Kollegen sagen würdest. Konkret statt Abstraktion: „Der Klient vermutet Geld in der Preissetzung — wir prüfen, wo und wie viel." NICHT: „Durchführung einer Pricing-Analyse zur Potenzialidentifikation."]
-**Status:** [Was zuletzt passiert ist, was als Nächstes ansteht — 1–2 kurze Sätze. Wird bei Updates ERSETZT, nicht ergänzt.]
-**Phase:** Planung
-**Stakeholder:** [Namen + Rolle im Projekt, z.B. „Anna M. (Auftraggeberin)"]
-**Timeline:** [Nächster Termin/Meilenstein mit Datum, falls bekannt — sonst Zeile weglassen]
-**Blocker:** [was hängt, auf wen wird gewartet — Zeile weglassen, wenn nichts hängt]
+**Purpose:** [One sentence on why this project exists — the way you'd say it to a colleague. Concrete instead of abstract: "The client suspects money is sitting in their pricing — we're checking where and how much." NOT: "Execution of a pricing analysis for potential identification."]
+**Status:** [What happened last, what comes next — 1–2 short sentences. On updates this gets REPLACED, not appended to.]
+**Phase:** Planning
+**Stakeholder:** [Names + role in the project, e.g. "Anna M. (project sponsor)"]
+**Timeline:** [Next date/milestone with a date, if known — otherwise leave the line out]
+**Blocker:** [what's stuck, who you're waiting on — leave the line out if nothing is stuck]
 
-_Die offenen To-dos dieses Projekts stehen in `STATUS.md` — hier steht, wie das Projekt steht, nicht was zu tun ist._
+_This project's open to-dos live in `STATUS.md` — here you find how the project stands, not what needs doing._
 
 ---
 
 ## History
 
-_Abgeschlossene Projekte + Meilensteine, chronologisch._
+_Completed projects + milestones, chronological._

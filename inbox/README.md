@@ -1,7 +1,7 @@
-# Inbox — Drop-Zone
+# Inbox — drop zone
 
-Leg hier alles rein, was Claude einsortieren soll: Meeting-Transkripte, Notizen, PDFs, Decks, Mail-Exports. Dann im Chat: `/ingest <dateiname>`.
+Put everything in here that Claude should file: meeting transcripts, notes, PDFs, decks, mail exports. Then in the chat: `/ingest <filename>`.
 
-**Alte Briefings räumt Claude selbst weg** (nach `archive/`, älter als 14 Tage).
+**Claude clears old briefings away itself** (to `archive/`, older than 14 days).
 
-**Deine abgelegten Dokumente bleiben liegen, bis du etwas sagst** — hier passiert nichts von allein. Nach dem Einlesen wandert die Quelle dorthin, wo man sie sucht: gehört sie zu einem Projekt, nach `projects/<slug>/inputs/`, sonst nach `processed/`.
+**The documents you drop stay put until you say something** — nothing happens here on its own. After being read in, the source moves to where you would look for it: if it belongs to a project, to `projects/<slug>/inputs/`, otherwise to `processed/`.

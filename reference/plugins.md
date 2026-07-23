@@ -1,25 +1,25 @@
 # Claude Code Plugins
 
-> **Kurz vorweg:** Plugins gelten für die ganze Maschine, nicht nur für diesen Ordner. Wer eines installiert, hat es in jedem Claude-Code-Projekt. Und: **Das Paket braucht keines davon.** Alle Werkzeuge (`/morning`, `/eod`, `/email`, `/ingest`, `/setup`) laufen ohne jedes Plugin. Was hier steht, sind Erfahrungswerte, keine Voraussetzungen.
+> **Up front:** plugins apply to the whole machine, not just to this folder. Whoever installs one has it in every Claude Code project. And: **the package needs none of them.** All the tools (`/morning`, `/eod`, `/email`, `/ingest`, `/setup`) run without any plugin. What follows are experience notes, not prerequisites.
 
-Wenn Commands nach einer Installation nicht erkannt werden: `/reload-plugins`.
+If commands are not recognised after an installation: `/reload-plugins`.
 
-Für die zwei empfohlenen Kommandozeilen-Werkzeuge (firecrawl, playwright) siehe [`tools.md`](tools.md). Das sind keine Plugins.
+For the two recommended command-line tools (firecrawl, playwright) see [`tools.md`](tools.md). Those are not plugins.
 
-## Empfohlen
+## Recommended
 
-### Anthropic Official Marketplace — und was davon wirklich zählt
+### Anthropic Official Marketplace — and what in it actually counts
 
-**Wird beim Setup freigeschaltet** (SETUP.md Schritt 3): `/plugin marketplace add anthropics/claude-plugins-official` — das macht nur den Katalog bekannt, installiert wird einzeln und erst auf dein Ja. Im Alltag gilt: Merkt Claude bei einer Aufgabe, dass ein Plugin aus dem Katalog konkret helfen würde, empfiehlt es das in einem Satz mit dem Install-Befehl — nie ungefragt installieren, nie wiederholt nerven.
+**Enabled during setup** (SETUP.md step 3): `/plugin marketplace add anthropics/claude-plugins-official` — that only makes the catalogue known, installing happens one by one and only on your yes. In everyday use: if Claude notices during a task that a plugin from the catalogue would concretely help, it recommends it in one sentence with the install command — never install unasked, never nag repeatedly.
 
-Kuratiertes, geprüftes Directory von Anthropic selbst — der erste Ort, an dem man nachsieht, bevor man ein Plugin aus einer fremden Quelle installiert. Aber: Das meiste darin ist Entwickler-Werkzeug (Code-Review, Commits, Debugging) und für diesen Workspace irrelevant. **Für dich zählen zwei:**
+A curated, reviewed directory from Anthropic itself — the first place to look before installing a plugin from a foreign source. But: most of it is developer tooling (code review, commits, debugging) and irrelevant for this workspace. **Two of them count for you:**
 
-- **`skill-creator`** — baut neue Skills und verbessert bestehende. Das ist das Werkzeug hinter dem Versprechen aus `VISION.md`: du beschreibst, was du jede Woche tust, und bekommst einen eigenen Befehl dafür (Ablauf: `reference/system-erweitern.md`). Install: `/plugin install skill-creator@claude-plugins-official`
-- **`claude-md-management`** — auditiert die CLAUDE.md, wenn der Workspace über Monate gewachsen ist und die Regeln Wildwuchs ansetzen. Install erst bei Bedarf.
+- **`skill-creator`** — builds new skills and improves existing ones. This is the tool behind the promise from `VISION.md`: you describe what you do every week and get your own command for it (procedure: `reference/extending-the-system.md`). Install: `/plugin install skill-creator@claude-plugins-official`
+- **`claude-md-management`** — audits the CLAUDE.md once the workspace has grown over months and the rules start sprawling. Install only when needed.
 
-Alles Weitere aus dem Marketplace nur auf konkreten Anlass installieren: Jedes Plugin gilt für die ganze Maschine, bringt eigene Befehle mit und liest bei jeder Session mit — drei installierte Plugins, die niemand nutzt, machen `/help` unübersichtlich und jede Antwort ein bisschen teurer.
+Everything else from the marketplace only on a concrete occasion: every plugin applies to the whole machine, brings its own commands and reads along in every session — three installed plugins that nobody uses make `/help` cluttered and every answer a little more expensive.
 
-### `ponytail`: Anti-Over-Engineering
+### `ponytail`: anti-over-engineering
 
 **Install:**
 ```
@@ -27,34 +27,34 @@ Alles Weitere aus dem Marketplace nur auf konkreten Anlass installieren: Jedes P
 /plugin install ponytail@ponytail
 ```
 
-Erzwingt die einfachste, kürzeste Lösung (YAGNI). Nützlich, bevor man Skills oder das Dashboard erweitert: `/ponytail-review` nach größeren Umbauten, `/ponytail-audit` für ein ganzes Projekt. Wer dieses Paket anpasst, spart sich damit die typische Runde, in der aus einer kleinen Änderung ein Framework wird.
+Forces the simplest, shortest solution (YAGNI). Useful before extending skills or the dashboard: `/ponytail-review` after larger rebuilds, `/ponytail-audit` for a whole project. Whoever adapts this package saves themselves the classic round in which a small change turns into a framework.
 
-## Nach Use Case — was wofür
+## By use case — what for what
 
-Die Kurz-Übersicht, aus der Claude im Alltag empfiehlt (installiert wird nur auf dein Ja):
+The short overview Claude recommends from in everyday use (installing happens only on your yes):
 
-| Du willst … | Werkzeug | Wann |
+| You want to … | Tool | When |
 |---|---|---|
-| Wiederkehrende Abläufe zu eigenen Befehlen machen | `skill-creator` (offizieller Katalog) | Sobald der erste Ablauf zweimal gleich lief |
-| Herausfinden, was sich bei DIR lohnt zu automatisieren | `claude-code-setup` (offizieller Katalog) — analysiert deine bisherige Nutzung und schlägt Automatisierungen vor | Nach 2–4 Wochen Nutzung; vorher gibt es keine Muster zu lesen |
-| Eigenen Code reviewen lassen | Nichts installieren: `/code-review` und `/security-review` sind in Claude Code **eingebaut** | Sofort, wenn ihr Code im Workspace habt |
-| Designs / Oberflächen erstellen und verbessern | `impeccable` (unten) | Erst bei ernsthafter Frontend-Arbeit |
-| Token-Kosten sehen und senken | `codeburn` (unten, läuft ohne Installation via `npx`) | Wenn die Rechnung Fragen aufwirft |
-| Umbauten einfach halten statt aufblasen | `ponytail` (oben) | Vor jedem größeren Eigenbau |
-| Die CLAUDE.md nach Monaten aufräumen | `claude-md-management` (offizieller Katalog) | Wenn die Regeln Wildwuchs ansetzen |
-| Vertriebs-/Marketing-Arbeit mit Claude | `anthropics/knowledge-work-plugins` (offiziell, unten) | Wenn Sales/Marketing im Team Claude nutzt |
-| Einen Skill finden, den es vielleicht schon gibt | `find-skills` (unten) | Bevor etwas selbst gebaut wird |
-| Ernsthaft Software entwickeln (TDD, Debugging, Planung) | `superpowers` (unten) | Nur auf Entwickler-Rechnern |
+| Turn recurring procedures into your own commands | `skill-creator` (official catalogue) | As soon as the first procedure ran the same way twice |
+| Find out what is worth automating for YOU | `claude-code-setup` (official catalogue) — analyses your usage so far and suggests automations | After 2–4 weeks of use; before that there are no patterns to read |
+| Have your own code reviewed | Install nothing: `/code-review` and `/security-review` are **built into** Claude Code | Right away, if you have code in the workspace |
+| Create and improve designs / interfaces | `impeccable` (below) | Only for serious frontend work |
+| See and reduce token costs | `codeburn` (below, runs without installation via `npx`) | When the bill raises questions |
+| Keep rebuilds simple instead of inflating them | `ponytail` (above) | Before every larger build of your own |
+| Tidy up the CLAUDE.md after months | `claude-md-management` (official catalogue) | When the rules start sprawling |
+| Sales/marketing work with Claude | `anthropics/knowledge-work-plugins` (official, below) | When sales/marketing in the team use Claude |
+| Find a skill that may already exist | `find-skills` (below) | Before building something yourself |
+| Develop software seriously (TDD, debugging, planning) | `superpowers` (below) | Only on developer machines |
 
-## Optional (bei Bedarf)
+## Optional (if needed)
 
-### `claude-code-setup`: Automatisierungs-Kandidaten finden
+### `claude-code-setup`: find automation candidates
 
 **Install:** `/plugin install claude-code-setup@claude-plugins-official`
 
-Liest die eigene Claude-Code-Nutzung (lokal) und empfiehlt, welche deiner wiederkehrenden Abläufe sich als Skill, Hook oder Routine lohnen würden. Das perfekte Gespann mit `system-erweitern.md` und `routinen.md`: erst zeigt es dir WAS, dann bauen wir es. Vor Woche 2 sinnlos — es braucht Nutzungsgeschichte.
+Reads your own Claude Code usage (locally) and recommends which of your recurring procedures would be worth building as a skill, hook or routine. The perfect pairing with `extending-the-system.md` and `routines.md`: first it shows you WHAT, then we build it. Pointless before week 2 — it needs a usage history.
 
-### `impeccable`: Design-Guidance für Frontends
+### `impeccable`: design guidance for frontends
 
 **Install:**
 ```
@@ -63,50 +63,50 @@ Liest die eigene Claude-Code-Nutzung (lokal) und empfiehlt, welche deiner wieder
 ```
 Docs: https://impeccable.style
 
-**Wann:** Erst, wenn du das Dashboard optisch ernsthaft weiterentwickelst, zum Beispiel mit `/impeccable critique context/today.html`. Vorher überflüssig.
+**When:** only once you seriously develop the dashboard visually, for example with `/impeccable critique context/today.html`. Before that, superfluous.
 
-### `knowledge-work-plugins`: Sales, Marketing & Co (offiziell von Anthropic)
+### `knowledge-work-plugins`: sales, marketing & co (official, from Anthropic)
 
-**Install:** `/plugin marketplace add anthropics/knowledge-work-plugins`, dann z.B. `/plugin install sales@knowledge-work-plugins`
+**Install:** `/plugin marketplace add anthropics/knowledge-work-plugins`, then e.g. `/plugin install sales@knowledge-work-plugins`
 
-Open-Source-Plugins von Anthropic für Wissensarbeit jenseits von Code — Vertrieb, Marketing und mehr. Für ein Startup oft der relevanteste Katalog nach dem offiziellen: Wer im Team Angebote, Kampagnen oder Kunden-Recherche mit Claude macht, findet hier fertige Abläufe statt Eigenbau.
+Open-source plugins from Anthropic for knowledge work beyond code — sales, marketing and more. For a startup often the most relevant catalogue after the official one: whoever in the team does proposals, campaigns or customer research with Claude finds ready-made procedures here instead of building their own.
 
-### `find-skills`: erst suchen, dann bauen
+### `find-skills`: search first, then build
 
 **Install:** `npx skills add vercel-labs/skills --skill find-skills`
 
-Durchsucht die offene Skill-Registry (skills.sh), bevor etwas selbst gebaut wird — die „gibt es das schon?"-Frage als Werkzeug. Zaun dazu: Die Registry ist Community-Ware, Qualität schwankt. Gefundene Skills erst ansehen (Quelle, was sie lesen/schreiben), dann installieren — nie blind, und Claude installiert grundsätzlich nichts ungefragt.
+Searches the open skill registry (skills.sh) before something is built from scratch — the "does this already exist?" question as a tool. The fence around it: the registry is community-made, quality varies. Look at found skills first (source, what they read/write), then install — never blindly, and Claude installs nothing unasked as a matter of principle.
 
-### `superpowers`: Entwicklungs-Methodik für die Techniker im Team
+### `superpowers`: development methodology for the engineers in the team
 
-**Install:** `/plugin marketplace add obra/superpowers-marketplace`, dann `/plugin install superpowers@superpowers-marketplace`
+**Install:** `/plugin marketplace add obra/superpowers-marketplace`, then `/plugin install superpowers@superpowers-marketplace`
 
-Bewährtes Skill-Framework für ernsthafte Software-Entwicklung: Brainstorming → Plan → Umsetzung, testgetrieben, systematisches Debugging. **Aber:** Es hängt sich in jede Session ein und drückt seine Methodik durch — auf dem Rechner von jemandem, der hier nur Briefings und Projekte steuert, ist das Lärm und kollidiert mit dem schlanken Alltag dieses Pakets. Deshalb: nur auf Entwickler-Rechnern, nicht als Team-Standard.
+A proven skill framework for serious software development: brainstorming → plan → implementation, test-driven, systematic debugging. **But:** it hooks into every session and pushes its methodology through — on the machine of someone who only steers briefings and projects here, that is noise and collides with the lean everyday use of this package. So: only on developer machines, not as a team standard.
 
-### `codeburn`: Verbrauch sichtbar machen
+### `codeburn`: make consumption visible
 
-**Test ohne Installation:** `npx codeburn`
+**Test without installing:** `npx codeburn`
 
-Read-only, liest nur lokale Session-Dateien, nichts verlässt den Rechner. Zeigt den Verbrauch nach Modell und Projekt; `codeburn optimize` findet Token-Verschwendung mit konkreten Fixes.
+Read-only, it only reads local session files, nothing leaves the machine. Shows consumption by model and project; `codeburn optimize` finds token waste with concrete fixes.
 
-**Wann:** Wenn du wissen willst, was deine Nutzung konkret treibt. Für den Alltagsfall reicht die Sektion „Verbrauch im Griff" im Hilfe-Tab des Dashboards.
+**When:** when you want to know what your usage is actually driven by. For the everyday case the model tiers in `CLAUDE.md` ("Token Economy") are enough — mechanics on Haiku, judgement on the session model, deep analysis on Opus only when it earns it.
 
-## Power-User — mit offenen Augen
+## Power users — with your eyes open
 
-Zwei Werkzeuge für Leute, die das System schon sicher fahren und mehr wollen. Beide bewusst NICHT für die erste Zeit und nicht für jeden Rechner.
+Two tools for people who already drive the system confidently and want more. Both deliberately NOT for the first while and not for every machine.
 
-### `claude-mem`: Session-übergreifendes Zusatz-Gedächtnis
+### `claude-mem`: cross-session additional memory
 
-**Install:** `/plugin marketplace add thedotmack/claude-mem`, dann `/plugin install claude-mem@thedotmack`
+**Install:** `/plugin marketplace add thedotmack/claude-mem`, then `/plugin install claude-mem@thedotmack`
 
-Merkt sich, was in früheren Sessions passiert ist, und macht es durchsuchbar — nützlich, wenn viel außerhalb der Kern-Befehle gearbeitet wird und Kontext zwischen Sessions verloren geht. **Vor dem Einschalten drei Dinge wissen:**
+Remembers what happened in earlier sessions and makes it searchable — useful when a lot of work happens outside the core commands and context gets lost between sessions. **Know three things before switching it on:**
 
-1. **Es loggt Werkzeugaufrufe** — inklusive gelesener Projektinhalte — in eine eigene lokale Datenbank. Wer mit vertraulichen Kundendaten arbeitet, klärt das vorher (dieselbe Frage wie bei jedem Werkzeug mit Vollzugriff).
-2. **Es bringt einen Daemon und eine Vektor-Datenbank mit** — läuft im Hintergrund, will gewartet werden. Wenn etwas klemmt, ist das eine Fehlerquelle mehr.
-3. **Das Datei-Gedächtnis bleibt die Wahrheit.** `PROJECTS.md`, `STATUS.md` und `JOURNAL.md` sind weiterhin der Ort, an dem der Stand lebt — lesbar, korrigierbar, in Git versioniert. claude-mem ist Zusatz-Recall, nie Ersatz. Nichts aus dem System darauf umbauen.
+1. **It logs tool calls** — including project content that was read — into its own local database. Whoever works with confidential client data clarifies that beforehand (the same question as with every tool that has full access).
+2. **It brings a daemon and a vector database with it** — runs in the background, wants maintenance. When something jams, that is one more source of error.
+3. **The file memory stays the truth.** `PROJECTS.md`, `STATUS.md` and `JOURNAL.md` remain the place where the state lives — readable, correctable, versioned in Git. claude-mem is additional recall, never a replacement. Do not rebuild anything in the system around it.
 
-### `task-observer`: Skill-Lücken automatisch protokollieren (Experiment)
+### `task-observer`: log skill gaps automatically (experiment)
 
 **Install:** `npx skills add rebelytics/one-skill-to-rule-them-all --skill task-observer`
 
-Beobachtet die Arbeit, loggt Lücken und Verbesserungs-Kandidaten, speist wöchentliche Reviews. Ehrliche Einordnung: **Dieses Paket hat dafür schon eigene Mechanik** — die „ab jetzt"-Lernschleife, den Tagesabschluss und `claude-code-setup` für die Automatisierungs-Analyse. task-observer legt ein zweites Beobachtungs-Log daneben (zwei Orte für dieselbe Art Wissen) und kostet in jeder Session etwas mit. Wer es probiert: als Experiment mit Ablaufdatum — nach zwei Wochen entscheiden, ob es die eingebaute Schleife wirklich schlägt, sonst wieder raus.
+Watches the work, logs gaps and improvement candidates, feeds weekly reviews. Honest assessment: **this package already has its own mechanics for that** — the "from now on" learning loop, the end of day, and `claude-code-setup` for the automation analysis. task-observer puts a second observation log next to it (two places for the same kind of knowledge) and costs a little in every session. Whoever tries it: as an experiment with an expiry date — decide after two weeks whether it really beats the built-in loop, otherwise out again.

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Tages-Cockpit</title>
+<title>Daily Cockpit</title>
 <style>
   :root {
     --bg: #F7F8F7;
@@ -27,8 +27,8 @@
     --shadow-1: 0 1px 2px rgba(13, 31, 26, 0.04);
     --shadow-2: 0 4px 16px rgba(13, 31, 26, 0.06);
     --ease: cubic-bezier(0.2, 0, 0, 1);
-    --gap: 14px;          /* EIN Abstand zwischen Blöcken */
-    --pad: 20px;          /* EIN Innenabstand in Karten */
+    --gap: 14px;          /* ONE gap between blocks */
+    --pad: 20px;          /* ONE inner padding in cards */
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -71,7 +71,7 @@
 
 
 
-  /* Karten-Label: 11px Caps mit Akzent-Punkt (Taxi-Signatur) */
+  /* Card label: 11px caps with an accent dot (taxi signature) */
   .label, .cardbox > h2, .pdetail h4 {
     margin: 0; font-size: 11px; font-weight: 600; color: var(--text-2);
     letter-spacing: .08em; text-transform: uppercase; display: flex; align-items: center; }
@@ -87,7 +87,7 @@
     box-shadow: var(--shadow-1); }
   .cardbox { padding: var(--pad) 22px; }
 
-  /* ── Morning Briefing — das Highlight: zentral, standardmäßig offen ── */
+  /* ── Morning Briefing — the highlight: central, open by default ── */
   details.briefing { background: linear-gradient(180deg, var(--brand-soft) 0%, var(--card) 150px);
     border: 1px solid var(--border); border-radius: 10px;
     box-shadow: var(--shadow-2); margin: 0 0 var(--gap); position: relative; overflow: hidden; }
@@ -114,6 +114,32 @@
     letter-spacing: -.005em; }
   .brf-body p:last-of-type { margin-bottom: 0; }
   .brf-body strong { color: var(--brand-deep); font-weight: 600; }
+  /* Briefing-Unterabschnitte: sie erzaehlen, was die Aufgabenliste NICHT weiss —
+     auf wen wir warten und seit wann, was sich seit gestern bewegt hat, was heute
+     entschieden werden muss. Bewusst KEINE Wiederholung von Aufgaben: abgehakt wird
+     unten in der Liste, und derselbe Fakt an zwei Orten driftet immer auseinander.
+     Der erste Abschnitt steht offen, die anderen zugeklappt. */
+  /* volle Breite unter dem Text: .brf-body ist ein Drei-Spalten-Raster, ohne
+     grid-column landen die Abschnitte in der schmalen rechten Spalte und reissen
+     links ein Loch auf (im Screenshot sofort sichtbar gewesen). */
+  .brf-secs { grid-column: 1 / -1; grid-row: 3; margin-top: 18px; display: grid; gap: 2px;
+    max-width: 74ch; }
+  .brf-sec { border-top: 1px solid var(--border); }
+  .brf-sec > summary { display: flex; align-items: center; gap: 9px; cursor: pointer;
+    list-style: none; padding: 11px 2px; }
+  .brf-sec > summary::-webkit-details-marker { display: none; }
+  .brf-sec > summary::after { content: ""; width: 6px; height: 6px; margin-left: auto;
+    border-right: 1.5px solid var(--text-3); border-bottom: 1.5px solid var(--text-3);
+    transform: rotate(45deg); transition: transform .16s; flex: none; }
+  .brf-sec[open] > summary::after { transform: rotate(-135deg); }
+  .bs-title { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--text-2); }
+  .bs-count { font-size: 11px; font-weight: 600; color: var(--text-3); background: var(--bg);
+    border-radius: 999px; padding: 1px 8px; }
+  .brf-sec > div { padding: 0 2px 13px; }
+  .brf-sec p { margin: 0 0 8px; font-size: 13.5px; line-height: 1.65; color: var(--text-2); max-width: 74ch; }
+  .brf-sec p:last-child { margin-bottom: 0; }
+  .brf-sec b { color: var(--text); font-weight: 600; }
   .brf-meta { grid-column: 2; grid-row: 2; align-self: start; padding-left: 22px; border-left: 1px solid var(--border);
     font-variant-numeric: tabular-nums; }
   .brf-meta div { font-size: 12.5px; color: var(--text-2); padding: 4px 0; white-space: nowrap; }
@@ -126,18 +152,20 @@
   details.notes-drop ul.notes li:first-child { padding-top: 0; }
 
 
-  /* ── SVG-Icons statt Emojis (ruhig, stroke 1.5, getönt statt Schwarz) ── */
+  /* ── SVG icons instead of emojis (calm, stroke 1.5, tinted instead of black) ── */
   .ic { display: inline-block; width: 14px; height: 14px; vertical-align: -2px;
     background-repeat: no-repeat; background-position: center; background-size: contain; }
   .ic-video { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233F4D47" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m22 8-6 4 6 4V8Z"/></svg>'); }
   .ic-bldg { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233F4D47" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M10 21v-3.5h4V21"/><path d="M8.5 7h2M8.5 11h2M13.5 7h2M13.5 11h2M8.5 15h2M13.5 15h2"/></svg>'); }
   .ic-cal { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233F4D47" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>'); }
 
-  /* Inbox-Karte: amber gerahmt, weil sie auf eine Entscheidung wartet */
+  /* Inbox card: amber framed, because it is waiting for a decision */
   .inboxbox { border-color: var(--amber-border); }
   .inboxbox > h2::before { background: var(--sev-amber); }
+  /* Empty inbox stays visible — an empty decision zone is a state worth seeing, not a missing card. */
+  .inbox-list:empty::after { content: "Nothing waiting. New items land here by themselves: findings from the morning mail triage, and thoughts you drop into the chat that aren't a task yet."; display: block; padding: 10px 2px; font-size: 13px; color: var(--text-3); }
 
-  /* ── Heute: Task-OS ── */
+  /* ── Today: task OS ── */
   .toolbar { display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
     padding-bottom: 14px; margin-bottom: 4px; border-bottom: 1px solid var(--border); }
   .plan-row { display: flex; align-items: center; gap: 10px; flex: 0 1 300px; min-width: 200px; }
@@ -163,7 +191,7 @@
   .pill:active { transform: scale(.96); }
   .pill.active { background: var(--brand-soft); color: var(--brand-deep); border-color: color-mix(in srgb, var(--brand) 35%, transparent); font-weight: 600; }
 
-  /* Filterleiste — Notion-Mechanik, Taxi-Optik */
+  /* Filter bar — Notion mechanics, taxi look */
   .fbar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-left: auto; }
   .fchip { position: relative; }
   .fbtn { background: var(--card); color: var(--text-2); border: 1px solid var(--border); padding: 5px 12px;
@@ -207,7 +235,7 @@
   .task-list li.open .t-note { display: block; }
   .c-proj, .c-cat { font-size: 12px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .c-status { font-size: 12px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  li[data-status="wartet"] .c-status { color: var(--sev-amber); }
+  li[data-status="waiting"] .c-status { color: var(--sev-amber); }
   .c-due { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; text-align: right; }
   .c-due.late { color: var(--sev-red); font-weight: 600; }
   .c-proj:empty::before, .c-cat:empty::before, .c-status:empty::before, .c-due:empty::before { content: "–"; color: var(--border-strong); }
@@ -216,32 +244,32 @@
   .task-list a.mail { font-size: 11.5px; }
   .hint { font-size: 11.5px; color: var(--text-3); margin: 16px 0 0; }
 
-  /* ── Kalender ── */
-  /* stretch = beide Spalten gleich hoch, damit unter der kürzeren kein Loch klafft */
+  /* ── Calendar ── */
+  /* stretch = both columns equal height, so no hole gapes under the shorter one */
   .cal-cols { display: block; }
 
-  /* Tages-Zeitachse: echte Dauer als Blockhöhe, freie Lücken sichtbar.
-     Das JS (dayAxis) baut Stundenlinien + Lücken und positioniert die .ev absolut.
-     Kein flex/height von außen — die Höhe setzt das JS in px, sonst passt die Achse
-     nicht mehr zu den absolut positionierten Stundenlinien. */
+  /* Day timeline: real duration as block height, free gaps visible.
+     The JS (dayAxis) builds hour lines + gaps and positions the .ev absolutely.
+     No flex/height from outside — the JS sets the height in px, otherwise the axis
+     no longer matches the absolutely positioned hour lines. */
   ol.tl { list-style: none; margin: 10px 0 0; padding: 0; position: relative; }
   .tl .hr { position: absolute; left: var(--gutter); right: 0; height: 0; border-top: 1px solid var(--border); }
   .tl .hr > i { position: absolute; left: calc(-1 * var(--gutter)); top: -7px; width: calc(var(--gutter) - 10px);
     text-align: right; font-style: normal; font-size: 10.5px; color: var(--text-3);
     font-variant-numeric: tabular-nums; letter-spacing: .02em; }
-  .tl .hr.half { display: none; } /* Halbstunden-Raster war reines Rauschen */
+  .tl .hr.half { display: none; } /* the half-hour grid was pure noise */
   .tl .free { position: absolute; left: var(--gutter); right: 0; border-radius: 6px; border: none;
     background: color-mix(in srgb, var(--brand) 3.5%, transparent);
     display: flex; align-items: center; justify-content: center; pointer-events: none; }
   .tl .free > span { font-size: 11px; color: var(--text-3); letter-spacing: .01em; }
   .tl .noev { padding: 26px 0 26px var(--gutter); font-size: 13px; color: var(--text-3); }
-  /* Rückfallebene ohne Endzeiten: schlichte Terminliste statt geratener Zeitachse */
+  /* Fallback without end times: plain event list instead of a guessed timeline */
   ol.tl.plain { height: auto !important; padding: 4px 0 0; }
   ol.tl.plain .ev { position: relative; margin: 0 0 7px; }
   ol.tl.plain .ev > .dur { display: none; }
 
-  /* Ein farbiger Balken links statt Rahmen plus Punkt: das ist die Kalender-Standardsprache
-     und halbiert die Linien, die auf der Achse um Aufmerksamkeit konkurrieren. */
+  /* One colored bar on the left instead of a border plus dot: that is the standard calendar
+     language and halves the lines competing for attention on the axis. */
   .ev { position: absolute; padding: 6px 12px 6px 13px; border-radius: 6px; background: var(--card);
     border: none; border-left: 3px solid var(--border-strong); box-shadow: 0 1px 2px rgba(15,23,42,.055);
     overflow: hidden; font-size: 13px; letter-spacing: -.005em; }
@@ -250,14 +278,14 @@
   .ev > b { font-weight: 600; font-size: 12.5px; margin-right: 8px; color: var(--text); }
   .ev > i { display: block; font-style: normal; font-size: 11.5px; color: var(--text-2); margin-top: 3px;
     line-height: 1.45; overflow: hidden; }
-  /* Format-Icon ist ebenfalls ein <i> im .ev — ohne diese Zeile erbt es die Kontext-Zeilen-Regel
-     darueber (display:block, Breite 0) und verschwindet oder springt in eine eigene Zeile. */
+  /* The format icon is also an <i> inside .ev — without this line it inherits the context-line rule
+     above (display:block, width 0) and disappears or jumps onto its own line. */
   .ev > i.ic { display: inline-block; width: 14px; height: 14px; margin-top: 0; margin-left: 5px; }
   .ev > .dur { float: right; font-size: 10.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
-  /* Meeting-Brief-Aufklapper: öffnet als Overlay-Karte unter dem Termin-Block, sprengt die Zeitachse nicht */
+  /* Meeting-brief disclosure: opens as an overlay card below the event block, does not blow up the timeline */
   .ev details.mb { display: inline; }
-  /* Bewusst auffällig: der Knopf ist der einzige Hinweis darauf, dass zu diesem Termin
-     ein Briefing existiert. Zu dezent = wird übersehen = das Feature existiert nicht. */
+  /* Deliberately conspicuous: the button is the only hint that a briefing exists for this
+     event. Too subtle = overlooked = the feature does not exist. */
   .ev details.mb summary { display: inline-flex; align-items: center; gap: 5px; list-style: none; cursor: pointer;
     font-size: 11.5px; font-weight: 700; letter-spacing: .01em; color: #fff; background: var(--brand);
     border: none; border-radius: 999px; padding: 3px 11px 3px 9px; margin-left: 10px;
@@ -269,15 +297,15 @@
   .ev details.mb summary:hover { background: var(--brand-deep); box-shadow: 0 2px 7px color-mix(in srgb, var(--brand) 45%, transparent); }
   .ev details.mb summary:focus-visible { outline: 2px solid var(--brand-deep); outline-offset: 2px; }
   .ev details.mb summary::-webkit-details-marker { display: none; }
-  /* Termine MIT Briefing tragen den Marken-Balken, damit man sie in der Achse sofort findet */
+  /* Events WITH a briefing carry the brand bar, so you spot them on the axis immediately */
   .ev:has(details.mb) { border-left-color: var(--brand); }
   .ev .mbc { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 40; background: var(--card);
     border: 1px solid var(--border-strong); border-left: 3px solid var(--brand); border-radius: 10px;
     padding: 13px 16px; box-shadow: var(--shadow-1); font-size: 12px; line-height: 1.55; color: var(--text-2);
     max-height: 340px; overflow-y: auto; }
   .ev .mbc .mb-lead { margin: 0 0 11px; font-size: 13px; line-height: 1.6; color: var(--text); }
-  /* Zweispaltig, weil ein Briefing aus kurzen Blöcken besteht: nebeneinander liest es sich
-     als Übersicht, untereinander als Textwand. */
+  /* Two columns, because a briefing consists of short blocks: side by side it reads
+     as an overview, stacked as a wall of text. */
   .ev .mbc .mb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 11px 26px; }
   .ev .mbc section { min-width: 0; }
   .ev .mbc h4 { margin: 0 0 4px; font-size: 10px; font-weight: 700; letter-spacing: .07em;
@@ -288,51 +316,51 @@
   .ev .mbc li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 4px; height: 4px;
     border-radius: 50%; background: var(--border-strong); }
   .ev .mbc li.due::before { background: var(--sev-amber); }
-  /* Ohne overflow:visible kappt der Termin-Block das geöffnete Panel — der Klick wirkt dann tot */
+  /* Without overflow:visible the event block clips the opened panel — the click then feels dead */
   .ev:has(details.mb[open]) { overflow: visible; z-index: 39; }
-  /* Kurze Termine (15-30 Min) bekommen einen flachen Block — Typo muss in ~20px passen, sonst kappt
-     das overflow:hidden die Zeile mittendrin. Kontext-Unterzeile hat hier keinen Platz. */
+  /* Short events (15-30 min) get a flat block — type has to fit in ~20px, otherwise
+     the overflow:hidden clips the line halfway. No room for a context sub-line here. */
   .ev.tight { padding: 3px 10px 3px 12px; line-height: 1.35; font-size: 11.5px; }
   .ev.tight > b { font-size: 11.5px; margin-right: 6px; }
   .ev.tight > .dur { font-size: 10px; }
-  /* Kurze Termine haben vertikal keinen Platz fuer eine zweite Zeile, horizontal aber jede Menge:
-     der Kontext wandert neben den Titel statt darunter. So traegt die volle Breite Information
-     statt Leere, und der Kontext geht nicht verloren. */
+  /* Short events have no vertical room for a second line, but plenty horizontally:
+     the context moves next to the title instead of below it. That way the full width carries
+     information instead of emptiness, and the context is not lost. */
   .ev.tight > i { display: inline; margin-left: 12px; margin-top: 0; font-size: 11px; color: var(--text-3); }
   .ev.tight > i.ic { display: inline-block; width: 14px; height: 14px; margin-left: 5px; }
   .ev.past { opacity: .58; }
-  /* Termine mit Briefing bleiben auch nachmittags lesbar, sonst verschwindet der Knopf im Grau */
+  /* Events with a briefing stay readable in the afternoon too, otherwise the button vanishes into the gray */
   .ev.past:has(details.mb) { opacity: .78; }
   .ev.past:has(details.mb[open]) { opacity: 1; }
   .ev.next, .ev.running { background: var(--brand-soft); border-left-color: var(--brand); }
   .ev.next::after, .ev.running::after { position: absolute; right: 11px; bottom: 5px; font-size: 9px;
     letter-spacing: .08em; text-transform: uppercase; color: var(--brand-deep); font-weight: 600; }
-  .ev.next::after { content: "als Nächstes"; }
-  .ev.running::after { content: "läuft"; }
+  .ev.next::after { content: "up next"; }
+  .ev.running::after { content: "running"; }
   .ev.tight.next::after, .ev.tight.running::after { display: none; }
 
-  /* Jetzt-Linie: der einzige rote Strich im Tab — deshalb liest er sich als "jetzt", nicht als Alarm */
+  /* Now line: the only red stroke in the tab — that is why it reads as "now", not as an alarm */
   .tl .nowline { position: absolute; left: var(--gutter); right: 0; height: 0;
     border-top: 1px solid var(--sev-red); pointer-events: none; }
   .tl .nowline > i { position: absolute; left: calc(-1 * var(--gutter)); top: -8px; width: calc(var(--gutter) - 10px);
     text-align: right; font-style: normal; font-size: 10px; font-weight: 600; color: var(--sev-red);
     font-variant-numeric: tabular-nums; background: var(--card); }
 
-  /* Reminder MIT Uhrzeit stehen auf der Achse (sie haben eine Zeit), müssen aber sofort vom
-     Meeting unterscheidbar sein — sonst liest sich die eigene Frist wie ein Termin mit anderen. */
-  /* Reminder: gepunkteter Balken statt durchgezogenem, damit sie sich von echten Terminen abheben */
+  /* Reminders WITH a time sit on the axis (they have a time), but have to be instantly
+     distinguishable from a meeting — otherwise your own deadline reads like an event with others. */
+  /* Reminders: dotted bar instead of solid, so they stand out from real events */
   .tl .ev.rem { border-left-style: dotted; border-left-width: 4px; background: var(--bg); box-shadow: none; }
 
-  /* Ganztägiges (Fristen ohne Uhrzeit) — eigene Leiste unter der Achse */
+  /* All-day items (deadlines without a time) — their own strip below the axis */
   .rem-strip { margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--border);
     display: flex; flex-wrap: wrap; gap: 7px; }
   .rem-strip .ev { position: static; padding: 5px 13px; border-radius: 999px;
     border-left: none; border: 1px solid var(--border); background: var(--card); box-shadow: none; }
   .rem-strip .ev > b { font-size: 11.5px; margin-right: 5px; }
-  /* Eine Fälligkeit in der Zukunft ist normal, kein Alarm: neutraler Chip, Ring statt "FÄLLIG"-Label.
-     Rot bleibt allein dem Überfällig-Strip vorbehalten — sonst sagt die Farbe nichts mehr. */
+  /* A due date in the future is normal, not an alarm: neutral chip, ring instead of a "DUE" label.
+     Red stays reserved for the overdue strip alone — otherwise the color stops saying anything. */
 
-  /* ── Projekte: Hierarchie — Kopf, Kontext, Status, Details, Timeline-Footer ── */
+  /* ── Projects: hierarchy — head, context, status, details, timeline footer ── */
   .pgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(370px, 1fr)); gap: var(--gap); }
   .pdetail { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
   .pdetail .head { display: flex; justify-content: space-between; align-items: center; gap: 10px;
@@ -349,10 +377,10 @@
   .badge.amber { color: var(--amber-deep); border-color: var(--amber-border); background: var(--amber-soft); }
   .badge.red { color: var(--red-deep); border-color: var(--red-border); background: var(--red-soft); }
 
-  /* Übersicht = Untertitel unter dem Namen (kein eigenes Label) */
+  /* Overview = subtitle under the name (no label of its own) */
   .pdetail .p-about { margin: 5px 20px 0; padding-bottom: 12px; border-bottom: 1px solid var(--border);
     font-size: 12.5px; line-height: 1.5; color: var(--text-3); }
-  /* Status quo = der prominente Kern der Karte */
+  /* Status quo = the prominent core of the card */
   .pdetail .story { margin: 12px 20px 0; font-size: 13.5px; line-height: 1.65; color: var(--text); letter-spacing: -.005em; }
   .pdetail .story + .story { margin-top: 8px; }
   .pdetail .blocker-line { margin: 12px 20px 0; padding: 8px 11px; border-radius: 7px;
@@ -360,7 +388,7 @@
     font-size: 12.5px; line-height: 1.5; color: var(--amber-deep); }
   .pdetail .blocker-line::before { content: "Blocker · "; font-size: 10px; letter-spacing: .08em;
     text-transform: uppercase; font-weight: 700; }
-  /* Detail-Bausteine */
+  /* Detail building blocks */
   .pdetail h4 { margin: 14px 20px 4px; }
   .pdetail p, .pdetail ul { margin-left: 20px; margin-right: 20px; }
   .pdetail p { font-size: 13px; line-height: 1.55; color: var(--text-2); }
@@ -368,7 +396,7 @@
   .pdetail ul li { font-size: 12.5px; line-height: 1.5; padding: 3px 0 3px 13px; position: relative; color: var(--text-2); }
   .pdetail ul li::before { content: ""; position: absolute; left: 0; top: 10px; width: 4px; height: 4px;
     border-radius: 50%; background: var(--brand); opacity: .55; }
-  /* Timeline als Fußleiste */
+  /* Timeline as a footer strip */
   .pdetail .p-time { margin: 14px 0 0; padding: 9px 20px; background: var(--bg); border-top: 1px solid var(--border);
     font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; }
   .pdetail .p-time::before { content: "Timeline"; font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
@@ -380,7 +408,7 @@
   ul.notes li + li { border-top: 1px solid var(--border); }
   ul.notes li > b { color: var(--text-3); font-weight: 600; font-size: 12px; margin-right: 10px; }
 
-  /* ── Werkzeuge ── */
+  /* ── Tools ── */
   .guide { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
     padding: 14px 22px 16px; box-shadow: var(--shadow-1); margin-bottom: var(--gap); }
   .guide-steps { margin: 8px 0 0; padding: 0; list-style: none; counter-reset: g; max-width: 92ch; }
@@ -407,9 +435,9 @@
   a.tool { display: block; text-decoration: none; color: inherit; transition: border-color .15s var(--ease); }
   a.tool:hover { text-decoration: none; border-color: var(--border-strong); }
 
-  /* ── Ausstattung: Karten mit Icon-Feld links, Status auf einen Blick ── */
-  /* Selbsttest-Block: nur sichtbar, wenn wirklich etwas offen ist (data-collapse-empty greift ueber die ul).
-     Amber, weil es Aufmerksamkeit will, aber nichts kaputt ist. */
+  /* ── Setup: cards with an icon field on the left, status at a glance ── */
+  /* Self-test block: only visible when something really is open (data-collapse-empty works via the ul).
+     Amber, because it wants attention but nothing is broken. */
   .health { margin: 18px 0 0; padding: 14px 16px; border: 1px solid var(--amber-border);
     background: var(--amber-soft); border-radius: 10px; }
   .health h4 { margin: 0 0 6px; font-size: 12.5px; font-weight: 700; color: var(--amber-deep); }
@@ -418,8 +446,10 @@
   .health li b { color: var(--text); font-weight: 600; }
   .inv-cat { margin: 16px 0 8px; font-size: 12px; font-weight: 600; color: var(--text-2); letter-spacing: -.005em; }
   .inv-cat:first-child { margin-top: 0; }
-  /* auto-fill statt auto-fit: eine einzelne Karte bleibt schmal, statt die Zeile zu füllen */
-  .invgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(275px, 1fr)); gap: var(--gap); }
+  /* auto-fill instead of auto-fit: a single card stays narrow instead of filling the row */
+  /* align-items: start — an opened card must not stretch its whole row */
+  .invgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(275px, 1fr)); gap: var(--gap);
+    align-items: start; }
   .inv-card { display: flex; gap: 12px; align-items: flex-start;
     background: var(--card); border: 1px solid var(--border); border-radius: 10px;
     padding: 13px 15px; box-shadow: var(--shadow-1); }
@@ -428,7 +458,7 @@
     background: var(--bg); color: var(--text-3); }
   .inv-ico svg { width: 18px; height: 18px; fill: none; stroke: currentColor;
     stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-  /* Eingerichtet = farbiges Icon-Feld, offen = gedeckt grau. Aus zwei Metern unterscheidbar. */
+  /* Set up = colored icon field, open = muted gray. Distinguishable from two meters away. */
   .inv-card.on .inv-ico { background: var(--brand-soft); color: var(--brand); }
   .inv-body { min-width: 0; }
   .inv-name { margin: 1px 0 2px; font-size: 13.5px; font-weight: 600; letter-spacing: -.01em;
@@ -445,15 +475,15 @@
     border-radius: 10px; padding: 12px 15px; font-size: 12.5px; line-height: 1.55; color: var(--text-3); }
   .inv-empty code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px;
     background: var(--bg); border-radius: 4px; padding: 1px 5px; }
-  /* Amber-Abzeichen fuer Routinen, deren letzter Lauf lange her ist. Green-Override der .on-Karte
-     wird bewusst zurueckgeholt, sonst faerbt .inv-card.on das Warn-Abzeichen gruen. */
+  /* Amber badge for routines whose last run is a long time ago. The green override of the .on card
+     is deliberately taken back, otherwise .inv-card.on colors the warning badge green. */
   .inv-badge.warn, .inv-card.on .inv-badge.warn {
     background: var(--amber-soft); border-color: var(--amber-border); color: var(--amber-deep); }
 
-  /* ── Verbindungs-Slots: sechs feste Anschluesse, ruhiges Raster ── */
-  /* gefuellt = gruener Punkt (Brandfarbe), offen = grauer Ring. Kein Rot, keine Akzent-Balken. */
-  /* Feste drei Spalten: sechs Slots ergeben zwei volle Reihen. auto-fill wuerde bei breiten
-     Fenstern fuenf Karten nebeneinander setzen und die sechste allein stehen lassen. */
+  /* ── Connection slots: six fixed connections, calm grid ── */
+  /* filled = green dot (brand color), open = gray ring. No red, no accent bars. */
+  /* Fixed three columns: six slots make two full rows. auto-fill would put five cards
+     side by side on wide windows and leave the sixth standing alone. */
   .slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); margin-top: 10px; }
   @media (max-width: 1000px) { .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 620px) { .slots { grid-template-columns: 1fr; } }
@@ -474,7 +504,7 @@
     padding: 2px 7px; border-radius: 999px; background: var(--brand-soft); color: var(--brand-deep); }
   .slot-desc { margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-2); overflow-wrap: anywhere; }
 
-  /* ── Zeilen-Listen: zuletzt benutzte Befehle + Gedaechtnis-Dateien ── */
+  /* ── Row lists: recently used commands + memory files ── */
   .rowlist { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
   .cmduse, .memrow { display: flex; align-items: baseline; gap: 10px;
     background: var(--card); border: 1px solid var(--border); border-radius: 8px;
@@ -518,6 +548,350 @@
     .cardbox, .pdetail { box-shadow: none; }
     .wrap { padding: 0; }
   }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     Pixel look — a second skin on the SAME markup. Toggled top right,
+     the choice is remembered in the browser. Nothing here changes what the
+     dashboard SHOWS, only how it looks, so both skins stay in sync forever.
+     ══════════════════════════════════════════════════════════════════════ */
+  .skinbtn { font: inherit; font-size: 11px; font-weight: 600; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--text-3); background: transparent; cursor: pointer;
+    border: 1px solid var(--border-strong); border-radius: 6px; padding: 4px 10px; margin-top: 6px; }
+  .skinbtn:hover { color: var(--brand); border-color: var(--brand); }
+
+  html[data-skin="pixel"] {
+    --bg: #58B858;
+    --card: #F8F8E8;
+    --border: #383838;
+    --border-strong: #282828;
+    --text: #282828;
+    --text-2: #46443E;
+    --text-3: #6B6A62;
+    --brand: #2848A0;
+    --brand-deep: #182860;
+    --brand-soft: #DCE8FF;
+    --sev-red: #B02020;
+    --red-soft: #FBDCDC;
+    --red-border: #E08080;
+    --red-deep: #801818;
+    --sev-amber: #A05808;
+    --amber-soft: #FCEFC8;
+    --amber-border: #E0B040;
+    --amber-deep: #7A4406;
+    --shadow-1: 3px 3px 0 rgba(40, 40, 40, .18);
+    --shadow-2: 4px 4px 0 rgba(40, 40, 40, .22);
+  }
+  html[data-skin="pixel"] body {
+    font-family: 'Silkscreen', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 2px, transparent 2px 8px),
+                      repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 2px, transparent 2px 8px);
+    -webkit-font-smoothing: none; font-feature-settings: normal;
+  }
+  html[data-skin="pixel"] h1,
+  html[data-skin="pixel"] .tab,
+  html[data-skin="pixel"] .label,
+  html[data-skin="pixel"] .eyebrow,
+  html[data-skin="pixel"] .skinbtn {
+    font-family: 'Press Start 2P', 'Silkscreen', ui-monospace, monospace;
+    letter-spacing: 0; text-transform: none;
+  }
+  html[data-skin="pixel"] h1 { font-size: 14px; line-height: 1.7; }
+  html[data-skin="pixel"] .tab { font-size: 10px; }
+  html[data-skin="pixel"] .label { font-size: 11px; line-height: 1.8; }
+  html[data-skin="pixel"] .eyebrow, html[data-skin="pixel"] .skinbtn { font-size: 8px; line-height: 1.9; }
+  /* square everything, thick frames, hard shadows — the whole trick */
+  html[data-skin="pixel"] *:not(svg):not(path):not(use):not(circle):not(rect) { border-radius: 0 !important; }
+  html[data-skin="pixel"] .card, html[data-skin="pixel"] .box, html[data-skin="pixel"] .tool,
+  html[data-skin="pixel"] .inv-card, html[data-skin="pixel"] .panel, html[data-skin="pixel"] .pcard {
+    border: 3px solid var(--border); box-shadow: var(--shadow-2);
+  }
+  html[data-skin="pixel"] header.top { border-bottom: 4px solid var(--border);
+    background: linear-gradient(#A8E0F8, #F8F8E8); }
+  html[data-skin="pixel"] header.top::after { display: none; }
+  html[data-skin="pixel"] nav.tabs { border-bottom: 3px solid var(--border); }
+  html[data-skin="pixel"] .tab.active { box-shadow: inset 0 -4px 0 var(--brand); }
+  /* text that sits directly on the grass, not inside a card, needs to stay readable */
+  html[data-skin="pixel"] .sec-sub { color: #123A12; }
+  html[data-skin="pixel"] .label.sec { color: #0E2E0E; }
+  html[data-skin="pixel"] a { text-decoration: none; }
+  html[data-skin="pixel"] a:hover { text-decoration: underline; }
+  /* the sprite row under the header: one ball per open task, drawn in CSS */
+  html[data-skin="pixel"] #skin-balls { display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+    padding: 8px 48px; background: #E0C888; border-bottom: 3px solid var(--border); }
+  html[data-skin="pixel"] #skin-balls i { width: 14px; height: 14px; display: block;
+    border: 2px solid var(--border); background: linear-gradient(#E04038 0 45%, var(--border) 45% 55%, #F8F8F8 55% 100%); }
+  #skin-balls { display: none; }
+
+  /* ── Skill cards open up (native <details>, no JavaScript needed) ── */
+  .inv-cat { display: flex; align-items: baseline; gap: 8px; }
+  .inv-count { font-size: 11.5px; font-weight: 500; color: var(--text-3); }
+  details.inv-card { display: block; padding: 0; }
+  details.inv-card > summary { display: flex; gap: 12px; align-items: flex-start; padding: 13px 15px;
+    cursor: pointer; list-style: none; }
+  details.inv-card > summary::-webkit-details-marker { display: none; }
+  details.inv-card > summary::marker { content: ""; }
+  details.inv-card .inv-body { display: block; }
+  details.inv-card .inv-desc { display: block; }
+  details.inv-card[open] { box-shadow: var(--shadow-2); border-color: var(--border-strong); }
+  .inv-scope { font-size: 10.5px; font-weight: 500; color: var(--text-3); }
+  .inv-more { padding: 0 15px 13px 61px; }
+  .inv-more p { margin: 0 0 10px; font-size: 12.5px; line-height: 1.55; color: var(--text-2); }
+  .inv-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .say-btn { font: inherit; font-size: 11.5px; font-weight: 500; cursor: pointer;
+    color: var(--brand-deep); background: var(--brand-soft); border: 1px solid transparent;
+    border-radius: 6px; padding: 3px 10px; }
+  .say-btn:hover { border-color: var(--brand); }
+  .say-btn.done { background: var(--bg); color: var(--text-3); }
+  .inv-filter { width: 100%; max-width: 320px; margin: 0 0 10px; font: inherit; font-size: 13px;
+    padding: 7px 11px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--card); color: var(--text); }
+  .inv-filter:focus { outline: none; border-color: var(--brand); }
+  html[data-skin="pixel"] .say-btn, html[data-skin="pixel"] .inv-filter { border: 2px solid var(--border); }
+
+  .inv-warn { margin: 18px 0 0; padding: 14px 16px; border: 1px solid var(--amber-border);
+    background: var(--amber-soft); border-radius: 10px; }
+  .inv-warn h4 { margin: 0 0 6px; font-size: 12.5px; font-weight: 700; color: var(--amber-deep); }
+  .inv-warn ul { margin: 0; padding-left: 18px; }
+  .inv-warn li { font-size: 13px; color: var(--text-2); line-height: 1.55; padding: 2px 0; }
+  .inv-warn b { color: var(--text); font-weight: 600; }
+
+  /* rows inside an opened skill group */
+  .sk-row { padding: 8px 0; border-top: 1px solid var(--border); }
+  .sk-row:first-child { border-top: none; padding-top: 0; }
+  .sk-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .sk-head b { font-size: 13px; font-weight: 600; }
+  .sk-row p { margin: 3px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); }
+  .sk-row .say-btn { opacity: 0; transition: opacity .12s; }
+  .sk-row:hover .say-btn, .sk-row:focus-within .say-btn { opacity: 1; }
+  @media (hover: none) { .sk-row .say-btn { opacity: 1; } }
+  details.grp > .inv-more { padding-left: 61px; }
+
+  /* ── Setup one pager: seven KPI tiles, details open on click ── */
+  /* the script always emits exactly seven tiles (plus the optional wide one),
+     so seven fixed columns beat auto-fit: no lone orphan on wide screens */
+  .kpigrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--gap); }
+  @media (max-width: 1280px) { .kpigrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 760px) { .kpigrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  details.kpi { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow-1); overflow: hidden; }
+  details.kpi > summary { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto;
+    column-gap: 11px; align-items: center; padding: 14px 15px; cursor: pointer; list-style: none; }
+  details.kpi > summary::-webkit-details-marker { display: none; }
+  details.kpi > summary::marker { content: ""; }
+  .kpi-ico { grid-row: 1 / 3; width: 34px; height: 34px; border-radius: 8px; display: flex;
+    align-items: center; justify-content: center; background: var(--bg); color: var(--text-3); }
+  .kpi-ico svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7;
+    stroke-linecap: round; stroke-linejoin: round; }
+  .kpi-num { font-size: 24px; font-weight: 650; letter-spacing: -.02em; line-height: 1.1;
+    font-variant-numeric: tabular-nums; }
+  .kpi-lab { font-size: 13px; font-weight: 600; color: var(--text-2); overflow-wrap: anywhere; }
+  .kpi-sub { grid-column: 2; font-size: 12px; color: var(--text-2); }
+  details.kpi:not([open]) > summary:hover { background: var(--bg); }
+  details.kpi > summary:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; border-radius: 10px; }
+  @keyframes kpi-in { from { opacity: 0; transform: translateY(-3px); } }
+  details.kpi[open] .kpi-body { animation: kpi-in .2s cubic-bezier(0.22, 1, 0.36, 1); }
+  @media (prefers-reduced-motion: reduce) { details.kpi[open] .kpi-body { animation: none; } }
+  details.kpi.ok .kpi-ico { background: var(--brand-soft); color: var(--brand); }
+  details.kpi.part .kpi-ico { background: var(--amber-soft); color: var(--amber-deep); }
+  details.kpi.part .kpi-sub { color: var(--amber-deep); }
+  details.kpi.none { opacity: .72; }
+  /* an opened tile takes the full width and must not stretch its neighbours */
+  .kpigrid { align-items: start; }
+  details.kpi.wide { grid-column: 1 / -1; border-color: var(--amber-border); background: var(--amber-soft); }
+  details.kpi.wide .kpi-ico { background: #fff; }
+  details.kpi[open] { grid-column: 1 / -1; box-shadow: var(--shadow-2); border-color: var(--border-strong); }
+  .kpi-body { padding: 0 15px 14px; border-top: 1px solid var(--border); }
+  .ivrow { padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .ivrow:last-child { border-bottom: none; }
+  .ivname { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+  .ivrow p { margin: 2px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); }
+  .inv-badge.xref { background: var(--bg); border-color: var(--border); color: var(--text-3);
+    text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+  /* setup progress: the number IS the message, the bar just makes it feel like progress */
+  .kpi-bar { grid-column: 2; margin-top: 8px; height: 5px; border-radius: 3px;
+    background: rgba(146, 64, 14, .16); overflow: hidden; }
+  .kpi-bar i { display: block; height: 100%; border-radius: 3px; background: var(--amber-deep);
+    transition: width .5s cubic-bezier(0.22, 1, 0.36, 1); }
+  details.kpi.ok .kpi-bar { background: rgba(23, 123, 87, .16); }
+  details.kpi.ok .kpi-bar i { background: var(--brand); }
+  @media (prefers-reduced-motion: reduce) { .kpi-bar i { transition: none; } }
+  .ivstep .ivname { align-items: baseline; }
+  .ivtick { width: 14px; font-size: 12px; color: var(--text-3); font-weight: 700; }
+  .ivstep.done .ivtick { color: var(--brand); }
+  .ivstep:not(.done) b { color: var(--amber-deep); }
+  .inv-note { margin: var(--gap) 0 0; padding: 12px 15px; border: 1px dashed var(--border-strong);
+    border-radius: 10px; background: var(--card); }
+  .inv-note b { font-size: 12px; font-weight: 600; color: var(--text-2); }
+  .inv-note p { margin: 4px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text-3); }
+  .setup-why { margin: 0 0 10px; font-size: 12.5px; line-height: 1.6; color: var(--text-2); max-width: 68ch; }
+  .ivbase { color: var(--text-3); }
+  .ivbase .ivname { font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-3); }
+  .ivempty { padding: 12px 0; font-size: 12.5px; line-height: 1.55; color: var(--text-3); }
+  .ivempty code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px;
+    background: var(--bg); border-radius: 4px; padding: 1px 5px; }
+  details.ivpanel { border-bottom: 1px solid var(--border); }
+  details.ivpanel:last-child { border-bottom: none; }
+  details.ivpanel > summary { display: flex; align-items: baseline; gap: 9px; padding: 10px 0;
+    cursor: pointer; list-style: none; font-size: 13px; }
+  details.ivpanel > summary::-webkit-details-marker { display: none; }
+  details.ivpanel > summary::marker { content: ""; }
+  details.ivpanel > summary::before { content: "+"; width: 12px; color: var(--text-3); font-weight: 600; }
+  details.ivpanel[open] > summary::before { content: "–"; }
+  .ivmeta { font-size: 11.5px; font-weight: 500; color: var(--text-3); }
+  .ivlist { padding: 0 0 10px 21px; columns: 2; column-gap: 26px; }
+  @media (max-width: 900px) { .ivlist { columns: 1; } }
+  .ivlist .sk-row { break-inside: avoid; }
+  html[data-skin="pixel"] details.kpi { border: 3px solid var(--border); box-shadow: var(--shadow-2); }
+
+  /* Das Start-Here-Deck lebt als eigenes Dokument in reference/start-here-deck/ und wird
+     hier eingebettet. Ein Dokument, zwei Orte: im Dashboard zum Durchklicken, im Vollbild
+     als Deck, das man jemandem zeigt. Keine zweite Fassung, die auseinanderlaeuft. */
+  .deckwrap { position: relative; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; background: #faf9f5; box-shadow: var(--shadow-1); }
+  .deckwrap video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: #14140f; }
+  /* Ausstattung nach Technik-Art. Bewusst NICHT dieselbe Darstellung wie die Kacheln im
+     Workspace-Tab: dort steht der Zustand (was ist verbunden), hier der Plan (was wird
+     eingerichtet). Gleiches Aussehen wuerde die beiden verwechselbar machen. */
+  /* Der Setup-Plan. Gruppiert nach "passiert das im Setup", NICHT nach Technik —
+     die Technik ist das Etikett an der Zeile. Grund: ein System hat oft zwei Wege
+     (Supabase und Vercel haben beide ein CLI UND einen Connector), nach Mechanismus
+     gruppiert stand dasselbe Ding deshalb zweimal in verschiedenen Karten.
+     Die neun Schritte sind exakt die Pflichtschritte aus inventory.js — dieselbe
+     Liste, die der Workspace-Tab als Live-Zustand zeigt. Zwei Orte, eine Wahrheit. */
+  /* Karten aufklappbar: der Ueberblick soll auf einen Blick lesbar sein, das Detail
+     kommt auf Klick. Ohne das sind es ueber dreissig Zeilen am Stueck. */
+  details.kit > summary { cursor: pointer; list-style: none; }
+  details.kit > summary::-webkit-details-marker { display: none; }
+  /* Der Kopf war ein Grid mit "Marke ueber zwei Zeilen"; ein dritter Pfeil-Platzhalter
+     hat Titel und Unterzeile auseinandergerissen. Als Flexbox mit eigenem Textblock
+     bleibt beides zusammen und der Pfeil sitzt rechts. */
+  /* Feste Bereiche statt Flexbox: Marke links, Titel und Unterzeile gestapelt in der
+     Mitte, Pfeil rechts. Als Flexbox nahm der Titel seine volle Breite und die Unterzeile
+     wurde in eine Spalte von wenigen Zeichen gequetscht — wortweiser Umbruch. */
+  details.kit > summary { display: grid; align-items: center; gap: 1px 11px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "code title arrow" "code sub arrow"; }
+  details.kit > summary > code { grid-area: code; }
+  details.kit > summary > b { grid-area: title; }
+  details.kit > summary > span { grid-area: sub; }
+  details.kit > summary::after { content: ""; grid-area: arrow; width: 7px; height: 7px;
+    border-right: 1.5px solid var(--text-3); border-bottom: 1.5px solid var(--text-3);
+    transform: rotate(45deg); transition: transform .16s; }
+  details.kit[open] > summary::after { transform: rotate(-135deg); }
+  details.kit:not([open]) > summary { padding-bottom: 0; margin-bottom: 0; border-bottom: 0; }
+  .plan { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px 16px; box-shadow: var(--shadow-1); margin-bottom: 16px; }
+  .plan-hd { display: flex; align-items: center; gap: 14px; padding-bottom: 14px;
+    margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .plan-n { flex: none; width: 42px; height: 42px; border-radius: 10px; background: var(--brand);
+    color: #fff; font-size: 19px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .plan-hd b { display: block; font-size: 15px; font-weight: 650; letter-spacing: -.01em; }
+  .plan-hd span { font-size: 12px; color: var(--text-3); }
+  /* Phasen statt einer Liste aus fuenfzehn: drei bis fuenf Schritte kann man sich merken,
+     fuenfzehn am Stueck liest niemand. Je Schritt eine Zeile sichtbar, das Warum auf Klick.
+     Vorher standen hier fuenfzehn Absaetze untereinander, das war eine Textwand. */
+  .ph { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap;
+    margin: 18px 0 9px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .ph:first-of-type { margin-top: 4px; padding-top: 0; border-top: 0; }
+  .ph b { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-2); }
+  .ph span { font-size: 11.5px; color: var(--text-3); }
+
+  .plan-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+  .plan-steps li { display: grid; grid-template-columns: 24px 1fr; gap: 11px; align-items: start; }
+  .plan-steps li::before { content: attr(value); margin-top: 5px;
+    width: 24px; height: 24px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border-strong);
+    font-size: 11px; font-weight: 700; color: var(--text-3);
+    display: flex; align-items: center; justify-content: center; }
+  .plan-steps details { min-width: 0; }
+  /* Feste Bereiche: Titel oben, Einzeiler darunter, Pfeil rechts ueber beide Zeilen.
+     Ohne das landete der Einzeiler rechts neben dem Titel und der Pfeil unter der Nummer. */
+  .plan-steps summary { display: grid; gap: 2px 12px; cursor: pointer;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "title arrow" "sub arrow";
+    list-style: none; padding: 6px 8px 6px 0; border-radius: 7px; }
+  .plan-steps summary b { grid-area: title; }
+  .plan-steps summary i { grid-area: sub; }
+  .plan-steps summary::-webkit-details-marker { display: none; }
+  .plan-steps summary:hover { background: var(--bg); }
+  .plan-steps summary::after { content: ""; grid-area: arrow; align-self: center; width: 6px; height: 6px;
+    border-right: 1.5px solid var(--border-strong); border-bottom: 1.5px solid var(--border-strong);
+    transform: rotate(45deg); transition: transform .16s; }
+  .plan-steps details[open] summary::after { transform: rotate(-135deg); }
+  .plan-steps summary b { font-size: 13.5px; font-weight: 650; display: flex; align-items: center;
+    gap: 7px; flex-wrap: wrap; }
+  .plan-steps summary i { font-style: normal; font-size: 12.5px; color: var(--text-3); }
+  .plan-steps details > p { margin: 0 0 10px; padding: 10px 13px; font-size: 12.5px; line-height: 1.6;
+    color: var(--text-2); background: var(--bg); border-radius: 8px; max-width: 82ch; }
+  /* Ein Bild, kein Bilderbuch: das Diagramm steht nur dort, wo es etwas sagt, das der Satz
+     nicht sagt — naemlich dass der Ordner in der Mitte steht und welche zwei Verbindungen
+     nicht verhandelbar sind. Fuenfzehn Icons waeren Dekoration, kein Erklaerstueck. */
+  .plan-steps svg.map { display: block; width: 100%; max-width: 560px; height: auto;
+    margin: 2px 0 12px; color: var(--text); }
+  .plan-steps svg.map text { fill: var(--text-2); font-family: inherit; }
+  .plan-steps svg.map .req { fill: var(--brand-soft, #eaf5ee); stroke: var(--brand); stroke-width: 1.2; }
+  .plan-steps svg.map .opt { fill: var(--bg); stroke: var(--border-strong); stroke-width: 1.2;
+    stroke-dasharray: 3 2.5; }
+  /* Detail-Listen in den Aufklappern: Begriff links fett, Erklaerung darunter.
+     Kein Raster mit zwei Spalten — bei acht Eintraegen wird die rechte Spalte sonst
+     zu schmal und bricht wortweise um, derselbe Fehler wie in den Kartenkoepfen. */
+  .plan-steps dl.det { margin: 0 0 10px; padding: 12px 14px; background: var(--bg); border-radius: 8px;
+    max-width: 82ch; }
+  .plan-steps dl.det dt { font-size: 12.5px; font-weight: 650; color: var(--text);
+    display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .plan-steps dl.det dt .tg { background: var(--card); }
+  .plan-steps dl.det dd { margin: 2px 0 11px; font-size: 12.5px; line-height: 1.6; color: var(--text-3); }
+  .plan-steps dl.det dd:last-of-type { margin-bottom: 0; }
+  .plan-steps .tg { flex: none; font-size: 9.5px; font-weight: 700; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--text-3); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; }
+  .plan-steps .tg.opt { background: var(--brand-soft, #eaf5ee); border-color: transparent;
+    color: var(--brand-deep, var(--brand)); text-transform: none; letter-spacing: 0; font-weight: 600; }
+
+  .kitgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 14px; }
+  .kit { background: var(--card); border: 1px solid var(--border); border-radius: 11px;
+    padding: 15px 17px 13px; box-shadow: var(--shadow-1); }
+  .kit-h { display: grid; grid-template-columns: auto 1fr; gap: 3px 9px; align-items: center;
+    padding-bottom: 10px; margin-bottom: 9px; border-bottom: 1px solid var(--border); }
+  .kit-h code { grid-row: span 2; align-self: start; font-size: 9.5px; font-weight: 700; letter-spacing: .09em;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 5px;
+    padding: 4px 7px; color: var(--text-3); }
+  .kit-h b { font-size: 14px; font-weight: 650; letter-spacing: -.01em; color: var(--text); }
+  .kit-h span { font-size: 11.5px; line-height: 1.4; color: var(--text-3); }
+  .kit-h code.mini { grid-row: auto; padding: 1px 4px; font-size: 10px; letter-spacing: 0; }
+  /* Zwei beschriftete Gruppen statt einer Legende: was mitkommt und was auf Wunsch
+     kommt, ist die wichtigste Aussage der Uebersicht. Sie an einem 7px-Punkt haengen zu
+     lassen war zu schwach — jetzt traegt die Struktur sie, der Punkt bestaetigt nur noch. */
+  .kit-grp { font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+    color: var(--text-3); margin: 13px 0 7px; display: flex; align-items: center; gap: 7px; }
+  .kit-grp:first-of-type { margin-top: 2px; }
+  .kit-grp::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none;
+    border: 1.5px solid var(--border-strong); }
+  .kit-grp.on { color: var(--brand-deep, var(--text-2)); }
+  .kit-grp.on::before { background: var(--brand); border-color: var(--brand); }
+  .kit li::before { display: none; }
+  .kit li { grid-template-columns: 1fr; }
+  .kit li b, .kit li i { grid-column: 1; }
+  .kit ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .kit li { display: grid; grid-template-columns: 13px 1fr; gap: 8px; align-items: baseline; font-size: 12.5px; }
+  .kit li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; align-self: center;
+    border: 1.5px solid var(--border-strong); }
+  .kit li.on::before { background: var(--brand); border-color: var(--brand); }
+  /* Beide Textknoten muessen in Spalte 2. Ohne das rutscht das <i> in die 13px schmale
+     Punkt-Spalte und bricht wortweise um. */
+  .kit li b { grid-column: 2; font-weight: 650; color: var(--text); }
+  .kit li i { grid-column: 2; font-style: normal; font-size: 11.5px; line-height: 1.5;
+    color: var(--text-3); margin-top: 1px; }
+
+  .deckbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 12px 0 6px; }
+  .deckspeed { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 999px; overflow: hidden; }
+  .deckspeed button { border: 0; background: var(--card); cursor: pointer; font: inherit; font-size: 12.5px;
+    font-weight: 600; color: var(--text-3); padding: 7px 13px; border-right: 1px solid var(--border); }
+  .deckspeed button:last-child { border-right: 0; }
+  .deckspeed button:hover { color: var(--brand); }
+  .deckspeed button.on { background: var(--brand); color: #fff; }
+  .deckbar a { font-size: 12.5px; font-weight: 600; }
+  .decknote { margin: 4px 0 8px; font-size: 12.5px; line-height: 1.55; color: var(--text-3); }
 </style>
 </head>
 <body>
@@ -526,25 +900,28 @@
   <div class="top-inner">
     <div>
       <h1>{{DATE_LONG}}</h1>
-      <div class="eyebrow">{{USER_NAME}} · Tages-Cockpit</div>
+      <div class="eyebrow">{{USER_NAME}} · Daily Cockpit</div>
     </div>
     <div class="meta">
       <div><strong>{{META_LINE}}</strong></div>
-      <div>Stand {{GENERATED_AT}} · lädt sich selbst neu</div>
+      <div>As of {{GENERATED_AT}} · reloads itself</div>
+      <button class="skinbtn" id="skinbtn" type="button">Pixel look</button>
     </div>
   </div>
 </header>
 
 <nav class="tabs" id="tabs">
   <div class="tabs-inner">
-    <button class="tab active" data-tab="heute">Heute</button>
-    <button class="tab" data-tab="kalender">Kalender</button>
-    <button class="tab" data-tab="projekte">Projekte &amp; Notizen</button>
+    <button class="tab active" data-tab="heute">Today</button>
+    <button class="tab" data-tab="kalender">Calendar</button>
+    <button class="tab" data-tab="projekte">Projects &amp; Notes</button>
     <button class="tab" data-tab="workspace">Workspace</button>
     <button class="tab" data-tab="tools">Start Here</button>
-    <button class="tab" data-tab="hilfe">Hilfe</button>
+    <button class="tab" data-tab="audit">Audit</button>
   </div>
 </nav>
+
+<div id="skin-balls" aria-hidden="true"></div>
 
 <div class="wrap">
 
@@ -558,12 +935,13 @@
       <div class="brf-body">
         <p class="brf-lead">{{BRIEFING_LEAD}}</p>
         <div class="brf-text">{{BRIEFING}}</div>
+        <div class="brf-secs">{{BRIEFING_SECTIONS}}</div>
         <aside class="brf-meta" id="brf-meta"></aside>
       </div>
     </details>
     <details class="briefing notes-drop" id="notes-drop">
       <summary>
-        <span class="label">Notizen</span>
+        <span class="label">Notes</span>
         <span class="brf-teaser" id="notes-teaser"></span>
         <span class="brf-toggle" aria-hidden="true"></span>
       </summary>
@@ -571,35 +949,35 @@
     </details>
     <div class="cardbox inboxbox" id="inboxbox" data-collapse-empty>
       <h2>Inbox</h2>
-      <p class="sub">Wartet auf deine Entscheidung — im Chat: „übernimm 1 ins Projekt X" · „verwirf 2". Mail-Funde und lose Notizen, noch keine Tasks.</p>
+      <p class="sub">Waiting for your decision — in the chat: "take 1 into project X" · "discard 2". Mail findings and loose notes, not tasks yet.</p>
       <ul class="task-list inbox-list" id="inbox-list">{{INBOX_ITEMS}}</ul>
     </div>
     <div class="cardbox">
       <div class="toolbar">
         <div class="plan-row" id="plan-row" {{PLAN_STATE}} hidden>
-          <span class="label plan-label">Tagesplan</span>
+          <span class="label plan-label">Day plan</span>
           <div class="plan-bar"><i id="plan-bar"></i></div>
           <span class="plan-count" id="plan-count"></span>
         </div>
       <div class="fbar" id="fbar">
-        <div class="fchip" data-dim="project"><button class="fbtn" type="button">Projekt</button><div class="fmenu"></div></div>
+        <div class="fchip" data-dim="project"><button class="fbtn" type="button">Project</button><div class="fmenu"></div></div>
         <div class="fchip" data-dim="status"><button class="fbtn" type="button">Status</button><div class="fmenu"></div></div>
-        <div class="fchip" data-dim="cat"><button class="fbtn" type="button">Art</button><div class="fmenu"></div></div>
-        <button class="pill sortpill" id="sort-due" type="button" title="Nach Fälligkeit sortieren">↕ Fälligkeit</button>
+        <div class="fchip" data-dim="cat"><button class="fbtn" type="button">Type</button><div class="fmenu"></div></div>
+        <button class="pill sortpill" id="sort-due" type="button" title="Sort by due date">↕ Due date</button>
         </div>
       </div>
       <div class="task-cols" aria-hidden="true">
-        <span>Task</span><span>Projekt</span><span>Art</span><span>Status</span><span>Fällig</span>
+        <span>Task</span><span>Project</span><span>Type</span><span>Status</span><span>Due</span>
       </div>
       <ul class="task-list" id="task-list">{{TASK_ITEMS}}</ul>
-      <p class="hint">Dieses Dashboard ist reine Ansicht. Alles Operative läuft über Claude: „X ist erledigt“ · „übernimm 1 ins Projekt Y“ · „verwirf 2“ · „nimm Z in den Tagesplan“.</p>
+      <p class="hint">This dashboard is view-only. Everything operational runs through Claude: “X is done” · “take 1 into project Y” · “discard 2” · “put Z on the day plan”.</p>
     </div>
   </div><!-- /pane-heute -->
 
   <div class="tabpane" id="pane-kalender" hidden>
     <div class="cal-cols">
       <div class="cardbox">
-        <h2>Heute</h2>
+        <h2>Today</h2>
         <ol class="tl">{{AGENDA}}</ol>
       </div>
     </div>
@@ -617,225 +995,93 @@
       <symbol id="i-puzzle" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></symbol>
       <symbol id="i-repo" viewBox="0 0 24 24"><circle cx="7" cy="6" r="2.5"/><circle cx="7" cy="18" r="2.5"/><circle cx="17" cy="9" r="2.5"/><path d="M7 8.5v7"/><path d="M17 11.5c0 3-3 3.5-7 4"/></symbol>
       <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+      <symbol id="i-open" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" stroke-dasharray="2.8 3.2"/><path d="M12 8.2v4.3"/><path d="M12 15.6v.01"/></symbol>
       <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="3.5"/><path d="M11.5 12H21"/><path d="M17.5 12v3"/><path d="M20 12v2.5"/></symbol>
     </defs></svg>
 
-    <h3 class="label">Deine Verbindungen</h3>
-    <p class="sec-sub">Die sechs Anschlüsse deines Systems. Grüner Punkt heißt verbunden, grauer Ring heißt noch offen. Verbunden wird einmalig in Claude Cowork unter Einstellungen und Connectors; die Anleitung steht in <code>reference/mcp.md</code>.</p>
-    <div class="slots" id="slots">
-      <!-- {{SLOTS}} — Fragment-Format (wird 1:1 an dieser Stelle eingesetzt):
-           IMMER genau sechs Slots, IMMER in dieser Reihenfolge, auch wenn die meisten offen sind:
-             1. Mail · 2. Kalender · 3. Dateiablage · 4. Team-Chat · 5. CRM · 6. Entwicklung
-
-           Gefüllter Slot (Anschluss steht):
-             <div class="slot on"><span class="slot-dot"></span><div class="slot-body"><p class="slot-cap">MAIL</p><p class="slot-name">PRODUKT<span class="slot-badge">heute aktiv</span></p><p class="slot-desc">ZWECK</p></div></div>
-
-           Offener Slot (noch nicht verbunden):
-             <div class="slot"><span class="slot-dot"></span><div class="slot-body"><p class="slot-cap">CRM</p><p class="slot-name muted">offen</p><p class="slot-desc">WANN-ES-SICH-LOHNT + Verbinde-Hinweis</p></div></div>
-
-           Regeln:
-             - SLOT-CAP ist immer der Slot-Name in Großbuchstaben, nie der Produktname.
-             - PRODUKT = das tatsächlich verbundene Produkt (Outlook, Google Kalender, SharePoint, Slack, …).
-             - <span class="slot-badge">heute aktiv</span> NUR, wenn der Anschluss heute wirklich Daten geliefert hat.
-               Kein Abzeichen ist der Normalfall; der grüne Punkt sagt bereits, dass es steht.
-             - ZWECK = ein kurzer Satz, was dieser Anschluss für den Nutzer tut.
-             - Offene Slots tragen nie Rot und nie das Wort Fehler. Sie sind eine Möglichkeit, kein Defekt.
-             - Alle Texte HTML-escapen (&amp; &lt; &gt;), keine Em-Dashes.
-             - Quelle und Regeln: reference/dashboard-render.md
-             - Wird der Platzhalter gar nicht ersetzt (oder bleibt leer), setzt das Template selbst
-               alle sechs Slots als "offen" mit einem generischen Hinweis. -->
-      {{SLOTS}}
-    </div>
-
-    <h3 class="label sec">Befehle</h3>
-    <p class="sec-sub">Die festen Befehle deines Systems. Auswendig lernen musst du sie nicht, im Chat reicht auch normale Sprache.</p>
-    <div class="invgrid">
-      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Tages-Briefing</p><p class="inv-desc">Kalender, Mail-Triage und Tasks zum Tagesstart. Baut auch dieses Dashboard.</p><code class="inv-chip">/morning</code></div></div>
-      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Tagesabschluss</p><p class="inv-desc">Plan gegen Realität, was liegen bleibt, was entschieden wurde.</p><code class="inv-chip">/eod</code></div></div>
-      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Mail-Entwurf</p><p class="inv-desc">Mail in deinem Stil, fertig zum Abschicken in deinem Mailprogramm.</p><code class="inv-chip">/email</code></div></div>
-      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">Dokumente einsortieren</p><p class="inv-desc">Dokumente, Transkripte und Notizen automatisch in deine Projekte einsortieren.</p><code class="inv-chip">/ingest</code></div></div>
-      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span><div class="inv-body"><p class="inv-name">System prüfen</p><p class="inv-desc">Schaut nach, ob mit deinem Workspace selbst alles stimmt. Nützlich, wenn etwas klemmt.</p><code class="inv-chip">/checkup</code></div></div>
-      <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-puzzle"/></svg></span><div class="inv-body"><p class="inv-name">Mitgelieferte Fähigkeiten</p><p class="inv-desc">Claude zieht bei Bedarf selbst: PDF, Word und PowerPoint, Webseiten holen, Browser bedienen, Datenbanken abfragen, Texte straffen. Kein Befehl nötig, sag einfach, was du brauchst.</p></div></div>
-    </div>
     <div class="rowlist" id="cmduse" data-collapse-empty>
-      <!-- {{COMMANDS_USED}} — "Zuletzt benutzt", eine Zeile pro Befehl:
-             <div class="cmduse"><code>/morning</code><span>zuletzt heute 07:31</span></div>
-           Liegt der letzte Lauf ungewöhnlich lange zurück, zusätzlich am Zeilenende:
-             <span class="cmduse-warn">lange her</span>
-           Welche Befehle auftauchen, wie "zuletzt" formuliert wird und ab wann "lange her" gilt,
-           steht im Render-Vertrag. Quelle und Regeln: reference/dashboard-render.md
-           Keine Zeile (oder Platzhalter nicht ersetzt) → der Block klappt komplett weg. -->
+      <!-- {{COMMANDS_USED}} — "recently used", one line per command:
+             <div class="cmduse"><code>/morning</code><span>last run today 07:31</span></div>
+           If the last run is unusually long ago, additionally at the end of the line:
+             <span class="cmduse-warn">a while ago</span>
+           Which commands show up, how "last run" is phrased and from when "a while ago" applies
+           is in the render contract. Source and rules: reference/dashboard-render.md
+           No line (or placeholder not replaced) → the block collapses entirely. -->
       {{COMMANDS_USED}}
     </div>
 
-    <h3 class="label sec">Deine Ausstattung</h3>
-    <p class="sec-sub">Was dein System kann und was davon bei dir schon eingerichtet ist. Farbiges Symbol heißt eingerichtet, graues heißt noch offen. Gepflegt wird die Liste in <code>context/config.yaml</code> unter <code>inventory</code>.</p>
+    <h3 class="label">Your setup, right now</h3>
+    <p class="sec-sub">What this workspace can do, read live off your machine: skills, MCP servers, CLIs, repos, plugins, routines and API keys. Each tile shows the state, clicking opens the details. What an entry is for is maintained in <code>context/config.yaml</code> under <code>inventory</code>.</p>
     <div id="ausstattung">
-      <!-- {{AUSSTATTUNG}} — Fragment-Format (wird 1:1 an dieser Stelle eingesetzt):
-           Sechs Kategorie-Blöcke, IMMER alle sechs, IMMER in dieser Reihenfolge, jeder exakt so:
-
-             <h4 class="inv-cat">ÜBERSCHRIFT</h4>
-             <div class="invgrid" data-hint="HINWEIS-HTML">KARTEN</div>
-
-           Kategorie / Quelle in config.yaml / ÜBERSCHRIFT / Icon-Id / HINWEIS-HTML (bei leerer Liste):
-             1. connectors → "Verbindungen"  · #i-plug   · Noch keine Verbindung eingetragen. Mail, Kalender und Dateiablage verbindest du einmal in Claude Cowork unter Einstellungen &rarr; Connectors; die Anleitung steht in <code>reference/mcp.md</code>
-             2. clis       → "Werkzeuge"     · #i-cli    · Noch kein Werkzeug eingetragen. firecrawl liest Webseiten, playwright bedient einen echten Browser; die Installation steht in <code>reference/tools.md</code>
-             3. plugins    → "Plugins"       · #i-puzzle · Noch kein Plugin eingetragen. Das Paket braucht keines; welche sich lohnen, steht in <code>reference/plugins.md</code>
-             4. repos      → "Repos"         · #i-repo   · Noch kein Repo eingetragen. Trag Name und Adresse in <code>context/config.yaml</code> unter <code>inventory.repos</code> ein
-             5. routines   → "Routinen"      · #i-clock  · Noch keine Routine eingetragen. Routinen lassen Claude zeitgesteuert arbeiten, zum Beispiel das Briefing morgens um 7; siehe <code>SETUP.md</code>
-             6. accounts   → "Zugänge"       · #i-key    · Noch kein Zugang eingetragen. Manche Werkzeuge brauchen einen eigenen Schlüssel, zum Beispiel firecrawl zum Lesen von Webseiten; wie das geht, steht in <code>reference/tools.md</code>
-
-           KARTEN = pro Eintrag der Kategorie genau eine Karte:
-
-             <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-plug"/></svg></span><div class="inv-body"><p class="inv-name">NAME<span class="inv-badge">ABZEICHEN</span></p><p class="inv-desc">BESCHREIBUNG</p><code class="inv-chip">CHIP</code></div></div>
-
-           Regeln für die Karte:
-             - Klasse "inv-card on" wenn status: true (bzw. bei repos/routines immer), sonst "inv-card" ohne "on".
-             - <span class="inv-badge">…</span> NUR wenn es etwas zu sagen gibt, sonst ganz weglassen:
-               connectors ohne status → "nicht verbunden" · clis ohne status → "nicht installiert" · plugins ohne status → "nicht installiert"
-               · accounts ohne status → "kein Schlüssel hinterlegt".
-               Bei accounts steht nie der Schlüssel selbst auf der Karte, nur der Name des Dienstes und wofür er da ist.
-               Ist etwas eingerichtet, kein Abzeichen setzen; das farbige Symbol sagt es bereits.
-               AUSNAHME repos: die Karte des Workspace-Repos trägt "gesichert vor X" (aus git log, siehe dashboard-render.md).
-               AUSNAHME routines: die Karte darf zusätzlich zum Chip ein Abzeichen "zuletzt gelaufen vor X" tragen.
-                 Ist unklar, ob die Routine überhaupt noch läuft (letzter Lauf deutlich über dem Zeitplan),
-                 stattdessen die amber-Variante <span class="inv-badge warn">läuft evtl. nicht mehr</span> setzen.
-                 Wann welches greift: siehe dashboard-render.md.
-             - <code class="inv-chip">…</code> NUR wo eine Adresse oder ein Zeitplan dazugehört, sonst weglassen:
-               repos → url · routines → schedule. connectors/clis/plugins/accounts tragen keinen Chip.
-             - BESCHREIBUNG = purpose aus config.yaml. Fehlt purpose, Karte ohne <p class="inv-desc">.
-             - Alle Texte HTML-escapen (&amp; &lt; &gt;), keine Em-Dashes.
-             - Leere Kategorie: den Block trotzdem ausgeben, das <div class="invgrid"> einfach leer lassen.
-               Den Hinweis setzt das Template selbst aus data-hint. Wird der Platzhalter gar nicht ersetzt,
-               zeigt das Template ebenfalls einen ruhigen Hinweis statt einer Lücke. -->
+      <!-- {{AUSSTATTUNG}} — NOT written by hand. The fragment comes from
+             node reference/scripts/inventory.js
+           Seven category blocks, always all seven, always in this order:
+             Skills · Connections · Tools · Repos · Plugins · Routines · Access keys
+           Per block:  <h4 class="inv-cat">HEADING</h4><div class="invgrid" data-hint="HINT">CARDS</div>
+           Per entry:  <div class="inv-card on"><span class="inv-ico"><svg><use href="#i-cmd"/></svg></span>
+                         <div class="inv-body"><p class="inv-name">NAME<span class="inv-badge">BADGE</span></p>
+                         <p class="inv-desc">PURPOSE</p><code class="inv-chip">CHIP</code></div></div>
+           Icons: skills #i-cmd · connections #i-plug · tools #i-cli · repos #i-repo
+                  · plugins #i-puzzle · routines #i-clock · keys #i-key
+           An empty category still gets its block, just with an empty invgrid; the template
+           then shows the data-hint itself. Placeholder not replaced at all → same calm hint.
+           Rules, sources and what makes a card "on": reference/dashboard-render.md -->
       <div id="inv-dyn">{{AUSSTATTUNG}}</div>
       <div class="health" id="health" data-collapse-empty>
-        <h4>Was an deinem System noch offen ist</h4>
+        <h4>What is still open on your system</h4>
         <ul>{{SELBSTTEST}}</ul>
       </div>
     </div>
 
-    <h3 class="label sec">Noch möglich</h3>
-    <p class="sec-sub">Was du zusätzlich einrichten könntest, und was es dir bringen würde. Nichts davon ist ein Fehler oder eilig. Wenn dich etwas anspricht, sag den Satz unter der Karte einfach im Chat.</p>
-    <div class="tgrid" id="offen">
-      <!-- {{OFFEN}} — pro noch nicht eingerichteter Möglichkeit eine Kachel im .tool-Format:
-             <div class="tool"><h3>WAS FEHLT</h3><p>WAS ES BRINGT</p><p class="say">„SATZ FÜR DEN CHAT"</p></div>
-           Regeln:
-             - Einladender Ton, nie mahnend: kein Rot, kein Ausrufezeichen, kein "du solltest".
-               Ein leerer Anschluss ist eine offene Möglichkeit, kein Mangel.
-             - WAS ES BRINGT ist konkret und auf den Nutzer bezogen, nicht auf die Technik.
-             - Der Satz in .say ist wörtlich das, was der Nutzer im Chat sagen kann.
-             - Alle Texte HTML-escapen (&amp; &lt; &gt;), keine Em-Dashes.
-           Welche Punkte auftauchen und wie viele: reference/dashboard-render.md
-           Nichts offen (oder Platzhalter nicht ersetzt) → das Template setzt selbst eine freundliche Zeile. -->
-      {{OFFEN}}
-    </div>
-
-    <h3 class="label sec">Dein Gedächtnis, live</h3>
-    <p class="sec-sub">Die Dateien in <code>context/</code>, in denen dein Arbeitsstand wirklich liegt. Sie sind der Grund, warum das System dich noch kennt, wenn du morgen eine frische Unterhaltung startest.</p>
+    <h3 class="label sec">Your memory, live</h3>
+    <p class="sec-sub">The files in <code>context/</code> where your working state actually lives. They are the reason the system still knows you when you start a fresh conversation tomorrow.</p>
     <div class="rowlist" id="memory">
-      <!-- {{MEMORY_FILES}} — eine Zeile pro Arbeitsdatei aus context/:
-             <div class="memrow"><code>PROJECTS.md</code><span>ZWECK</span><span class="memwhen">aktualisiert VOR X</span></div>
-           ZWECK = ein kurzer Halbsatz, was in der Datei steht (die Projekte, die Aufgaben, die Historie).
-           Welche Dateien auftauchen und wie der Zeitpunkt formuliert wird: reference/dashboard-render.md
-           Keine Zeile (oder Platzhalter nicht ersetzt) → das Template setzt selbst einen ruhigen Hinweis. -->
+      <!-- {{MEMORY_FILES}} — one line per working file from context/:
+             <div class="memrow"><code>PROJECTS.md</code><span>PURPOSE</span><span class="memwhen">updated X ago</span></div>
+           PURPOSE = a short half sentence on what is in the file (the projects, the tasks, the history).
+           Which files show up and how the timestamp is phrased: reference/dashboard-render.md
+           No line (or placeholder not replaced) → the template sets a calm hint itself. -->
       {{MEMORY_FILES}}
     </div>
 
-    <h3 class="label sec">Eigene Tools</h3>
-    <p class="sec-sub">Selbst gebaute Werkzeuge deines Teams. Gepflegt wird die Liste in <code>context/config.yaml</code> unter <code>own_tools</code>: Name, Zweck, Adresse. Das Dashboard verlinkt sie nur, es führt nichts aus.</p>
+    <h3 class="label sec">Your own tools</h3>
+    <p class="sec-sub">Tools your team built itself. The list is maintained in <code>context/config.yaml</code> under <code>own_tools</code>: name, purpose, address. The dashboard only links them, it runs nothing.</p>
     <div class="tgrid" id="own-tools">
-      <!-- {{OWN_TOOLS}} — pro Eintrag aus config.yaml → own_tools eine Kachel:
-           <a class="tool" href="ADRESSE" target="_blank" rel="noopener">[<code>Kategorie</code>]<h3>Name</h3><p>Zweck</p><p class="say">ADRESSE</p></a>
-           Kein Eintrag (oder Platzhalter nicht ersetzt) → das Template setzt selbst einen Hinweis. -->
+      <!-- {{OWN_TOOLS}} — one tile per entry from config.yaml → own_tools:
+           <a class="tool" href="ADDRESS" target="_blank" rel="noopener">[<code>Category</code>]<h3>Name</h3><p>Purpose</p><p class="say">ADDRESS</p></a>
+           No entry (or placeholder not replaced) → the template sets a hint itself. -->
       {{OWN_TOOLS}}
     </div>
 
-    <h3 class="label sec">Zusätzlich verfügbar</h3>
-    <p class="sec-sub">Skills und Plugins, die nicht Teil dieses Pakets sind, die du dir aber dazuholen kannst. Frag Claude, wenn du etwas brauchst, das deine Ausstattung oben nicht abdeckt.</p>
+    <h3 class="label sec">Additionally available</h3>
+    <p class="sec-sub">Skills and plugins that are not part of this package but that you can add. Ask Claude if you need something your setup above does not cover.</p>
     <div class="tgrid" id="tools-extra">
-      <!-- {{TOOLS_EXTRA}} — pro Empfehlung eine Kachel im .tool-Format (wie "Eigene Tools").
-           Kein Eintrag (oder Platzhalter nicht ersetzt) → das Template setzt selbst einen Hinweis. -->
+      <!-- {{TOOLS_EXTRA}} — one tile in .tool format per recommendation (like "Your own tools").
+           No entry (or placeholder not replaced) → the template sets a hint itself. -->
       {{TOOLS_EXTRA}}
     </div>
   </div><!-- /pane-workspace -->
 
   <div class="tabpane" id="pane-tools" hidden>
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:18px;box-shadow:var(--shadow-1)">
-      <b style="font-size:13.5px">👋 Neu hier? Das ganze System in 3 Minuten (Video)</b>
-      <video controls preload="none" src="../reference/quickstart.mp4" style="width:100%;border-radius:8px;background:#000;display:block;margin-top:10px"></video>
-      <p style="margin:8px 0 0;font-size:12.5px;line-height:1.55;color:var(--text-2)">Startet nichts? Dann liegt die Datei noch nicht bei — sie gehört in <code>reference/quickstart.mp4</code>. Kein Problem: Der Guide darunter deckt dasselbe ab.</p>
+    <p class="sec-sub" style="margin:0 0 12px">The same page the setup opens on your very first message. It lives in the workspace root as <code>START-HERE.html</code>, so it also works before anything has been set up — one file, two places, nothing that can drift apart.</p>
+    <div class="deckwrap" style="aspect-ratio:auto;height:1400px">
+      <iframe src="../START-HERE.html" title="Start here" loading="lazy" style="width:100%;height:100%;border:0"></iframe>
     </div>
+</div><!-- /pane-tools -->
 
-    <div class="guide">
-      <h3 class="label">So arbeitest du damit</h3>
-      <ol class="guide-steps">
-        <li><b>Morgens</b> „Guten Morgen" sagen. Claude holt Kalender und Mails, briefed dich und baut dieses Dashboard. Optional planst du danach den Tag durch.</li>
-        <li><b>Tagsüber</b> einfach reden, kein Befehl nötig: „Kapitel 3 ist fertig", „warte auf die IT", „Termin lief gut, wir machen X". Claude sortiert es ein.</li>
-        <li><b>Dokumente</b> in den <code>inbox/</code>-Ordner legen und „lies das ein" sagen. Entscheidungen und To-dos landen im richtigen Projekt.</li>
-        <li><b>Abends</b> „Feierabend": kurzer Tagesabschluss, was war und was liegen bleibt. Was in den nächsten Tagen ansteht, fragst du einfach im Chat („was steht diese Woche an?").</li>
-        <li><b>Wenn etwas falsch ist</b>, sag es einfach: „das stimmt nicht", „hab ich längst beantwortet". Wird korrigiert, ohne Diskussion. Kommt derselbe Fehler öfter, wird die Ursache abgestellt.</li>
-        <li><b>In Eile?</b> „Guten Morgen, schnell" lässt die Postfach-Analyse weg: Kalender und Aufgaben in rund 30 Sekunden. <b>Länger weg gewesen?</b> Sag einfach „guten Morgen", du wirst gefragt, was liegengeblieben ist.</li>
-      </ol>
-      <p class="guide-foot">Du musst dir keine Befehle merken. „Was liegt heute an?" tut dasselbe wie „Guten Morgen", und eine frische Unterhaltung pro Tag reicht völlig.</p>
+  <div class="tabpane" id="pane-audit" hidden>
+    <h3 class="label">Audit</h3>
+    <p class="sec-sub">How well this folder works as a system: is what is here actually being used, does Claude find the documents, are they still true, is everything backed up. One tile per dimension, one click shows the findings and what would help. It never runs by itself, say "run an audit" when you want a fresh one.</p>
+    <div id="audit-dyn">
+      <!-- The placeholder below is never written by hand, the fragment comes from
+             node reference/scripts/workspace-audit.js --render
+           It only reads the finished context/audit.json, so it costs nothing. The audit RUN
+           itself never happens inside /morning, only on /audit.
+           No audit.json yet -> the script emits a calm card with the sentence for the chat. -->
+      {{AUDIT}}
     </div>
+  </div><!-- /pane-audit -->
 
-    <h3 class="label sec">Ohne Befehl, einfach sagen</h3>
-    <p class="sec-sub">Diese drei brauchen keinen Befehl. Sag es im Chat in eigenen Worten, der Rest passiert von selbst.</p>
-    <div class="tgrid">
-      <div class="tool"><code>Chat</code><h3>Mein Mail-Stil</h3><p>Einmalig: Claude liest deine gesendeten Mails (nur lesen, nichts wird gesendet) und lernt deinen Schreibstil. Danach klingen alle Entwürfe nach dir, nicht nach Vorlage.</p><p class="say">„Leite meinen Mail-Stil ab"</p></div>
-      <div class="tool"><code>Chat</code><h3>Neuer Case</h3><p>Ordner, Projekt-Steckbrief und erste Aufgaben legt Claude selbst an. Sag einfach, dass etwas Neues anfängt — den Rest macht das System.</p><p class="say">„Ich starte einen neuen Case: …"</p></div>
-      <div class="tool"><code>Chat</code><h3>Problembericht</h3><p>Etwas kaputt und nichts hilft? Claude baut eine fertige Mail an die Person, von der du das System hast — mit allem, was sie wissen muss. Du klickst nur Senden.</p><p class="say">„Schreib einen Problembericht"</p></div>
-    </div>
-
-  </div><!-- /pane-tools -->
-
-  <div class="tabpane" id="pane-hilfe" hidden>
-    <style>
-      .faq { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
-      .faq details { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 11px 16px; box-shadow: var(--shadow-1); }
-      .faq summary { cursor: pointer; font-weight: 600; font-size: 13.5px; letter-spacing: -.01em; }
-      .faq p { margin: 8px 0 2px; font-size: 12.5px; line-height: 1.55; color: var(--text-2); }
-      .faq code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px; }
-    </style>
-
-    <h3 class="label">Es startet nicht richtig</h3>
-    <p class="guide-foot" style="margin-bottom:18px">Du musst hier nichts auswendig lernen — <b>frag einfach im Chat</b>, in eigenen Worten, jederzeit. Diese Seite ist nur dein Spickzettel für den Fall, dass etwas klemmt. Jede Antwort zeigt dir den Satz, den du dazu schreiben kannst.</p>
-    <div class="faq">
-      <details><summary>Ich sage „guten Morgen" und es passiert nichts Besonderes</summary><p>Dann läuft Claude gerade im falschen Ordner und weiß deshalb nichts von deinem System. So kommst du in den richtigen — in <b>VS Code</b>: „Datei → Ordner öffnen", deinen Workspace-Ordner wählen, dann das Claude-Panel in der Seitenleiste aufmachen. Ohne VS Code, <b>Windows</b>: den Ordner im Explorer öffnen, oben in die Adresszeile klicken, <b>cmd</b> tippen, Enter, dann <b>claude</b> tippen, Enter. <b>Mac</b>: Terminal öffnen, <b>cd</b> tippen (mit Leerzeichen), den Ordner aus dem Finder ins Fenster ziehen, Enter, dann <b>claude</b>.</p></details>
-      <details><summary>Die Befehle wie /morning gibt es bei mir nicht</summary><p>Beim Kopieren ist ein unsichtbarer Teil des Ordners verloren gegangen. Das passiert leicht und ist nicht dein Fehler. Bitte die Person, von der du den Ordner hast, um eine frische Kopie und kopiere dann den <b>ganzen Ordner</b>, nicht die Dateien einzeln.</p></details>
-      <details><summary>Das Einrichten wurde unterbrochen</summary><p>Kein Problem. Einfach wieder öffnen und <b>„hallo"</b> schreiben. Claude merkt selbst, wo es aufgehört hat, und macht genau dort weiter.</p></details>
-      <details><summary>Im Briefing fehlen Mails und Kalender</summary><p>Claude hat noch keine Verbindung zu deinem Postfach. Die stellst du einmal in der Claude-App her: Einstellungen öffnen, den Punkt „Connectors" wählen und dort den Dienst verbinden, den ihr nutzt, zum Beispiel Microsoft 365 oder Google Workspace. Danach hier schreiben: <b>„prüf die Mail-Verbindung nochmal"</b>. Unsicher? Schreib <b>„hilf mir, das Postfach zu verbinden"</b>, dann wirst du Schritt für Schritt durchgeführt.</p></details>
-      <details><summary>Es entsteht keine Dashboard-Seite</summary><p>Dafür fehlt ein kleines Hilfsprogramm (Node.js) auf deinem Rechner. Schreib im Chat: <b>„hilf mir, das Dashboard zum Laufen zu bringen"</b>. Das ist einmalig und dauert ein paar Minuten. Alles andere funktioniert auch ohne.</p></details>
-    </div>
-
-    <h3 class="label sec">Im Alltag</h3>
-    <div class="faq">
-      <details><summary>Claude behauptet etwas Falsches</summary><p>Einfach widersprechen: <b>„das stimmt nicht"</b> oder <b>„hab ich längst beantwortet"</b>. Es wird sofort korrigiert, ohne Diskussion. Und mit <b>„mach das rückgängig"</b> holst du den vorherigen Stand deiner Projekte zurück.</p></details>
-      <details><summary>Die Mail-Sortierung passt nicht zu mir</summary><p>Sag in normalen Worten, was anders sein soll: <b>„Newsletter interessieren mich nicht"</b> oder <b>„Mails von X sind immer wichtig"</b>. Claude merkt sich das dauerhaft. Mit störenden Kalender-Einträgen (Gym, private Blöcke) funktioniert es genauso.</p></details>
-      <details><summary>Der Mail-Entwurf taucht nicht im Postfach auf</summary><p>Schau zuerst, ob dein Mailprogramm auf dem Rechner geöffnet ist, es muss laufen. Dann schreib: <b>„versuch den Entwurf nochmal"</b>. Klappt es wieder nicht, beschreib Claude einfach, was du siehst.</p></details>
-      <details><summary>Das Dashboard zeigt alte Daten</summary><p>Schreib: <b>„das Dashboard ist von gestern"</b>, dann wird es neu gebaut. Oben auf der Seite steht übrigens immer, von wann sie ist. Sie tut nie so, als wäre sie aktuell.</p></details>
-      <details><summary>Es gibt plötzlich Dateien mit „ 2" im Namen</summary><p>Solche Doppelgänger legt OneDrive an, wenn zwei Programme gleichzeitig gespeichert haben. Lösch die Kopien mit der „ 2" im Namen im Explorer und arbeite am besten mit nur einem Claude-Fenster in diesem Ordner.</p></details>
-      <details><summary>Ich will ein sehr großes Dokument einlesen lassen</summary><p>Sag vorher kurz Bescheid, dass etwas Großes kommt, dann teilt Claude sich die Arbeit ein. Bei allem, was spürbar Verbrauch kostet, meldet es sich ohnehin, bevor es loslegt.</p></details>
-    </div>
-
-    <h3 class="label sec">Verbrauch im Griff</h3>
-    <div class="faq">
-      <details><summary>Was treibt den Verbrauch — und was nicht?</summary><p>Abgerechnet wird nach Menge, ähnlich wie Datenvolumen. Günstig: der normale Alltag — ein Morgen-Briefing entspricht etwa einer längeren Unterhaltung, und das Sortieren eurer Mails läuft bewusst auf dem günstigsten Modell. Spürbar wird nur: sehr große Dokumente einlesen (lange Transkripte, dicke Decks), Bilder und sehr lange Unterhaltungen. Bei allem Großen meldet sich Claude vorher, bevor es loslegt — du kannst dann nein sagen.</p></details>
-      <details><summary>Meine Unterhaltung läuft seit Tagen mit — ist das schlimm?</summary><p>Für den Verbrauch: ja. Jede neue Nachricht schleppt die ganze bisherige Unterhaltung mit, sie wird also jedes Mal teurer. Der einfache Spar-Trick: <b>eine frische Unterhaltung pro Tag</b> (oder pro neuem Thema). Du verlierst dabei nichts — alles Wichtige steht in den Dateien dieses Ordners, nicht im Chat.</p></details>
-      <details><summary>Wann lohnt sich das stärkste Modell?</summary><p>Für 95 % des Tages reicht die Standardeinstellung. Für wirklich tiefe Analysen oder große Dokument-Synthesen kann sich einmal <b>/model opus</b> lohnen — danach mit <b>/model sonnet</b> zurückschalten. Claude selbst sagt dir an der Stelle auch, wenn sich ein Wechsel lohnt bzw. wenn das starke Modell für eine Routine-Aufgabe gerade verschwendet ist.</p></details>
-    </div>
-
-    <h3 class="label sec">Gut zu wissen</h3>
-    <div class="faq">
-      <details><summary>Darf ich das überhaupt nutzen?</summary><p>Frag Claude: <b>„was liest das System eigentlich alles?"</b> Du bekommst eine Seite Klartext dazu, was gelesen wird und was nie passiert. Die ist genau für den Moment gemacht, in dem dich jemand danach fragt.</p></details>
-      <details><summary>Kann es versehentlich Mails senden oder Termine ändern?</summary><p>Nein. Claude legt nur Entwürfe in dein Postfach, den Senden-Knopf drückst immer du. An deinem Kalender ändert es nie etwas. Und gelöscht wird auch nichts: Was weg soll, wandert in einen Archiv-Ordner und lässt sich zurückholen.</p></details>
-      <details><summary>Ich war zwei Wochen beim Klienten und nichts ist gepflegt</summary><p>Das ist eingeplant. Sag <b>„guten Morgen"</b>, dann wirst du gefragt, was in der Zwischenzeit passiert ist. Zwei, drei Stichpunkte reichen, den Rest räumt Claude selbst auf, auch die längst erledigten Aufgaben.</p></details>
-      <details><summary>Ich habe den Ordner verschoben oder einen neuen Rechner</summary><p>Den ganzen Ordner mitnehmen (wieder: als Ganzes kopieren, nicht die Dateien einzeln). Dann Claude darin öffnen und schreiben: <b>„ich habe den Ordner verschoben"</b>. Den Rest erledigt es selbst.</p></details>
-      <details><summary>Was kostet die Nutzung?</summary><p>Abgerechnet wird nach Verbrauch, ähnlich wie beim Handy nach Datenvolumen. Ein Morgen-Briefing entspricht ungefähr einer längeren Chat-Unterhaltung, der Alltag fällt kaum ins Gewicht. Sparsam unterwegs: <b>„guten Morgen, schnell"</b> lässt die Postfach-Analyse weg.</p></details>
-      <details><summary>Etwas ist kaputt und nichts hier hilft</summary><p>Schreib im Chat: <b>„schreib einen Problembericht"</b>. Claude baut eine fertige Mail an die Person, von der du das System hast, mit allem, was sie wissen muss. Du klickst nur noch auf Senden. Oft ist das Problem in einer neueren Version längst behoben.</p></details>
-    </div>
-  </div><!-- /pane-hilfe -->
 
 
 </div>
@@ -846,96 +1092,225 @@
 </footer>
 
 <script>
-  // Leere Sektionen komplett ausblenden. Mit Liste zaehlt die Liste (der Rahmen hat noch eine
-  // Ueberschrift), ohne Liste zaehlen die eigenen Kind-Elemente — ein unersetzter Platzhalter
-  // ist reiner Text und damit kein Kind-Element, faellt also korrekt als "leer" durch.
+  // The walkthrough starts by itself when the tab is opened, and remembers its speed.
+  // Built from the slides and the podcast by .claude/skills/presentation/make_video.py.
+  (function () {
+    const v = document.getElementById('deckvideo');
+    if (!v) return;
+
+    // A browser only allows sound when a real click started it. Opening the tab IS a
+    // click, so that case plays normally; landing on the page with #tools in the address
+    // is not, and would be refused outright. Muted always works, so fall back to that
+    // instead of silently doing nothing — the controls are right there to unmute.
+    let started = false;
+    window.startWalkthrough = () => {
+      if (started || !v.paused) return;
+      started = true;
+      v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
+    };
+
+    // This block runs after the tab logic, so a page opened straight on Start Here has
+    // already switched panes without anyone here to listen. Catch up on that one case.
+    const pane = document.getElementById('pane-tools');
+    if (pane && !pane.hidden) window.startWalkthrough();
+
+    const speed = document.querySelector('.deckspeed');
+    if (speed) {
+      let rate = 1;
+      try { rate = parseFloat(localStorage.getItem('walkthrough-rate')) || 1; } catch (e) {}
+      const apply = (r) => {
+        v.playbackRate = r;
+        speed.querySelectorAll('button').forEach((b) => b.classList.toggle('on', parseFloat(b.dataset.rate) === r));
+        try { localStorage.setItem('walkthrough-rate', r); } catch (e) {}
+      };
+      apply(rate);
+      // playbackRate is reset when the source loads, so set it again once it is ready
+      v.addEventListener('loadedmetadata', () => { v.playbackRate = rate; });
+      speed.addEventListener('click', (e) => {
+        const b = e.target.closest('button[data-rate]');
+        if (b) { rate = parseFloat(b.dataset.rate); apply(rate); }
+      });
+    }
+  })();
+
+  // Skin switch — the same dashboard, a different look. Purely visual, remembered per browser.
+  (function () {
+    const btn = document.getElementById('skinbtn');
+    const root = document.documentElement;
+    const apply = (skin) => {
+      root.dataset.skin = skin;
+      if (btn) btn.textContent = skin === 'pixel' ? 'Normal look' : 'Pixel look';
+      const balls = document.getElementById('skin-balls');
+      if (balls) {
+        balls.style.display = skin === 'pixel' ? 'flex' : 'none';
+        if (skin === 'pixel' && !balls.childElementCount) {
+          const open = document.querySelectorAll('#task-list .t-row, #task-list .trow, #task-list li').length;
+          balls.innerHTML = Array.from({ length: Math.min(open, 24) }, () => '<i></i>').join('');
+        }
+      }
+      // the pixel fonts are only fetched when the pixel look is actually switched on
+      if (skin === 'pixel' && !document.getElementById('px-font')) {
+        const l = document.createElement('link');
+        l.id = 'px-font'; l.rel = 'stylesheet';
+        l.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap';
+        document.head.appendChild(l);
+      }
+    };
+    let saved = 'classic';
+    try { saved = localStorage.getItem('dashboard-skin') || 'classic'; } catch (e) {}
+    apply(saved);
+    if (btn) btn.addEventListener('click', () => {
+      const next = root.dataset.skin === 'pixel' ? 'classic' : 'pixel';
+      try { localStorage.setItem('dashboard-skin', next); } catch (e) {}
+      apply(next);
+    });
+  })();
+</script>
+<script>
+  // Skill cards: copy the sentence for the chat. The dashboard itself changes nothing on
+  // your machine (rule 8) — it hands you the sentence, Claude does the work with all its
+  // safeguards. Plus a filter, because a hundred skills are not a list you scroll.
+  (function () {
+    const i18n = document.getElementById('inv-i18n');
+    const copiedLabel = (i18n && i18n.dataset.copied) || 'copied';
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('.say-btn');
+      if (!b) return;
+      e.preventDefault();
+      const text = b.dataset.say || '';
+      const done = () => {
+        const before = b.textContent;
+        b.textContent = copiedLabel; b.classList.add('done');
+        setTimeout(() => { b.textContent = before; b.classList.remove('done'); }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, () => fallback(text, done));
+      } else fallback(text, done);
+    });
+    function fallback(text, done) {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch (err) {}
+      ta.remove();
+    }
+
+    const skTile = document.getElementById('kpi-skills');
+    const rows = skTile ? skTile.querySelectorAll('.sk-row') : [];
+    if (rows.length < 20) return;
+    const input = document.createElement('input');
+    input.className = 'inv-filter'; input.type = 'search';
+    input.placeholder = (i18n && i18n.dataset.filter) || 'Search skill';
+    skTile.querySelector('.kpi-body').prepend(input);
+    input.addEventListener('click', (ev) => ev.stopPropagation());
+    const panels = skTile.querySelectorAll('details.ivpanel');
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      panels.forEach((g) => {
+        let hits = 0;
+        g.querySelectorAll('.sk-row').forEach((r) => {
+          const on = !q || r.textContent.toLowerCase().includes(q);
+          r.style.display = on ? '' : 'none';
+          if (on) hits++;
+        });
+        g.style.display = q && !hits ? 'none' : '';
+        g.open = !!q && hits > 0;
+      });
+    });
+  })();
+
+  // Hide empty sections completely. With a list the list counts (the frame still has a
+  // heading), without a list the own child elements count — an unreplaced placeholder
+  // is plain text and therefore not a child element, so it correctly falls through as "empty".
   document.querySelectorAll('[data-collapse-empty]').forEach(el => {
     const ul = el.querySelector('ul');
     if (!(ul ? ul.children.length : el.childElementCount)) el.style.display = 'none';
   });
 
-  // Eigene Tools: keine konfiguriert (oder Platzhalter nicht ersetzt) → ruhiger Hinweis statt Lücke
+  // Own tools: none configured (or placeholder not replaced) → calm hint instead of a gap
   (function () {
     const g = document.getElementById('own-tools');
-    if (g && !g.querySelector('.tool')) g.innerHTML = '<div class="tool"><h3>Noch kein eigenes Tool eingetragen</h3><p>Trag dein erstes Werkzeug in <code>context/config.yaml</code> unter <code>own_tools</code> ein: Name, Zweck und Adresse. Ab dem nächsten Briefing steht es hier.</p><p class="say">„Trag mir ein Tool ins Dashboard ein"</p></div>';
+    if (g && !g.querySelector('.tool')) g.innerHTML = '<div class="tool"><h3>No own tool entered yet</h3><p>Enter your first tool in <code>context/config.yaml</code> under <code>own_tools</code>: name, purpose and address. From the next briefing on it shows up here.</p><p class="say">"Add a tool to my dashboard"</p></div>';
   })();
 
-  // Ausstattung: leere Kategorie → ruhiger Hinweis aus data-hint statt Lücke.
-  // Platzhalter gar nicht ersetzt → ein Hinweis für den ganzen Block.
+  // Setup: empty category → calm hint from data-hint instead of a gap.
+  // Placeholder not replaced at all → one hint for the whole block.
   (function () {
     const box = document.getElementById('inv-dyn');
     if (!box) return;
-    // Keine einzige Kategorie da (Platzhalter nicht ersetzt) → ein Hinweis für den ganzen Block
-    if (!box.querySelector('.invgrid')) {
-      box.innerHTML = '<h4 class="inv-cat">Verbindungen, Werkzeuge, Plugins, Repos, Routinen und Zugänge</h4>' +
-        '<div class="invgrid"><div class="inv-empty">Hier steht noch nichts. Was du verbunden und installiert hast, trägst du in <code>context/config.yaml</code> unter <code>inventory</code> ein, dann steht es ab dem nächsten Briefing hier</div></div>';
+    // Not a single category there (placeholder not replaced) → one hint for the whole block
+    if (!box.querySelector('.invgrid') && !box.querySelector('.kpi')) {
+      box.innerHTML = '<h4 class="inv-cat">Connections, tools, plugins, repos, routines and access keys</h4>' +
+        '<div class="invgrid"><div class="inv-empty">Nothing here yet. What you have connected and installed goes into <code>context/config.yaml</code> under <code>inventory</code>, then it shows up here from the next briefing on</div></div>';
     }
     box.querySelectorAll('.invgrid[data-hint]').forEach(g => {
       if (!g.querySelector('.inv-card')) g.innerHTML = '<div class="inv-empty">' + g.dataset.hint + '</div>';
     });
   })();
 
-  // Verbindungs-Slots: die sechs Anschluesse stehen immer, auch ohne Daten. Ist der Platzhalter
-  // nicht ersetzt, zeigt das Template sie selbst als "offen" — nie eine Luecke, nie ein rohes Fragment.
+  // Connection slots: the six connections are always there, even without data. If the placeholder
+  // is not replaced, the template shows them as "open" itself — never a gap, never a raw fragment.
   (function () {
     const box = document.getElementById('slots');
     if (!box || box.querySelector('.slot')) return;
     box.innerHTML = [
-      ['Mail', 'Sobald das Postfach verbunden ist, holt Claude deine Mails und sortiert sie für dich vor.'],
-      ['Kalender', 'Zeigt deine Termine im Briefing und im Kalender-Tab. Läuft über denselben Connector wie die Mail.'],
-      ['Dateiablage', 'Lässt Claude Dokumente aus eurer Ablage lesen, statt dass du sie einzeln herüberkopierst.'],
-      ['Team-Chat', 'Lohnt sich, sobald wichtige Absprachen im Chat laufen und nicht mehr per Mail.'],
-      ['CRM', 'Lohnt sich, wenn du Kunden oder Leads pflegst und der Stand dort lebt.'],
-      ['Entwicklung', 'Für alle, die Code oder Repos verwalten und den Stand im Blick behalten wollen.'],
+      ['Mail', 'As soon as the mailbox is connected, Claude fetches your mails and pre-sorts them for you.'],
+      ['Calendar', 'Shows your appointments in the briefing and in the calendar tab. Runs through the same connector as the mail.'],
+      ['File storage', 'Lets Claude read documents from your storage instead of you copying them over one by one.'],
+      ['Team chat', 'Worth it as soon as important agreements happen in chat rather than by mail.'],
+      ['CRM', 'Worth it if you maintain customers or leads and the current state lives there.'],
+      ['Development', 'For everyone who manages code or repos and wants to keep an eye on the state.'],
     ].map(([cap, desc]) =>
       '<div class="slot"><span class="slot-dot"></span><div class="slot-body">' +
       '<p class="slot-cap">' + cap.toUpperCase() + '</p>' +
-      '<p class="slot-name muted">offen</p>' +
-      '<p class="slot-desc">' + desc + ' Verbinden kannst du das in Claude Cowork unter Einstellungen und Connectors.</p>' +
+      '<p class="slot-name muted">open</p>' +
+      '<p class="slot-desc">' + desc + ' You can connect this in Claude Cowork under Settings and Connectors.</p>' +
       '</div></div>'
     ).join('');
   })();
 
-  // Noch moeglich: alles eingerichtet (oder Platzhalter nicht ersetzt) → freundliche Zeile statt Luecke.
-  // Bewusst kein data-collapse-empty: "nichts offen" ist eine gute Nachricht und darf sichtbar sein.
+  // Still possible: everything set up (or placeholder not replaced) → friendly line instead of a gap.
+  // Deliberately no data-collapse-empty: "nothing open" is good news and may be visible.
   (function () {
     const g = document.getElementById('offen');
-    if (g && !g.querySelector('.tool')) g.innerHTML = '<div class="inv-empty">Alles eingerichtet. Wenn du später etwas dazunehmen willst, sag im Chat einfach, was dir fehlt.</div>';
+    if (g && !g.querySelector('.tool')) g.innerHTML = '<div class="inv-empty">Everything is set up. If you want to add something later, just say in the chat what you are missing.</div>';
   })();
 
-  // Zusaetzlich verfuegbar: nichts empfohlen (oder Platzhalter nicht ersetzt) → ruhiger Hinweis
+  // Additionally available: nothing recommended (or placeholder not replaced) → calm hint
   (function () {
     const g = document.getElementById('tools-extra');
-    if (g && !g.querySelector('.tool')) g.innerHTML = '<div class="inv-empty">Hier steht noch keine Empfehlung. Sag im Chat, was du brauchst, dann prüft Claude, ob es dafür einen fertigen Skill oder ein Plugin gibt.</div>';
+    if (g && !g.querySelector('.tool')) g.innerHTML = '<div class="inv-empty">No recommendation here yet. Say in the chat what you need, then Claude checks whether there is a ready-made skill or plugin for it.</div>';
   })();
 
-  // Gedaechtnis: noch keine Arbeitsdateien gelesen (oder Platzhalter nicht ersetzt) → ruhiger Hinweis
+  // Memory: no working files read yet (or placeholder not replaced) → calm hint
   (function () {
     const g = document.getElementById('memory');
-    if (g && !g.querySelector('.memrow')) g.innerHTML = '<div class="inv-empty">Hier stehen gleich deine Arbeitsdateien aus <code>context/</code> mit ihrem letzten Stand. Nach dem ersten Briefing füllt sich die Liste von selbst.</div>';
+    if (g && !g.querySelector('.memrow')) g.innerHTML = '<div class="inv-empty">Your working files from <code>context/</code> will show up here shortly with their latest state. After the first briefing the list fills itself.</div>';
   })();
 
-  // Tabs — aktiver Tab überlebt Auto-Reloads (sessionStorage), Deep-Link via #kalender/#projekte
-  const panes = { heute: document.getElementById('pane-heute'), kalender: document.getElementById('pane-kalender'), projekte: document.getElementById('pane-projekte'), workspace: document.getElementById('pane-workspace'), tools: document.getElementById('pane-tools'), hilfe: document.getElementById('pane-hilfe') };
+  // Tabs — the active tab survives auto-reloads (sessionStorage), deep link via #kalender/#projekte
+  const panes = { heute: document.getElementById('pane-heute'), kalender: document.getElementById('pane-kalender'), projekte: document.getElementById('pane-projekte'), workspace: document.getElementById('pane-workspace'), tools: document.getElementById('pane-tools'), audit: document.getElementById('pane-audit') };
   function showTab(name) {
     if (!panes[name]) name = 'heute';
     Object.entries(panes).forEach(([k, p]) => p.hidden = k !== name);
     document.querySelectorAll('#tabs .tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
     sessionStorage.setItem('cockpit-tab', name);
+    // The Start Here walkthrough plays by itself when you land on that tab.
+    if (name === 'tools' && window.startWalkthrough) window.startWalkthrough();
   }
   document.querySelectorAll('#tabs .tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
   showTab(location.hash ? location.hash.slice(1) : (sessionStorage.getItem('cockpit-tab') || 'heute'));
 
   const taskList = document.getElementById('task-list');
   const inboxList = document.getElementById('inbox-list');
-  // Inbox lebt in einer eigenen Karte, gehoert aber zu denselben Zeilen-Mechaniken
-  // (Note aufklappen, Faellig-Rot, Kennzahlen). Ohne diesen Helper zaehlt und
-  // verdrahtet jede Abfrage nur die halbe Wahrheit.
+  // The inbox lives in a card of its own but belongs to the same row mechanics
+  // (expand note, due-date red, metrics). Without this helper every query counts
+  // and wires only half the truth.
   const allRows = sel => [...taskList.querySelectorAll(sel), ...(inboxList ? inboxList.querySelectorAll(sel) : [])];
   const todayISO = '{{DATE_ISO}}';
 
-  // Briefing: standardmäßig OFFEN — Zustand ist View-State (wie Tabs) und überlebt Auto-Reloads;
-  // wer es einmal zuklappt, dem bleibt es zugeklappt
+  // Briefing: OPEN by default — the state is view state (like the tabs) and survives auto-reloads;
+  // whoever collapses it once keeps it collapsed
   const brf = document.getElementById('briefing');
   if (brf) {
     const lead = brf.querySelector('.brf-lead');
@@ -947,7 +1322,7 @@
     }
   }
 
-  // Tagesplan-Fortschritt — vom Render mitgegeben (data-done/data-total aus STATUS.md)
+  // Day-plan progress — passed in by the render (data-done/data-total from STATUS.md)
   (function planProgress() {
     const row = document.getElementById('plan-row');
     const total = +row.dataset.total || 0, done = +row.dataset.done || 0;
@@ -957,30 +1332,30 @@
     document.getElementById('plan-bar').style.width = (100 * done / total) + '%';
   })();
 
-  // Notion-artige Dropdown-Filter (Projekt × Status/Zeit × Art) — Projekt-Optionen aus den Zeilen abgeleitet
-  // Lokal rechnen UND lokal zurückformatieren. toISOString() würde nach UTC konvertieren und
-  // damit östlich von Greenwich (Berlin!) einen Tag verlieren — der "Diese Woche"-Filter
-  // hätte still 6 statt 7 Tage gezeigt.
+  // Notion-style dropdown filters (project × status/time × type) — project options derived from the rows
+  // Compute locally AND format back locally. toISOString() would convert to UTC and therefore
+  // lose a day east of Greenwich (Berlin!) — the "This week" filter would silently
+  // have shown 6 days instead of 7.
   const isoPlus = d => {
     const t = new Date(todayISO + 'T00:00'); t.setDate(t.getDate() + d);
     const p = n => String(n).padStart(2, '0');
     return t.getFullYear() + '-' + p(t.getMonth() + 1) + '-' + p(t.getDate());
   };
   const fState = { project: 'all', status: 'all', cat: 'all' };
-  const CAT_LABELS = { 'deep-work': 'Deep Work', 'quick-win': 'Quick Win', 'komm': 'Kommunikation', 'prep': 'Vorbereitung', 'admin': 'Admin' };
+  const CAT_LABELS = { 'deep-work': 'Deep Work', 'quick-win': 'Quick Win', 'comms': 'Communication', 'prep': 'Prep', 'admin': 'Admin' };
   const DIMS = {
-    project: { label: 'Projekt', options: () =>
+    project: { label: 'Project', options: () =>
       [...new Set([...taskList.querySelectorAll('li[data-id]:not([data-inbox])')].map(li => li.dataset.project))].map(v => [v, v]) },
-    status: { label: 'Status', options: () => [['plan','Tagesplan'],['inbox','Inbox'],['zu-tun','Zu tun'],['wartet','Wartet'],['overdue','Überfällig'],['today','Heute fällig'],['week','Diese Woche']] },
-    cat: { label: 'Art', options: () => Object.entries(CAT_LABELS) },
+    status: { label: 'Status', options: () => [['plan','Day plan'],['inbox','Inbox'],['todo','To do'],['waiting','Waiting'],['overdue','Overdue'],['today','Due today'],['week','This week']] },
+    cat: { label: 'Type', options: () => Object.entries(CAT_LABELS) },
   };
   function matchStatus(li) {
     const due = li.dataset.due || '';
     switch (fState.status) {
       case 'plan':    return li.hasAttribute('data-plan');
       case 'inbox':   return li.hasAttribute('data-inbox');
-      case 'zu-tun':  return li.dataset.status === 'zu-tun';
-      case 'wartet':  return li.dataset.status === 'wartet';
+      case 'todo':    return li.dataset.status === 'todo';
+      case 'waiting': return li.dataset.status === 'waiting';
       case 'overdue': return due && due < todayISO;
       case 'today':   return due === todayISO;
       case 'week':    return due && due >= todayISO && due <= isoPlus(7);
@@ -997,7 +1372,7 @@
   document.querySelectorAll('.fchip').forEach(chip => {
     const dim = chip.dataset.dim, btn = chip.querySelector('.fbtn'), menu = chip.querySelector('.fmenu');
     function renderMenu() {
-      const opts = [['all', 'Alle'], ...DIMS[dim].options()];
+      const opts = [['all', 'All'], ...DIMS[dim].options()];
       menu.innerHTML = '';
       opts.forEach(([v, t]) => {
         const b = document.createElement('button');
@@ -1031,7 +1406,7 @@
     items.forEach(li => taskList.appendChild(li));
   });
 
-  // Notizen-Dropdown: Teaser = neueste Notiz, versteckt wenn leer
+  // Notes dropdown: teaser = newest note, hidden when empty
   (function notesDrop() {
     const nd = document.getElementById('notes-drop');
     if (!nd) return;
@@ -1039,61 +1414,61 @@
     if (!items.length) { nd.style.display = 'none'; return; }
     const newest = items[0].textContent.replace(/\s+/g, ' ').trim();
     document.getElementById('notes-teaser').textContent =
-      items.length + (items.length === 1 ? ' Notiz · ' : ' Notizen · ') + newest;
+      items.length + (items.length === 1 ? ' note · ' : ' notes · ') + newest;
     if (sessionStorage.getItem('cockpit-notes') === 'open') nd.open = true;
     nd.addEventListener('toggle', () => sessionStorage.setItem('cockpit-notes', nd.open ? 'open' : 'closed'));
   })();
 
-  // Task-Kontext aufklappen — reine Ansicht (Mail-Links bleiben klickbar)
+  // Expand task context — view only (mail links stay clickable)
   allRows('li[data-note]').forEach(li => {
     li.addEventListener('click', e => { if (!e.target.closest('a')) li.classList.toggle('open'); });
   });
 
-  // Briefing-Fußzeile: Kennzahlen aus dem DOM gezählt (kein Fragment nötig)
+  // Briefing footer: metrics counted from the DOM (no fragment needed)
   (function briefingMeta() {
     const el = document.getElementById('brf-meta');
     if (!el) return;
     const seg = [];
-    // :not(.rem) — ein Reminder mit Uhrzeit ist ein Reminder, kein Termin. Ohne das zählt er doppelt.
-    const termine = document.querySelectorAll('#pane-kalender .ev[data-time]:not(.rem)').length;
+    // :not(.rem) — a reminder with a time is a reminder, not an event. Without this it counts twice.
+    const events = document.querySelectorAll('#pane-kalender .ev[data-time]:not(.rem)').length;
     const rem = document.querySelectorAll('#pane-kalender .ev.rem').length;
     const inbox = allRows('li[data-inbox]').length;
-    const heute = allRows('li[data-due]').filter(li => li.dataset.due === todayISO).length;
-    const spaet = allRows('li[data-due]').filter(li => li.dataset.due < todayISO).length;
+    const dueToday = allRows('li[data-due]').filter(li => li.dataset.due === todayISO).length;
+    const overdue = allRows('li[data-due]').filter(li => li.dataset.due < todayISO).length;
     const add = (n, label) => { if (n) seg.push('<div><b>' + n + '</b>' + label + '</div>'); };
-    add(termine, termine === 1 ? 'Termin' : 'Termine');
-    add(rem, 'Reminder');
-    add(inbox, inbox === 1 ? 'neue Mail' : 'neue Mails');
-    add(heute, 'heute fällig');
-    add(spaet, 'überfällig');
+    add(events, events === 1 ? 'event' : 'events');
+    add(rem, rem === 1 ? 'reminder' : 'reminders');
+    add(inbox, inbox === 1 ? 'new mail' : 'new mails');
+    add(dueToday, 'due today');
+    add(overdue, 'overdue');
     el.innerHTML = seg.join('');
   })();
 
-  // Fällig-Spalte: überfällige rot markieren
+  // Due column: mark overdue ones red
   allRows('li[data-due]').forEach(li => {
     if (li.dataset.due < todayISO) li.querySelector('.c-due')?.classList.add('late');
   });
 
-  // Tages-Zeitachse (Kalender-Tab): Blockhöhe = echte Dauer, freie Lücken sichtbar.
-  // Quelle je .ev: data-time (Start) + data-end (Ende). Ohne data-time = ganztägig → Leiste unter der Achse.
+  // Day timeline (calendar tab): block height = real duration, free gaps visible.
+  // Source per .ev: data-time (start) + data-end (end). Without data-time = all-day → strip below the axis.
   const now = new Date(); const nowMin = now.getHours() * 60 + now.getMinutes();
   (function dayAxis() {
     const tl = document.querySelector('#pane-kalender ol.tl');
     if (!tl) return;
-    // TARGET = Zielhöhe der Achse. Deckelt sie bei langen Tagen, damit der Tab ein One-Pager bleibt;
-    // ppm-Untergrenze .7 lässt sie erst bei >13h Spanne darüber hinauswachsen.
+    // TARGET = target height of the axis. Caps it on long days so the tab stays a one-pager;
+    // the ppm floor of .7 only lets it grow beyond that above a 13h span.
     const GUTTER = 52, TARGET = 490, MIN_GAP = 45;
     const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
     const hhmm = n => String(Math.floor(n / 60)).padStart(2, '0') + ':' + String(n % 60).padStart(2, '0');
-    const dur = n => n < 60 ? n + ' Min'
-      : (n % 60 ? Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0') : n / 60) + ' Std';
+    const dur = n => n < 60 ? n + ' min'
+      : (n % 60 ? Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0') : n / 60) + ' h';
 
-    // --gutter MUSS vor jedem Return gesetzt sein: .tl .noev liest es im padding, und eine
-    // undefinierte Custom Property macht die ganze Kurzschrift ungültig (padding fiele auf 0).
+    // --gutter MUST be set before every return: .tl .noev reads it in the padding, and an
+    // undefined custom property invalidates the whole shorthand (padding would drop to 0).
     tl.style.setProperty('--gutter', GUTTER + 'px');
 
-    // Ganztägiges (Fristen ohne Uhrzeit) raus aus der Achse, eigene Leiste darunter.
-    // Reminder MIT Uhrzeit bleiben auf der Achse — sie haben eine Zeit, also gehören sie dorthin.
+    // All-day items (deadlines without a time) out of the axis, their own strip below.
+    // Reminders WITH a time stay on the axis — they have a time, so that is where they belong.
     const rems = [...tl.querySelectorAll('.ev:not([data-time])')];
     if (rems.length) {
       const strip = document.createElement('div');
@@ -1102,30 +1477,30 @@
       tl.after(strip);
     }
     const evs = [...tl.querySelectorAll('.ev[data-time]')];
-    if (!evs.length) { tl.insertAdjacentHTML('beforeend', '<li class="noev">Kein Termin heute</li>'); return; }
+    if (!evs.length) { tl.insertAdjacentHTML('beforeend', '<li class="noev">No events today</li>'); return; }
 
-    // Liefert der Kalender keine Endzeiten, wären ALLE Dauern geraten und damit auch die "frei"-Blöcke.
-    // Eine falsche Lücke ist schlimmer als keine, weil sie aussieht wie eine echte: dann lieber
-    // schlichte Liste. Greift automatisch, sobald weniger als die Hälfte der Termine ein Ende hat.
+    // If the calendar delivers no end times, ALL durations would be guessed and with them the "free" blocks.
+    // A wrong gap is worse than none, because it looks like a real one: then rather a
+    // plain list. Kicks in automatically as soon as fewer than half the events have an end.
     if (evs.filter(e => e.dataset.end).length < evs.length / 2) {
       tl.classList.add('plain');
       return;
     }
 
-    // Einzelne fehlende Endzeit (Ganztags-Sonderfall) → 30 Min annehmen, statt die Achse zu verlieren
+    // A single missing end time (all-day special case) → assume 30 min instead of losing the axis
     const items = evs.map(ev => {
       const s = toMin(ev.dataset.time);
       const e = ev.dataset.end ? toMin(ev.dataset.end) : s + 30;
       return { ev, s, e: Math.max(e, s + 10) };
     }).sort((a, b) => a.s - b.s || a.e - b.e);
 
-    // FESTER Tagesrahmen (07–22), nicht die Spanne der Termine. Zwei Gründe:
-    // (1) Ein Tag mit 2 Terminen soll leerer AUSSEHEN als einer mit 8 — bei adaptiver Spanne füllen
-    //     beide die Karte randvoll, und die Achse zerstört genau das Signal, für das sie da ist.
-    // (2) Ein Rahmen, der je nach Uhrzeit wandert, ist kein Rahmen: der Tag muss morgens und
-    //     nachmittags gleich aussehen. Deshalb dehnt er sich NUR für echte Ausreißer-Termine,
-    //     nie für "jetzt"; die Jetzt-Linie erscheint einfach nur, wenn sie in den Rahmen fällt.
-    const DAY_FROM = 7 * 60, DAY_TO = 22 * 60;   // Berater-Realität, nicht Bürozeit-Fiktion
+    // FIXED day frame (07–22), not the span of the events. Two reasons:
+    // (1) A day with 2 events should LOOK emptier than one with 8 — with an adaptive span both
+    //     fill the card to the brim, and the axis destroys exactly the signal it exists for.
+    // (2) A frame that moves depending on the time of day is not a frame: the day has to look the
+    //     same in the morning and in the afternoon. That is why it only stretches for genuine
+    //     outlier events, never for "now"; the now line simply appears when it falls inside the frame.
+    const DAY_FROM = 7 * 60, DAY_TO = 22 * 60;   // consultant reality, not office-hours fiction
     const from = Math.min(DAY_FROM, Math.floor(Math.min(...items.map(i => i.s)) / 60) * 60);
     const to = Math.max(DAY_TO, Math.ceil(Math.max(...items.map(i => i.e)) / 60) * 60);
     const span = Math.max(to - from, 120);
@@ -1146,7 +1521,7 @@
       }
     }
 
-    // Freie Blöcke = Lücken zwischen den zusammengeführten Belegt-Intervallen
+    // Free blocks = gaps between the merged busy intervals
     const busy = [];
     items.forEach(i => {
       const last = busy[busy.length - 1];
@@ -1160,12 +1535,12 @@
       f.className = 'free';
       f.style.top = (y(g0) + 2) + 'px';
       f.style.height = Math.max(y(g1) - y(g0) - 4, 14) + 'px';
-      f.innerHTML = '<span>' + dur(g1 - g0) + ' frei</span>';
+      f.innerHTML = '<span>' + dur(g1 - g0) + ' free</span>';
       tl.appendChild(f);
     }
 
-    // Doppelbuchungen nebeneinander. Spuren werden PRO Überlappungs-Gruppe gezählt, nicht global —
-    // sonst würde ein einziger Doppeltermin am Vormittag jeden Termin des Tages auf halbe Breite drücken.
+    // Double bookings side by side. Lanes are counted PER overlap group, not globally —
+    // otherwise a single double booking in the morning would squeeze every event of the day to half width.
     const groups = [];
     items.forEach(i => {
       const g = groups[groups.length - 1];
@@ -1195,8 +1570,8 @@
       if (i.e <= nowMin) i.ev.classList.add('past');
     }));
 
-    // Laufender bzw. nächster Termin — ein Termin um 14:00-15:00 ist um 14:30 nicht "vorbei".
-    // Reminder sind ausgenommen: eine eigene Frist ist kein Termin, auf den man zuläuft.
+    // Running or next event — an event from 14:00-15:00 is not "over" at 14:30.
+    // Reminders are excluded: your own deadline is not an event you are heading towards.
     const nxt = items.find(i => i.e > nowMin && !i.ev.classList.contains('rem'));
     if (nxt) nxt.ev.classList.add(nxt.s <= nowMin ? 'running' : 'next');
 
@@ -1208,7 +1583,7 @@
     }
   })();
 
-  // Auto-Reload: Claude schreibt diese Datei bei jedem Status-Update neu.
+  // Auto reload: Claude rewrites this file on every status update.
   const reload = () => { sessionStorage.setItem('cockpit-scroll', String(scrollY)); location.reload(); };
   let hiddenAt = null;
   document.addEventListener('visibilitychange', () => {

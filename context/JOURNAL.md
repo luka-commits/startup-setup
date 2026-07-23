@@ -1,12 +1,12 @@
 # Journal
 
-Was passiert ist, was entschieden wurde. Neueste Einträge oben — Claude liest nur die letzten Wochen, ältere wandern automatisch nach `context/archive/`.
+What happened, what was decided. Newest entries on top — Claude only reads the last few weeks, older ones move to `context/archive/` automatically.
 
-**Kurz halten:** 3–5 knappe Bullets pro Tag. Ein Halbsatz pro Sache. Was in PROJECTS.md steht, gehört nicht nochmal hierher.
+**Keep it short:** 3–5 terse bullets per day. Half a sentence per thing. What's already in PROJECTS.md doesn't belong here again.
 
-**So klingt ein guter Eintrag:** `- Pricing: Schwellenwert mit Nicole auf 250k bestätigt, gilt ab FY27` — konkret, Namen und Zahlen drin, in drei Wochen ohne Kontext verständlich. **Nicht so:** `- Besprechung diverser Parameter im Rahmen des Steerings`.
+**This is what a good entry sounds like:** `- Pricing: threshold confirmed with Nicole at 250k, effective FY27` — concrete, names and numbers in it, understandable in three weeks without context. **Not like this:** `- Discussion of various parameters within the steering committee`.
 
 ---
 
 ## [YYYY-MM-DD]
-- _(füllt sich beim ersten `/eod` oder wenn du im Chat etwas entscheidest)_
+- _(fills up on the first `/eod` or when you decide something in the chat)_

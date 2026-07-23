@@ -1,0 +1,1043 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Start here — what this folder does</title>
+<style>
+/* Standalone twin of the dashboard's Start Here tab. It exists because a brand-new user
+   should see what is coming BEFORE anything is set up — at that moment context/today.html
+   has not been rendered, so the tab this normally lives in does not exist yet.
+   The whole dashboard stylesheet is inlined on purpose rather than a hand-picked subset:
+   picking rules by prefix pulled in the deck styles and everything overlapped. */
+
+  :root {
+    --bg: #F7F8F7;
+    --card: #FFFFFF;
+    --border: #E2E6E3;
+    --border-strong: #C8CFCB;
+    --text: #0D1F1A;
+    --text-2: #3F4D47;
+    --text-3: #7A857F;
+    --brand: #177B57;
+    --brand-deep: #0B3F2D;
+    --brand-soft: #E8F1ED;
+    --sev-red: #B42318;
+    --red-soft: #FBE8E5;
+    --red-border: #F5C5BE;
+    --red-deep: #911C13;
+    --sev-amber: #B54708;
+    --amber-soft: #FEF3E2;
+    --amber-border: #F8D5A4;
+    --amber-deep: #92400E;
+    --shadow-1: 0 1px 2px rgba(13, 31, 26, 0.04);
+    --shadow-2: 0 4px 16px rgba(13, 31, 26, 0.06);
+    --ease: cubic-bezier(0.2, 0, 0, 1);
+    --gap: 14px;          /* ONE gap between blocks */
+    --pad: 20px;          /* ONE inner padding in cards */
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text);
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv11", "ss01", "ss03";
+    line-height: 1.5; font-size: 14px;
+  }
+  a { color: var(--brand); text-decoration: none; font-weight: 500; }
+  a:hover { text-decoration: underline; }
+  b, strong { font-weight: 600; }
+  .ev > b, .plan-count { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+  /* ── Header — editorial, white, green hairline ── */
+  header.top { background: var(--card); border-bottom: 1px solid var(--border); position: relative; }
+  header.top::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+    background: var(--brand); opacity: .85; }
+  .top-inner { max-width: 1380px; margin: 0 auto; padding: 22px 48px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 32px; }
+  .top-inner h1 { margin: 0 0 3px; font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+  .eyebrow { font-size: 11.5px; letter-spacing: .02em; text-transform: uppercase; color: var(--text-3); font-weight: 500; }
+  .meta { text-align: right; font-size: 12.5px; color: var(--text-3); line-height: 1.7; white-space: nowrap; }
+  .meta strong { color: var(--text); font-weight: 600; }
+
+  nav.tabs { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
+  .tabs-inner { max-width: 1380px; margin: 0 auto; padding: 0 48px; display: flex; gap: 0; }
+  .tab { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    padding: 14px 20px 12px; font-family: inherit; font-size: 13.5px; font-weight: 500; color: var(--text-2);
+    cursor: pointer; letter-spacing: -.005em; transition: color .15s var(--ease), border-color .15s var(--ease); }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+  .tabpane { display: none; }
+  .tabpane:not([hidden]) { display: block; animation: fadeIn .18s var(--ease); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .tabpane:not([hidden]) { animation: none; } }
+
+  .wrap { max-width: 1380px; margin: 0 auto; padding: var(--gap) 48px 60px; }
+
+
+
+  /* Card label: 11px caps with an accent dot (taxi signature) */
+  .label, .cardbox > h2, .pdetail h4 {
+    margin: 0; font-size: 11px; font-weight: 600; color: var(--text-2);
+    letter-spacing: .08em; text-transform: uppercase; display: flex; align-items: center; }
+  .label::before, .cardbox > h2::before, .pdetail h4::before {
+    content: ""; display: inline-block; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--brand); margin-right: 8px; flex: none; }
+  .cardbox > .sub { margin: 4px 0 16px; font-size: 12.5px; color: var(--text-3); }
+
+  
+
+
+  .cardbox, .pdetail { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow-1); }
+  .cardbox { padding: var(--pad) 22px; }
+
+  /* ── Morning Briefing — the highlight: central, open by default ── */
+  details.briefing { background: linear-gradient(180deg, var(--brand-soft) 0%, var(--card) 150px);
+    border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow-2); margin: 0 0 var(--gap); position: relative; overflow: hidden; }
+  details.briefing::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--brand); }
+  details.briefing summary { list-style: none; cursor: pointer; padding: 13px 24px 10px;
+    display: flex; align-items: center; gap: 14px; }
+  details.briefing summary::-webkit-details-marker { display: none; }
+  .brf-toggle { flex: none; width: 8px; height: 8px; border-right: 1.5px solid var(--text-3); border-bottom: 1.5px solid var(--text-3);
+    transform: rotate(45deg); transition: transform .18s var(--ease); margin-right: 4px; }
+  details.briefing[open] .brf-toggle { transform: rotate(-135deg); margin-top: 5px; }
+  details.briefing summary .label { flex: none; }
+  .brf-teaser { flex: 1; min-width: 0; font-size: 13px; color: var(--text-2); overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap; }
+  details.briefing[open] .brf-teaser { display: none; }
+  .brf-toggle { margin-left: auto; }
+
+  .brf-body { padding: 4px 24px 22px; display: grid; grid-template-columns: minmax(0, 74ch) 170px minmax(0, 1fr); gap: 0 40px; }
+  .brf-lead { grid-column: 1 / 3; grid-row: 1; }
+  .brf-text { grid-column: 1; grid-row: 2; min-width: 0; }
+  .brf-lead { margin: 6px 0 18px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    font-size: 21px; font-weight: 600; line-height: 1.35; letter-spacing: -.022em; color: var(--brand-deep); }
+  .brf-body p { margin: 0 0 12px; font-size: 14px; line-height: 1.75; color: var(--text);
+    letter-spacing: -.005em; }
+  .brf-body p:last-of-type { margin-bottom: 0; }
+  .brf-body strong { color: var(--brand-deep); font-weight: 600; }
+  /* Briefing-Unterabschnitte: sie erzaehlen, was die Aufgabenliste NICHT weiss —
+     auf wen wir warten und seit wann, was sich seit gestern bewegt hat, was heute
+     entschieden werden muss. Bewusst KEINE Wiederholung von Aufgaben: abgehakt wird
+     unten in der Liste, und derselbe Fakt an zwei Orten driftet immer auseinander.
+     Der erste Abschnitt steht offen, die anderen zugeklappt. */
+  /* volle Breite unter dem Text: .brf-body ist ein Drei-Spalten-Raster, ohne
+     grid-column landen die Abschnitte in der schmalen rechten Spalte und reissen
+     links ein Loch auf (im Screenshot sofort sichtbar gewesen). */
+  .brf-secs { grid-column: 1 / -1; grid-row: 3; margin-top: 18px; display: grid; gap: 2px;
+    max-width: 74ch; }
+  .brf-sec { border-top: 1px solid var(--border); }
+  .brf-sec > summary { display: flex; align-items: center; gap: 9px; cursor: pointer;
+    list-style: none; padding: 11px 2px; }
+  .brf-sec > summary::-webkit-details-marker { display: none; }
+  .brf-sec > summary::after { content: ""; width: 6px; height: 6px; margin-left: auto;
+    border-right: 1.5px solid var(--text-3); border-bottom: 1.5px solid var(--text-3);
+    transform: rotate(45deg); transition: transform .16s; flex: none; }
+  .brf-sec[open] > summary::after { transform: rotate(-135deg); }
+  .bs-title { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--text-2); }
+  .bs-count { font-size: 11px; font-weight: 600; color: var(--text-3); background: var(--bg);
+    border-radius: 999px; padding: 1px 8px; }
+  .brf-sec > div { padding: 0 2px 13px; }
+  .brf-sec p { margin: 0 0 8px; font-size: 13.5px; line-height: 1.65; color: var(--text-2); max-width: 74ch; }
+  .brf-sec p:last-child { margin-bottom: 0; }
+  .brf-sec b { color: var(--text); font-weight: 600; }
+  .brf-meta { grid-column: 2; grid-row: 2; align-self: start; padding-left: 22px; border-left: 1px solid var(--border);
+    font-variant-numeric: tabular-nums; }
+  .brf-meta div { font-size: 12.5px; color: var(--text-2); padding: 4px 0; white-space: nowrap; }
+  .brf-meta div + div { border-top: 1px solid var(--border); }
+  .brf-meta b { color: var(--text); font-weight: 600; margin-right: 6px; }
+  .brf-meta:empty { display: none; }
+  details.notes-drop { background: var(--card); box-shadow: var(--shadow-1); }
+  details.notes-drop::before { display: none; }
+  details.notes-drop .brf-body { padding-top: 0; columns: 1; }
+  details.notes-drop ul.notes li:first-child { padding-top: 0; }
+
+
+  /* ── SVG icons instead of emojis (calm, stroke 1.5, tinted instead of black) ── */
+  .ic { display: inline-block; width: 14px; height: 14px; vertical-align: -2px;
+    background-repeat: no-repeat; background-position: center; background-size: contain; }
+  .ic-video { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233F4D47" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m22 8-6 4 6 4V8Z"/></svg>'); }
+  .ic-bldg { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233F4D47" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M10 21v-3.5h4V21"/><path d="M8.5 7h2M8.5 11h2M13.5 7h2M13.5 11h2M8.5 15h2M13.5 15h2"/></svg>'); }
+  .ic-cal { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%233F4D47" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>'); }
+
+  /* Inbox card: amber framed, because it is waiting for a decision */
+  .inboxbox { border-color: var(--amber-border); }
+  .inboxbox > h2::before { background: var(--sev-amber); }
+  /* Empty inbox stays visible — an empty decision zone is a state worth seeing, not a missing card. */
+  .inbox-list:empty::after { content: "Nothing waiting. New items land here by themselves: findings from the morning mail triage, and thoughts you drop into the chat that aren't a task yet."; display: block; padding: 10px 2px; font-size: 13px; color: var(--text-3); }
+
+  /* ── Today: task OS ── */
+  .toolbar { display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+    padding-bottom: 14px; margin-bottom: 4px; border-bottom: 1px solid var(--border); }
+  .plan-row { display: flex; align-items: center; gap: 10px; flex: 0 1 300px; min-width: 200px; }
+  .plan-row[hidden] { display: none; }
+  .plan-row .plan-label { flex: none; }
+  .plan-count { font-size: 12px; color: var(--text-3); flex: none; }
+  .plan-bar { height: 4px; background: var(--border); border-radius: 999px; overflow: hidden; flex: 1; }
+  .plan-bar > i { display: block; height: 100%; width: 0; background: var(--brand); border-radius: 999px;
+    transition: width .3s var(--ease); }
+  .task-list li[data-plan] .t-text::before { content: ""; display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent);
+    margin-right: 9px; vertical-align: 1.5px; }
+
+  .task-list li[data-inbox] .t-text::before { content: ""; display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--sev-amber); box-shadow: 0 0 0 3px rgba(181,71,8,.15);
+    margin-right: 9px; vertical-align: 1.5px; }
+  .tag.inbox { color: var(--amber-deep); font-weight: 600; }
+
+  .pill { background: var(--card); color: var(--text-2); border: 1px solid var(--border); padding: 4px 12px;
+    font-size: 12px; border-radius: 999px; cursor: pointer; font-family: inherit; font-weight: 500; letter-spacing: -.005em;
+    transition: border-color .15s var(--ease), color .15s var(--ease), background .15s var(--ease), transform .12s var(--ease); }
+  .pill:hover { color: var(--text); border-color: var(--border-strong); }
+  .pill:active { transform: scale(.96); }
+  .pill.active { background: var(--brand-soft); color: var(--brand-deep); border-color: color-mix(in srgb, var(--brand) 35%, transparent); font-weight: 600; }
+
+  /* Filter bar — Notion mechanics, taxi look */
+  .fbar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-left: auto; }
+  .fchip { position: relative; }
+  .fbtn { background: var(--card); color: var(--text-2); border: 1px solid var(--border); padding: 5px 12px;
+    font-size: 12.5px; border-radius: 999px; cursor: pointer; font-family: inherit; font-weight: 500; letter-spacing: -.005em;
+    transition: border-color .15s var(--ease), color .15s var(--ease); }
+  .fbtn::after { content: "▾"; margin-left: 6px; font-size: 9px; color: var(--text-3); }
+  .fbtn:hover { color: var(--text); border-color: var(--border-strong); }
+  .fchip.on .fbtn { background: var(--brand-soft); color: var(--brand-deep); font-weight: 600;
+    border-color: color-mix(in srgb, var(--brand) 35%, transparent); }
+  .fmenu { display: none; position: absolute; top: calc(100% + 6px); left: 0; z-index: 60; min-width: 190px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-2);
+    padding: 5px; }
+  .fchip.open .fmenu { display: block; }
+  .fopt { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%;
+    background: none; border: none; font-family: inherit; font-size: 13px; color: var(--text); cursor: pointer;
+    padding: 7px 10px; border-radius: 6px; text-align: left; }
+  .fopt:hover { background: var(--bg); }
+  .fopt.selected { background: var(--brand-soft); color: var(--brand-deep); font-weight: 600; }
+  .fopt.selected::after { content: "✓"; font-size: 11px; }
+  .sortpill.active { background: var(--brand-soft); color: var(--brand-deep); font-weight: 600;
+    border-color: color-mix(in srgb, var(--brand) 35%, transparent); }
+
+  .task-cols, .task-list li { display: grid; grid-template-columns: minmax(0,1fr) 160px 120px 170px 74px;
+    gap: 14px; align-items: baseline; }
+  .task-cols { padding: 12px 4px 8px; border-bottom: 1px solid var(--border-strong); }
+  .task-cols span { font-size: 10.5px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text-3); }
+  ul.task-list { list-style: none; margin: 0; padding: 0; }
+  .task-list li { padding: 12px 4px; font-size: 13.5px; letter-spacing: -.005em; }
+  .task-list li + li { border-top: 1px solid var(--border); }
+  .task-list li .t-text { min-width: 0; }
+  .task-list li[data-note] { cursor: pointer; }
+  .task-list li[data-note] .t-text::after { content: "›"; margin-left: 8px; color: var(--text-3);
+    font-size: 13px; display: inline-block; transition: transform .18s var(--ease); }
+  .task-list li[data-note].open .t-text::after { transform: rotate(90deg); }
+  @media (hover: hover) and (pointer: fine) {
+    .task-list li[data-note]:hover { background: var(--bg); border-radius: 6px; }
+  }
+  .t-note { display: none; grid-column: 1 / -1; margin: 8px 0 2px; padding: 10px 14px;
+    background: var(--bg); border-left: 2px solid var(--border-strong); border-radius: 0 6px 6px 0;
+    font-size: 12.5px; line-height: 1.65; color: var(--text-2); max-width: 90ch; }
+  .task-list li.open .t-note { display: block; }
+  .c-proj, .c-cat { font-size: 12px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .c-status { font-size: 12px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  li[data-status="waiting"] .c-status { color: var(--sev-amber); }
+  .c-due { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; text-align: right; }
+  .c-due.late { color: var(--sev-red); font-weight: 600; }
+  .c-proj:empty::before, .c-cat:empty::before, .c-status:empty::before, .c-due:empty::before { content: "–"; color: var(--border-strong); }
+
+  .tag.inbox { color: var(--amber-deep); font-weight: 600; font-size: 11px; margin-left: 8px; }
+  .task-list a.mail { font-size: 11.5px; }
+  .hint { font-size: 11.5px; color: var(--text-3); margin: 16px 0 0; }
+
+  /* ── Calendar ── */
+  /* stretch = both columns equal height, so no hole gapes under the shorter one */
+  .cal-cols { display: block; }
+
+  /* Day timeline: real duration as block height, free gaps visible.
+     The JS (dayAxis) builds hour lines + gaps and positions the .ev absolutely.
+     No flex/height from outside — the JS sets the height in px, otherwise the axis
+     no longer matches the absolutely positioned hour lines. */
+  ol.tl { list-style: none; margin: 10px 0 0; padding: 0; position: relative; }
+  .tl .hr { position: absolute; left: var(--gutter); right: 0; height: 0; border-top: 1px solid var(--border); }
+  .tl .hr > i { position: absolute; left: calc(-1 * var(--gutter)); top: -7px; width: calc(var(--gutter) - 10px);
+    text-align: right; font-style: normal; font-size: 10.5px; color: var(--text-3);
+    font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+  .tl .hr.half { display: none; } /* the half-hour grid was pure noise */
+  .tl .free { position: absolute; left: var(--gutter); right: 0; border-radius: 6px; border: none;
+    background: color-mix(in srgb, var(--brand) 3.5%, transparent);
+    display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .tl .free > span { font-size: 11px; color: var(--text-3); letter-spacing: .01em; }
+  .tl .noev { padding: 26px 0 26px var(--gutter); font-size: 13px; color: var(--text-3); }
+  /* Fallback without end times: plain event list instead of a guessed timeline */
+  ol.tl.plain { height: auto !important; padding: 4px 0 0; }
+  ol.tl.plain .ev { position: relative; margin: 0 0 7px; }
+  ol.tl.plain .ev > .dur { display: none; }
+
+  /* One colored bar on the left instead of a border plus dot: that is the standard calendar
+     language and halves the lines competing for attention on the axis. */
+  .ev { position: absolute; padding: 6px 12px 6px 13px; border-radius: 6px; background: var(--card);
+    border: none; border-left: 3px solid var(--border-strong); box-shadow: 0 1px 2px rgba(15,23,42,.055);
+    overflow: hidden; font-size: 13px; letter-spacing: -.005em; }
+  .ev.p-red { border-left-color: var(--sev-red); }
+  .ev.p-amber { border-left-color: var(--sev-amber); }
+  .ev > b { font-weight: 600; font-size: 12.5px; margin-right: 8px; color: var(--text); }
+  .ev > i { display: block; font-style: normal; font-size: 11.5px; color: var(--text-2); margin-top: 3px;
+    line-height: 1.45; overflow: hidden; }
+  /* The format icon is also an <i> inside .ev — without this line it inherits the context-line rule
+     above (display:block, width 0) and disappears or jumps onto its own line. */
+  .ev > i.ic { display: inline-block; width: 14px; height: 14px; margin-top: 0; margin-left: 5px; }
+  .ev > .dur { float: right; font-size: 10.5px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  /* Meeting-brief disclosure: opens as an overlay card below the event block, does not blow up the timeline */
+  .ev details.mb { display: inline; }
+  /* Deliberately conspicuous: the button is the only hint that a briefing exists for this
+     event. Too subtle = overlooked = the feature does not exist. */
+  .ev details.mb summary { display: inline-flex; align-items: center; gap: 5px; list-style: none; cursor: pointer;
+    font-size: 11.5px; font-weight: 700; letter-spacing: .01em; color: #fff; background: var(--brand);
+    border: none; border-radius: 999px; padding: 3px 11px 3px 9px; margin-left: 10px;
+    box-shadow: 0 1px 4px color-mix(in srgb, var(--brand) 34%, transparent); transition: background .12s, box-shadow .12s; }
+  .ev details.mb summary::before { content: "📋"; font-size: 10.5px; }
+  .ev details.mb summary::after { content: "▾"; font-size: 8.5px; opacity: .85; }
+  .ev details.mb[open] summary { background: var(--brand-deep); }
+  .ev details.mb[open] summary::after { content: "▴"; }
+  .ev details.mb summary:hover { background: var(--brand-deep); box-shadow: 0 2px 7px color-mix(in srgb, var(--brand) 45%, transparent); }
+  .ev details.mb summary:focus-visible { outline: 2px solid var(--brand-deep); outline-offset: 2px; }
+  .ev details.mb summary::-webkit-details-marker { display: none; }
+  /* Events WITH a briefing carry the brand bar, so you spot them on the axis immediately */
+  .ev:has(details.mb) { border-left-color: var(--brand); }
+  .ev .mbc { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 40; background: var(--card);
+    border: 1px solid var(--border-strong); border-left: 3px solid var(--brand); border-radius: 10px;
+    padding: 13px 16px; box-shadow: var(--shadow-1); font-size: 12px; line-height: 1.55; color: var(--text-2);
+    max-height: 340px; overflow-y: auto; }
+  .ev .mbc .mb-lead { margin: 0 0 11px; font-size: 13px; line-height: 1.6; color: var(--text); }
+  /* Two columns, because a briefing consists of short blocks: side by side it reads
+     as an overview, stacked as a wall of text. */
+  .ev .mbc .mb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 11px 26px; }
+  .ev .mbc section { min-width: 0; }
+  .ev .mbc h4 { margin: 0 0 4px; font-size: 10px; font-weight: 700; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--text-3); }
+  .ev .mbc p { margin: 0; }
+  .ev .mbc ul { list-style: none; margin: 0; padding: 0; }
+  .ev .mbc li { position: relative; padding-left: 12px; margin-bottom: 3px; }
+  .ev .mbc li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 4px; height: 4px;
+    border-radius: 50%; background: var(--border-strong); }
+  .ev .mbc li.due::before { background: var(--sev-amber); }
+  /* Without overflow:visible the event block clips the opened panel — the click then feels dead */
+  .ev:has(details.mb[open]) { overflow: visible; z-index: 39; }
+  /* Short events (15-30 min) get a flat block — type has to fit in ~20px, otherwise
+     the overflow:hidden clips the line halfway. No room for a context sub-line here. */
+  .ev.tight { padding: 3px 10px 3px 12px; line-height: 1.35; font-size: 11.5px; }
+  .ev.tight > b { font-size: 11.5px; margin-right: 6px; }
+  .ev.tight > .dur { font-size: 10px; }
+  /* Short events have no vertical room for a second line, but plenty horizontally:
+     the context moves next to the title instead of below it. That way the full width carries
+     information instead of emptiness, and the context is not lost. */
+  .ev.tight > i { display: inline; margin-left: 12px; margin-top: 0; font-size: 11px; color: var(--text-3); }
+  .ev.tight > i.ic { display: inline-block; width: 14px; height: 14px; margin-left: 5px; }
+  .ev.past { opacity: .58; }
+  /* Events with a briefing stay readable in the afternoon too, otherwise the button vanishes into the gray */
+  .ev.past:has(details.mb) { opacity: .78; }
+  .ev.past:has(details.mb[open]) { opacity: 1; }
+  .ev.next, .ev.running { background: var(--brand-soft); border-left-color: var(--brand); }
+  .ev.next::after, .ev.running::after { position: absolute; right: 11px; bottom: 5px; font-size: 9px;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--brand-deep); font-weight: 600; }
+  .ev.next::after { content: "up next"; }
+  .ev.running::after { content: "running"; }
+  .ev.tight.next::after, .ev.tight.running::after { display: none; }
+
+  /* Now line: the only red stroke in the tab — that is why it reads as "now", not as an alarm */
+  .tl .nowline { position: absolute; left: var(--gutter); right: 0; height: 0;
+    border-top: 1px solid var(--sev-red); pointer-events: none; }
+  .tl .nowline > i { position: absolute; left: calc(-1 * var(--gutter)); top: -8px; width: calc(var(--gutter) - 10px);
+    text-align: right; font-style: normal; font-size: 10px; font-weight: 600; color: var(--sev-red);
+    font-variant-numeric: tabular-nums; background: var(--card); }
+
+  /* Reminders WITH a time sit on the axis (they have a time), but have to be instantly
+     distinguishable from a meeting — otherwise your own deadline reads like an event with others. */
+  /* Reminders: dotted bar instead of solid, so they stand out from real events */
+  .tl .ev.rem { border-left-style: dotted; border-left-width: 4px; background: var(--bg); box-shadow: none; }
+
+  /* All-day items (deadlines without a time) — their own strip below the axis */
+  .rem-strip { margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--border);
+    display: flex; flex-wrap: wrap; gap: 7px; }
+  .rem-strip .ev { position: static; padding: 5px 13px; border-radius: 999px;
+    border-left: none; border: 1px solid var(--border); background: var(--card); box-shadow: none; }
+  .rem-strip .ev > b { font-size: 11.5px; margin-right: 5px; }
+  /* A due date in the future is normal, not an alarm: neutral chip, ring instead of a "DUE" label.
+     Red stays reserved for the overdue strip alone — otherwise the color stops saying anything. */
+
+  /* ── Projects: hierarchy — head, context, status, details, timeline footer ── */
+  .pgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(370px, 1fr)); gap: var(--gap); }
+  .pdetail { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+  .pdetail .head { display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    padding: 16px 20px 0; }
+  .pdetail h3 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -.015em; display: flex; align-items: center; }
+  .pdetail h3::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--text-3); margin-right: 9px; flex: none; }
+  .pdetail[data-health="green"] h3::before { background: var(--brand); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent); }
+  .pdetail[data-health="amber"] h3::before { background: var(--sev-amber); box-shadow: 0 0 0 3px rgba(217,119,6,.18); }
+  .pdetail[data-health="red"] h3::before   { background: var(--sev-red); box-shadow: 0 0 0 3px rgba(180,35,24,.18); }
+  .badge { font-size: 11px; font-weight: 500; letter-spacing: -.005em; padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--border-strong); background: var(--card); color: var(--text-2); flex: none; }
+  .badge.green { color: var(--brand-deep); border-color: color-mix(in srgb, var(--brand) 35%, transparent); background: var(--brand-soft); }
+  .badge.amber { color: var(--amber-deep); border-color: var(--amber-border); background: var(--amber-soft); }
+  .badge.red { color: var(--red-deep); border-color: var(--red-border); background: var(--red-soft); }
+
+  /* Overview = subtitle under the name (no label of its own) */
+  .pdetail .p-about { margin: 5px 20px 0; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    font-size: 12.5px; line-height: 1.5; color: var(--text-3); }
+  /* Status quo = the prominent core of the card */
+  .pdetail .story { margin: 12px 20px 0; font-size: 13.5px; line-height: 1.65; color: var(--text); letter-spacing: -.005em; }
+  .pdetail .story + .story { margin-top: 8px; }
+  .pdetail .blocker-line { margin: 12px 20px 0; padding: 8px 11px; border-radius: 7px;
+    background: var(--amber-soft); border: 1px solid var(--amber-border);
+    font-size: 12.5px; line-height: 1.5; color: var(--amber-deep); }
+  .pdetail .blocker-line::before { content: "Blocker · "; font-size: 10px; letter-spacing: .08em;
+    text-transform: uppercase; font-weight: 700; }
+  /* Detail building blocks */
+  .pdetail h4 { margin: 14px 20px 4px; }
+  .pdetail p, .pdetail ul { margin-left: 20px; margin-right: 20px; }
+  .pdetail p { font-size: 13px; line-height: 1.55; color: var(--text-2); }
+  .pdetail ul { padding: 0; list-style: none; }
+  .pdetail ul li { font-size: 12.5px; line-height: 1.5; padding: 3px 0 3px 13px; position: relative; color: var(--text-2); }
+  .pdetail ul li::before { content: ""; position: absolute; left: 0; top: 10px; width: 4px; height: 4px;
+    border-radius: 50%; background: var(--brand); opacity: .55; }
+  /* Timeline as a footer strip */
+  .pdetail .p-time { margin: 14px 0 0; padding: 9px 20px; background: var(--bg); border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .pdetail .p-time::before { content: "Timeline"; font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+    font-weight: 600; color: var(--text-3); margin-right: 9px; }
+  .pdetail .p-spacer { flex: 1; min-height: 8px; }
+
+  ul.notes { list-style: none; margin: 0; padding: 0; }
+  ul.notes li { padding: 10px 2px; font-size: 13px; line-height: 1.55; letter-spacing: -.005em; }
+  ul.notes li + li { border-top: 1px solid var(--border); }
+  ul.notes li > b { color: var(--text-3); font-weight: 600; font-size: 12px; margin-right: 10px; }
+
+  /* ── Tools ── */
+  .guide { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 22px 16px; box-shadow: var(--shadow-1); margin-bottom: var(--gap); }
+  .guide-steps { margin: 8px 0 0; padding: 0; list-style: none; counter-reset: g; max-width: 92ch; }
+  .guide-steps li { counter-increment: g; position: relative; padding: 5px 0 5px 28px; font-size: 13px;
+    line-height: 1.55; color: var(--text-2); letter-spacing: -.005em; }
+  .guide-steps li::before { content: counter(g); position: absolute; left: 0; top: 6px; width: 18px; height: 18px;
+    border-radius: 50%; background: var(--brand-soft); color: var(--brand-deep); font-size: 10.5px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; }
+  .guide-steps b { color: var(--text); }
+  .guide-foot { margin: 10px 0 0; padding-top: 9px; border-top: 1px solid var(--border);
+    font-size: 12.5px; color: var(--text-3); max-width: 92ch; }
+  .guide-steps code, .guide code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11.5px; background: var(--bg); border-radius: 4px; padding: 1px 5px; }
+  h3.label.sec { margin: 14px 0 4px; }
+  .sec-sub { margin: 0 0 10px; font-size: 12.5px; color: var(--text-3); max-width: 80ch; }
+  h3.label.sec + .tgrid { margin-top: 10px; }
+  .tgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(275px, 1fr)); gap: var(--gap); }
+  .tool { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; box-shadow: var(--shadow-1); }
+  .tool code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12px;
+    color: var(--brand-deep); background: var(--brand-soft); border-radius: 6px; padding: 2px 8px; }
+  .tool h3 { margin: 7px 0 3px; font-size: 14px; font-weight: 600; letter-spacing: -.01em; }
+  .tool p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); }
+  .tool .say { margin-top: 6px; font-size: 12px; color: var(--text-3); font-style: italic; }
+  a.tool { display: block; text-decoration: none; color: inherit; transition: border-color .15s var(--ease); }
+  a.tool:hover { text-decoration: none; border-color: var(--border-strong); }
+
+  /* ── Setup: cards with an icon field on the left, status at a glance ── */
+  /* Self-test block: only visible when something really is open (data-collapse-empty works via the ul).
+     Amber, because it wants attention but nothing is broken. */
+  .health { margin: 18px 0 0; padding: 14px 16px; border: 1px solid var(--amber-border);
+    background: var(--amber-soft); border-radius: 10px; }
+  .health h4 { margin: 0 0 6px; font-size: 12.5px; font-weight: 700; color: var(--amber-deep); }
+  .health ul { margin: 0; padding-left: 18px; }
+  .health li { font-size: 13px; color: var(--text-2); line-height: 1.5; padding: 2px 0; }
+  .health li b { color: var(--text); font-weight: 600; }
+  .inv-cat { margin: 16px 0 8px; font-size: 12px; font-weight: 600; color: var(--text-2); letter-spacing: -.005em; }
+  .inv-cat:first-child { margin-top: 0; }
+  /* auto-fill instead of auto-fit: a single card stays narrow instead of filling the row */
+  /* align-items: start — an opened card must not stretch its whole row */
+  .invgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(275px, 1fr)); gap: var(--gap);
+    align-items: start; }
+  .inv-card { display: flex; gap: 12px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 13px 15px; box-shadow: var(--shadow-1); }
+  .inv-ico { flex: none; width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--text-3); }
+  .inv-ico svg { width: 18px; height: 18px; fill: none; stroke: currentColor;
+    stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  /* Set up = colored icon field, open = muted gray. Distinguishable from two meters away. */
+  .inv-card.on .inv-ico { background: var(--brand-soft); color: var(--brand); }
+  .inv-body { min-width: 0; }
+  .inv-name { margin: 1px 0 2px; font-size: 13.5px; font-weight: 600; letter-spacing: -.01em;
+    display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .inv-desc { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); overflow-wrap: anywhere; }
+  .inv-badge { font-size: 10.5px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px;
+    background: var(--amber-soft); border: 1px solid var(--amber-border); color: var(--amber-deep); }
+  .inv-card.on .inv-badge { background: var(--brand-soft); border-color: var(--brand-soft); color: var(--brand-deep); }
+  .inv-chip { display: inline-block; margin-top: 7px; font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11.5px; color: var(--brand-deep); background: var(--brand-soft); border-radius: 6px; padding: 2px 8px;
+    overflow-wrap: anywhere; }
+  .inv-empty { grid-column: 1 / -1; background: var(--card); border: 1px dashed var(--border-strong);
+    border-radius: 10px; padding: 12px 15px; font-size: 12.5px; line-height: 1.55; color: var(--text-3); }
+  .inv-empty code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px;
+    background: var(--bg); border-radius: 4px; padding: 1px 5px; }
+  /* Amber badge for routines whose last run is a long time ago. The green override of the .on card
+     is deliberately taken back, otherwise .inv-card.on colors the warning badge green. */
+  .inv-badge.warn, .inv-card.on .inv-badge.warn {
+    background: var(--amber-soft); border-color: var(--amber-border); color: var(--amber-deep); }
+
+  /* ── Connection slots: six fixed connections, calm grid ── */
+  /* filled = green dot (brand color), open = gray ring. No red, no accent bars. */
+  /* Fixed three columns: six slots make two full rows. auto-fill would put five cards
+     side by side on wide windows and leave the sixth standing alone. */
+  .slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); margin-top: 10px; }
+  @media (max-width: 1000px) { .slots { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 620px) { .slots { grid-template-columns: 1fr; } }
+  .slot { display: flex; gap: 11px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 13px 15px; box-shadow: var(--shadow-1); }
+  .slot-dot { flex: none; width: 10px; height: 10px; margin-top: 5px; border-radius: 50%;
+    border: 2px solid var(--border-strong); background: transparent; }
+  .slot.on .slot-dot { border-color: var(--brand); background: var(--brand);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 16%, transparent); }
+  .slot-body { min-width: 0; }
+  .slot-cap { margin: 0 0 2px; font-size: 10.5px; font-weight: 600; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--text-3); }
+  .slot-name { margin: 0 0 3px; font-size: 13.5px; font-weight: 600; letter-spacing: -.01em;
+    display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .slot-name.muted { color: var(--text-3); font-weight: 500; }
+  .slot-badge { font-size: 10px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px; background: var(--brand-soft); color: var(--brand-deep); }
+  .slot-desc { margin: 0; font-size: 12px; line-height: 1.5; color: var(--text-2); overflow-wrap: anywhere; }
+
+  /* ── Row lists: recently used commands + memory files ── */
+  .rowlist { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .cmduse, .memrow { display: flex; align-items: baseline; gap: 10px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 13px; box-shadow: var(--shadow-1); }
+  .cmduse code, .memrow code { flex: none; font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px; color: var(--brand-deep); background: var(--brand-soft); border-radius: 6px; padding: 2px 8px; }
+  .cmduse > span, .memrow > span { font-size: 12px; color: var(--text-2); overflow-wrap: anywhere; }
+  .cmduse-warn { margin-left: auto; flex: none; font-size: 11px; font-weight: 600;
+    color: var(--amber-deep); background: var(--amber-soft); border: 1px solid var(--amber-border);
+    border-radius: 999px; padding: 2px 8px; }
+  .memrow .memwhen { margin-left: auto; flex: none; font-size: 11.5px; color: var(--text-3); white-space: nowrap; }
+
+  footer.bottom { max-width: 1380px; margin: 0 auto; padding: 16px 48px 40px;
+    color: var(--text-3); font-size: 11.5px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 1100px) {
+    .brf-body { grid-template-columns: 1fr; }
+    .brf-lead { grid-column: 1; grid-row: auto; }
+    .brf-text { grid-column: 1; grid-row: auto; }
+    .brf-meta { grid-column: 1; grid-row: auto; align-self: stretch; margin-top: 12px; padding: 10px 0 0;
+      border-left: none; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 0 18px; }
+    .brf-meta div + div { border-top: none; }
+  }
+  @media (max-width: 940px) {
+    .task-cols { display: none; }
+    .task-list li { display: block; }
+    .c-proj, .c-cat, .c-status, .c-due { display: inline; margin-right: 10px; }
+    .c-proj:empty, .c-cat:empty, .c-status:empty, .c-due:empty { display: none; }
+    .top-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .meta { text-align: left; white-space: normal; }
+    .pgrid { grid-template-columns: 1fr; }
+    .wrap, .top-inner, .tabs-inner { padding-left: 20px; padding-right: 20px; }
+    .toolbar { gap: 12px; }
+    .fbar { margin-left: 0; }
+    footer.bottom { padding-left: 20px; padding-right: 20px; }
+  }
+  @media print {
+    body { background: #fff; }
+    .hint, nav.tabs, .fbar, .toolbar { display: none; }
+    .tabpane { display: block !important; animation: none; }
+    .cardbox, .pdetail { box-shadow: none; }
+    .wrap { padding: 0; }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     Pixel look — a second skin on the SAME markup. Toggled top right,
+     the choice is remembered in the browser. Nothing here changes what the
+     dashboard SHOWS, only how it looks, so both skins stay in sync forever.
+     ══════════════════════════════════════════════════════════════════════ */
+  .skinbtn { font: inherit; font-size: 11px; font-weight: 600; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--text-3); background: transparent; cursor: pointer;
+    border: 1px solid var(--border-strong); border-radius: 6px; padding: 4px 10px; margin-top: 6px; }
+  .skinbtn:hover { color: var(--brand); border-color: var(--brand); }
+
+  html[data-skin="pixel"] {
+    --bg: #58B858;
+    --card: #F8F8E8;
+    --border: #383838;
+    --border-strong: #282828;
+    --text: #282828;
+    --text-2: #46443E;
+    --text-3: #6B6A62;
+    --brand: #2848A0;
+    --brand-deep: #182860;
+    --brand-soft: #DCE8FF;
+    --sev-red: #B02020;
+    --red-soft: #FBDCDC;
+    --red-border: #E08080;
+    --red-deep: #801818;
+    --sev-amber: #A05808;
+    --amber-soft: #FCEFC8;
+    --amber-border: #E0B040;
+    --amber-deep: #7A4406;
+    --shadow-1: 3px 3px 0 rgba(40, 40, 40, .18);
+    --shadow-2: 4px 4px 0 rgba(40, 40, 40, .22);
+  }
+  html[data-skin="pixel"] body {
+    font-family: 'Silkscreen', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 2px, transparent 2px 8px),
+                      repeating-linear-gradient(90deg, rgba(0,0,0,.05) 0 2px, transparent 2px 8px);
+    -webkit-font-smoothing: none; font-feature-settings: normal;
+  }
+  html[data-skin="pixel"] h1,
+  html[data-skin="pixel"] .tab,
+  html[data-skin="pixel"] .label,
+  html[data-skin="pixel"] .eyebrow,
+  html[data-skin="pixel"] .skinbtn {
+    font-family: 'Press Start 2P', 'Silkscreen', ui-monospace, monospace;
+    letter-spacing: 0; text-transform: none;
+  }
+  html[data-skin="pixel"] h1 { font-size: 14px; line-height: 1.7; }
+  html[data-skin="pixel"] .tab { font-size: 10px; }
+  html[data-skin="pixel"] .label { font-size: 11px; line-height: 1.8; }
+  html[data-skin="pixel"] .eyebrow, html[data-skin="pixel"] .skinbtn { font-size: 8px; line-height: 1.9; }
+  /* square everything, thick frames, hard shadows — the whole trick */
+  html[data-skin="pixel"] *:not(svg):not(path):not(use):not(circle):not(rect) { border-radius: 0 !important; }
+  html[data-skin="pixel"] .card, html[data-skin="pixel"] .box, html[data-skin="pixel"] .tool,
+  html[data-skin="pixel"] .inv-card, html[data-skin="pixel"] .panel, html[data-skin="pixel"] .pcard {
+    border: 3px solid var(--border); box-shadow: var(--shadow-2);
+  }
+  html[data-skin="pixel"] header.top { border-bottom: 4px solid var(--border);
+    background: linear-gradient(#A8E0F8, #F8F8E8); }
+  html[data-skin="pixel"] header.top::after { display: none; }
+  html[data-skin="pixel"] nav.tabs { border-bottom: 3px solid var(--border); }
+  html[data-skin="pixel"] .tab.active { box-shadow: inset 0 -4px 0 var(--brand); }
+  /* text that sits directly on the grass, not inside a card, needs to stay readable */
+  html[data-skin="pixel"] .sec-sub { color: #123A12; }
+  html[data-skin="pixel"] .label.sec { color: #0E2E0E; }
+  html[data-skin="pixel"] a { text-decoration: none; }
+  html[data-skin="pixel"] a:hover { text-decoration: underline; }
+  /* the sprite row under the header: one ball per open task, drawn in CSS */
+  html[data-skin="pixel"] #skin-balls { display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+    padding: 8px 48px; background: #E0C888; border-bottom: 3px solid var(--border); }
+  html[data-skin="pixel"] #skin-balls i { width: 14px; height: 14px; display: block;
+    border: 2px solid var(--border); background: linear-gradient(#E04038 0 45%, var(--border) 45% 55%, #F8F8F8 55% 100%); }
+  #skin-balls { display: none; }
+
+  /* ── Skill cards open up (native <details>, no JavaScript needed) ── */
+  .inv-cat { display: flex; align-items: baseline; gap: 8px; }
+  .inv-count { font-size: 11.5px; font-weight: 500; color: var(--text-3); }
+  details.inv-card { display: block; padding: 0; }
+  details.inv-card > summary { display: flex; gap: 12px; align-items: flex-start; padding: 13px 15px;
+    cursor: pointer; list-style: none; }
+  details.inv-card > summary::-webkit-details-marker { display: none; }
+  details.inv-card > summary::marker { content: ""; }
+  details.inv-card .inv-body { display: block; }
+  details.inv-card .inv-desc { display: block; }
+  details.inv-card[open] { box-shadow: var(--shadow-2); border-color: var(--border-strong); }
+  .inv-scope { font-size: 10.5px; font-weight: 500; color: var(--text-3); }
+  .inv-more { padding: 0 15px 13px 61px; }
+  .inv-more p { margin: 0 0 10px; font-size: 12.5px; line-height: 1.55; color: var(--text-2); }
+  .inv-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .say-btn { font: inherit; font-size: 11.5px; font-weight: 500; cursor: pointer;
+    color: var(--brand-deep); background: var(--brand-soft); border: 1px solid transparent;
+    border-radius: 6px; padding: 3px 10px; }
+  .say-btn:hover { border-color: var(--brand); }
+  .say-btn.done { background: var(--bg); color: var(--text-3); }
+  .inv-filter { width: 100%; max-width: 320px; margin: 0 0 10px; font: inherit; font-size: 13px;
+    padding: 7px 11px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--card); color: var(--text); }
+  .inv-filter:focus { outline: none; border-color: var(--brand); }
+  html[data-skin="pixel"] .say-btn, html[data-skin="pixel"] .inv-filter { border: 2px solid var(--border); }
+
+  .inv-warn { margin: 18px 0 0; padding: 14px 16px; border: 1px solid var(--amber-border);
+    background: var(--amber-soft); border-radius: 10px; }
+  .inv-warn h4 { margin: 0 0 6px; font-size: 12.5px; font-weight: 700; color: var(--amber-deep); }
+  .inv-warn ul { margin: 0; padding-left: 18px; }
+  .inv-warn li { font-size: 13px; color: var(--text-2); line-height: 1.55; padding: 2px 0; }
+  .inv-warn b { color: var(--text); font-weight: 600; }
+
+  /* rows inside an opened skill group */
+  .sk-row { padding: 8px 0; border-top: 1px solid var(--border); }
+  .sk-row:first-child { border-top: none; padding-top: 0; }
+  .sk-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .sk-head b { font-size: 13px; font-weight: 600; }
+  .sk-row p { margin: 3px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); }
+  .sk-row .say-btn { opacity: 0; transition: opacity .12s; }
+  .sk-row:hover .say-btn, .sk-row:focus-within .say-btn { opacity: 1; }
+  @media (hover: none) { .sk-row .say-btn { opacity: 1; } }
+  details.grp > .inv-more { padding-left: 61px; }
+
+  /* ── Setup one pager: seven KPI tiles, details open on click ── */
+  /* the script always emits exactly seven tiles (plus the optional wide one),
+     so seven fixed columns beat auto-fit: no lone orphan on wide screens */
+  .kpigrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--gap); }
+  @media (max-width: 1280px) { .kpigrid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 760px) { .kpigrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  details.kpi { background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow-1); overflow: hidden; }
+  details.kpi > summary { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto;
+    column-gap: 11px; align-items: center; padding: 14px 15px; cursor: pointer; list-style: none; }
+  details.kpi > summary::-webkit-details-marker { display: none; }
+  details.kpi > summary::marker { content: ""; }
+  .kpi-ico { grid-row: 1 / 3; width: 34px; height: 34px; border-radius: 8px; display: flex;
+    align-items: center; justify-content: center; background: var(--bg); color: var(--text-3); }
+  .kpi-ico svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7;
+    stroke-linecap: round; stroke-linejoin: round; }
+  .kpi-num { font-size: 24px; font-weight: 650; letter-spacing: -.02em; line-height: 1.1;
+    font-variant-numeric: tabular-nums; }
+  .kpi-lab { font-size: 13px; font-weight: 600; color: var(--text-2); overflow-wrap: anywhere; }
+  .kpi-sub { grid-column: 2; font-size: 12px; color: var(--text-2); }
+  details.kpi:not([open]) > summary:hover { background: var(--bg); }
+  details.kpi > summary:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; border-radius: 10px; }
+  @keyframes kpi-in { from { opacity: 0; transform: translateY(-3px); } }
+  details.kpi[open] .kpi-body { animation: kpi-in .2s cubic-bezier(0.22, 1, 0.36, 1); }
+  @media (prefers-reduced-motion: reduce) { details.kpi[open] .kpi-body { animation: none; } }
+  details.kpi.ok .kpi-ico { background: var(--brand-soft); color: var(--brand); }
+  details.kpi.part .kpi-ico { background: var(--amber-soft); color: var(--amber-deep); }
+  details.kpi.part .kpi-sub { color: var(--amber-deep); }
+  details.kpi.none { opacity: .72; }
+  /* an opened tile takes the full width and must not stretch its neighbours */
+  .kpigrid { align-items: start; }
+  details.kpi.wide { grid-column: 1 / -1; border-color: var(--amber-border); background: var(--amber-soft); }
+  details.kpi.wide .kpi-ico { background: #fff; }
+  details.kpi[open] { grid-column: 1 / -1; box-shadow: var(--shadow-2); border-color: var(--border-strong); }
+  .kpi-body { padding: 0 15px 14px; border-top: 1px solid var(--border); }
+  .ivrow { padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .ivrow:last-child { border-bottom: none; }
+  .ivname { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+  .ivrow p { margin: 2px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text-2); }
+  .inv-badge.xref { background: var(--bg); border-color: var(--border); color: var(--text-3);
+    text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+  /* setup progress: the number IS the message, the bar just makes it feel like progress */
+  .kpi-bar { grid-column: 2; margin-top: 8px; height: 5px; border-radius: 3px;
+    background: rgba(146, 64, 14, .16); overflow: hidden; }
+  .kpi-bar i { display: block; height: 100%; border-radius: 3px; background: var(--amber-deep);
+    transition: width .5s cubic-bezier(0.22, 1, 0.36, 1); }
+  details.kpi.ok .kpi-bar { background: rgba(23, 123, 87, .16); }
+  details.kpi.ok .kpi-bar i { background: var(--brand); }
+  @media (prefers-reduced-motion: reduce) { .kpi-bar i { transition: none; } }
+  .ivstep .ivname { align-items: baseline; }
+  .ivtick { width: 14px; font-size: 12px; color: var(--text-3); font-weight: 700; }
+  .ivstep.done .ivtick { color: var(--brand); }
+  .ivstep:not(.done) b { color: var(--amber-deep); }
+  .inv-note { margin: var(--gap) 0 0; padding: 12px 15px; border: 1px dashed var(--border-strong);
+    border-radius: 10px; background: var(--card); }
+  .inv-note b { font-size: 12px; font-weight: 600; color: var(--text-2); }
+  .inv-note p { margin: 4px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text-3); }
+  .setup-why { margin: 0 0 10px; font-size: 12.5px; line-height: 1.6; color: var(--text-2); max-width: 68ch; }
+  .ivbase { color: var(--text-3); }
+  .ivbase .ivname { font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--text-3); }
+  .ivempty { padding: 12px 0; font-size: 12.5px; line-height: 1.55; color: var(--text-3); }
+  .ivempty code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 11.5px;
+    background: var(--bg); border-radius: 4px; padding: 1px 5px; }
+  details.ivpanel { border-bottom: 1px solid var(--border); }
+  details.ivpanel:last-child { border-bottom: none; }
+  details.ivpanel > summary { display: flex; align-items: baseline; gap: 9px; padding: 10px 0;
+    cursor: pointer; list-style: none; font-size: 13px; }
+  details.ivpanel > summary::-webkit-details-marker { display: none; }
+  details.ivpanel > summary::marker { content: ""; }
+  details.ivpanel > summary::before { content: "+"; width: 12px; color: var(--text-3); font-weight: 600; }
+  details.ivpanel[open] > summary::before { content: "–"; }
+  .ivmeta { font-size: 11.5px; font-weight: 500; color: var(--text-3); }
+  .ivlist { padding: 0 0 10px 21px; columns: 2; column-gap: 26px; }
+  @media (max-width: 900px) { .ivlist { columns: 1; } }
+  .ivlist .sk-row { break-inside: avoid; }
+  html[data-skin="pixel"] details.kpi { border: 3px solid var(--border); box-shadow: var(--shadow-2); }
+
+  /* Das Start-Here-Deck lebt als eigenes Dokument in reference/start-here-deck/ und wird
+     hier eingebettet. Ein Dokument, zwei Orte: im Dashboard zum Durchklicken, im Vollbild
+     als Deck, das man jemandem zeigt. Keine zweite Fassung, die auseinanderlaeuft. */
+  .deckwrap { position: relative; width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; background: #faf9f5; box-shadow: var(--shadow-1); }
+  .deckwrap video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; background: #14140f; }
+  /* Ausstattung nach Technik-Art. Bewusst NICHT dieselbe Darstellung wie die Kacheln im
+     Workspace-Tab: dort steht der Zustand (was ist verbunden), hier der Plan (was wird
+     eingerichtet). Gleiches Aussehen wuerde die beiden verwechselbar machen. */
+  /* Der Setup-Plan. Gruppiert nach "passiert das im Setup", NICHT nach Technik —
+     die Technik ist das Etikett an der Zeile. Grund: ein System hat oft zwei Wege
+     (Supabase und Vercel haben beide ein CLI UND einen Connector), nach Mechanismus
+     gruppiert stand dasselbe Ding deshalb zweimal in verschiedenen Karten.
+     Die neun Schritte sind exakt die Pflichtschritte aus inventory.js — dieselbe
+     Liste, die der Workspace-Tab als Live-Zustand zeigt. Zwei Orte, eine Wahrheit. */
+  /* Karten aufklappbar: der Ueberblick soll auf einen Blick lesbar sein, das Detail
+     kommt auf Klick. Ohne das sind es ueber dreissig Zeilen am Stueck. */
+  details.kit > summary { cursor: pointer; list-style: none; }
+  details.kit > summary::-webkit-details-marker { display: none; }
+  /* Der Kopf war ein Grid mit "Marke ueber zwei Zeilen"; ein dritter Pfeil-Platzhalter
+     hat Titel und Unterzeile auseinandergerissen. Als Flexbox mit eigenem Textblock
+     bleibt beides zusammen und der Pfeil sitzt rechts. */
+  /* Feste Bereiche statt Flexbox: Marke links, Titel und Unterzeile gestapelt in der
+     Mitte, Pfeil rechts. Als Flexbox nahm der Titel seine volle Breite und die Unterzeile
+     wurde in eine Spalte von wenigen Zeichen gequetscht — wortweiser Umbruch. */
+  details.kit > summary { display: grid; align-items: center; gap: 1px 11px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "code title arrow" "code sub arrow"; }
+  details.kit > summary > code { grid-area: code; }
+  details.kit > summary > b { grid-area: title; }
+  details.kit > summary > span { grid-area: sub; }
+  details.kit > summary::after { content: ""; grid-area: arrow; width: 7px; height: 7px;
+    border-right: 1.5px solid var(--text-3); border-bottom: 1.5px solid var(--text-3);
+    transform: rotate(45deg); transition: transform .16s; }
+  details.kit[open] > summary::after { transform: rotate(-135deg); }
+  details.kit:not([open]) > summary { padding-bottom: 0; margin-bottom: 0; border-bottom: 0; }
+  .plan { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px 16px; box-shadow: var(--shadow-1); margin-bottom: 16px; }
+  .plan-hd { display: flex; align-items: center; gap: 14px; padding-bottom: 14px;
+    margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .plan-n { flex: none; width: 42px; height: 42px; border-radius: 10px; background: var(--brand);
+    color: #fff; font-size: 19px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .plan-hd b { display: block; font-size: 15px; font-weight: 650; letter-spacing: -.01em; }
+  .plan-hd span { font-size: 12px; color: var(--text-3); }
+  /* Phasen statt einer Liste aus fuenfzehn: drei bis fuenf Schritte kann man sich merken,
+     fuenfzehn am Stueck liest niemand. Je Schritt eine Zeile sichtbar, das Warum auf Klick.
+     Vorher standen hier fuenfzehn Absaetze untereinander, das war eine Textwand. */
+  .ph { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap;
+    margin: 18px 0 9px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .ph:first-of-type { margin-top: 4px; padding-top: 0; border-top: 0; }
+  .ph b { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-2); }
+  .ph span { font-size: 11.5px; color: var(--text-3); }
+
+  .plan-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; }
+  .plan-steps li { display: grid; grid-template-columns: 24px 1fr; gap: 11px; align-items: start; }
+  .plan-steps li::before { content: attr(value); margin-top: 5px;
+    width: 24px; height: 24px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border-strong);
+    font-size: 11px; font-weight: 700; color: var(--text-3);
+    display: flex; align-items: center; justify-content: center; }
+  .plan-steps details { min-width: 0; }
+  /* Feste Bereiche: Titel oben, Einzeiler darunter, Pfeil rechts ueber beide Zeilen.
+     Ohne das landete der Einzeiler rechts neben dem Titel und der Pfeil unter der Nummer. */
+  .plan-steps summary { display: grid; gap: 2px 12px; cursor: pointer;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "title arrow" "sub arrow";
+    list-style: none; padding: 6px 8px 6px 0; border-radius: 7px; }
+  .plan-steps summary b { grid-area: title; }
+  .plan-steps summary i { grid-area: sub; }
+  .plan-steps summary::-webkit-details-marker { display: none; }
+  .plan-steps summary:hover { background: var(--bg); }
+  .plan-steps summary::after { content: ""; grid-area: arrow; align-self: center; width: 6px; height: 6px;
+    border-right: 1.5px solid var(--border-strong); border-bottom: 1.5px solid var(--border-strong);
+    transform: rotate(45deg); transition: transform .16s; }
+  .plan-steps details[open] summary::after { transform: rotate(-135deg); }
+  .plan-steps summary b { font-size: 13.5px; font-weight: 650; display: flex; align-items: center;
+    gap: 7px; flex-wrap: wrap; }
+  .plan-steps summary i { font-style: normal; font-size: 12.5px; color: var(--text-3); }
+  .plan-steps details > p { margin: 0 0 10px; padding: 10px 13px; font-size: 12.5px; line-height: 1.6;
+    color: var(--text-2); background: var(--bg); border-radius: 8px; max-width: 82ch; }
+  /* Ein Bild, kein Bilderbuch: das Diagramm steht nur dort, wo es etwas sagt, das der Satz
+     nicht sagt — naemlich dass der Ordner in der Mitte steht und welche zwei Verbindungen
+     nicht verhandelbar sind. Fuenfzehn Icons waeren Dekoration, kein Erklaerstueck. */
+  .plan-steps svg.map { display: block; width: 100%; max-width: 560px; height: auto;
+    margin: 2px 0 12px; color: var(--text); }
+  .plan-steps svg.map text { fill: var(--text-2); font-family: inherit; }
+  .plan-steps svg.map .req { fill: var(--brand-soft, #eaf5ee); stroke: var(--brand); stroke-width: 1.2; }
+  .plan-steps svg.map .opt { fill: var(--bg); stroke: var(--border-strong); stroke-width: 1.2;
+    stroke-dasharray: 3 2.5; }
+  /* Detail-Listen in den Aufklappern: Begriff links fett, Erklaerung darunter.
+     Kein Raster mit zwei Spalten — bei acht Eintraegen wird die rechte Spalte sonst
+     zu schmal und bricht wortweise um, derselbe Fehler wie in den Kartenkoepfen. */
+  .plan-steps dl.det { margin: 0 0 10px; padding: 12px 14px; background: var(--bg); border-radius: 8px;
+    max-width: 82ch; }
+  .plan-steps dl.det dt { font-size: 12.5px; font-weight: 650; color: var(--text);
+    display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .plan-steps dl.det dt .tg { background: var(--card); }
+  .plan-steps dl.det dd { margin: 2px 0 11px; font-size: 12.5px; line-height: 1.6; color: var(--text-3); }
+  .plan-steps dl.det dd:last-of-type { margin-bottom: 0; }
+  .plan-steps .tg { flex: none; font-size: 9.5px; font-weight: 700; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--text-3); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; }
+  .plan-steps .tg.opt { background: var(--brand-soft, #eaf5ee); border-color: transparent;
+    color: var(--brand-deep, var(--brand)); text-transform: none; letter-spacing: 0; font-weight: 600; }
+
+  .kitgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 14px; }
+  .kit { background: var(--card); border: 1px solid var(--border); border-radius: 11px;
+    padding: 15px 17px 13px; box-shadow: var(--shadow-1); }
+  .kit-h { display: grid; grid-template-columns: auto 1fr; gap: 3px 9px; align-items: center;
+    padding-bottom: 10px; margin-bottom: 9px; border-bottom: 1px solid var(--border); }
+  .kit-h code { grid-row: span 2; align-self: start; font-size: 9.5px; font-weight: 700; letter-spacing: .09em;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 5px;
+    padding: 4px 7px; color: var(--text-3); }
+  .kit-h b { font-size: 14px; font-weight: 650; letter-spacing: -.01em; color: var(--text); }
+  .kit-h span { font-size: 11.5px; line-height: 1.4; color: var(--text-3); }
+  .kit-h code.mini { grid-row: auto; padding: 1px 4px; font-size: 10px; letter-spacing: 0; }
+  /* Zwei beschriftete Gruppen statt einer Legende: was mitkommt und was auf Wunsch
+     kommt, ist die wichtigste Aussage der Uebersicht. Sie an einem 7px-Punkt haengen zu
+     lassen war zu schwach — jetzt traegt die Struktur sie, der Punkt bestaetigt nur noch. */
+  .kit-grp { font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+    color: var(--text-3); margin: 13px 0 7px; display: flex; align-items: center; gap: 7px; }
+  .kit-grp:first-of-type { margin-top: 2px; }
+  .kit-grp::before { content: ""; width: 7px; height: 7px; border-radius: 50%; flex: none;
+    border: 1.5px solid var(--border-strong); }
+  .kit-grp.on { color: var(--brand-deep, var(--text-2)); }
+  .kit-grp.on::before { background: var(--brand); border-color: var(--brand); }
+  .kit li::before { display: none; }
+  .kit li { grid-template-columns: 1fr; }
+  .kit li b, .kit li i { grid-column: 1; }
+  .kit ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .kit li { display: grid; grid-template-columns: 13px 1fr; gap: 8px; align-items: baseline; font-size: 12.5px; }
+  .kit li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; align-self: center;
+    border: 1.5px solid var(--border-strong); }
+  .kit li.on::before { background: var(--brand); border-color: var(--brand); }
+  /* Beide Textknoten muessen in Spalte 2. Ohne das rutscht das <i> in die 13px schmale
+     Punkt-Spalte und bricht wortweise um. */
+  .kit li b { grid-column: 2; font-weight: 650; color: var(--text); }
+  .kit li i { grid-column: 2; font-style: normal; font-size: 11.5px; line-height: 1.5;
+    color: var(--text-3); margin-top: 1px; }
+
+  .deckbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 12px 0 6px; }
+  .deckspeed { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 999px; overflow: hidden; }
+  .deckspeed button { border: 0; background: var(--card); cursor: pointer; font: inherit; font-size: 12.5px;
+    font-weight: 600; color: var(--text-3); padding: 7px 13px; border-right: 1px solid var(--border); }
+  .deckspeed button:last-child { border-right: 0; }
+  .deckspeed button:hover { color: var(--brand); }
+  .deckspeed button.on { background: var(--brand); color: #fff; }
+  .deckbar a { font-size: 12.5px; font-weight: 600; }
+  .decknote { margin: 4px 0 8px; font-size: 12.5px; line-height: 1.55; color: var(--text-3); }
+
+body { margin: 0; padding: 26px 22px 60px; background: var(--bg); }
+.wrap { max-width: 1180px; margin: 0 auto; }
+.hdr { margin-bottom: 22px; }
+.hdr h1 { margin: 0 0 6px; font-size: 21px; font-weight: 700; letter-spacing: -.02em; color: var(--text); }
+.hdr p { margin: 0; font-size: 13.5px; color: var(--text-3); max-width: 76ch; line-height: 1.6; }
+</style></head>
+<body><div class="wrap">
+<div class="hdr"><h1>Start here</h1>
+<p>What this folder is, what the setup does with you, and what you end up with. None of it needs to be set up first, you can read it before answering a single question.</p></div>
+
+    <div class="guide">
+      <h3 class="label">The whole thing in eleven pictures</h3>
+      <p class="sec-sub">Why your AI keeps starting from zero, what closes that gap, how a day works with this folder, and where the line is.</p>
+      <div class="deckwrap">
+        <video id="deckvideo" controls playsinline preload="metadata"
+               src="reference/start-here-deck/start-here-walkthrough.mp4"></video>
+      </div>
+      <div class="deckbar">
+        <span class="deckspeed" role="group" aria-label="Playback speed">
+          <button type="button" data-rate="1" class="on">1×</button><button type="button" data-rate="1.25">1.25×</button><button type="button" data-rate="1.5">1.5×</button><button type="button" data-rate="2">2×</button>
+        </span>
+        <a href="reference/start-here-deck/index.html" target="_blank" rel="noopener">Or click through the slides yourself</a>
+      </div>
+      <p class="decknote">Eight minutes, three people talking it through. It starts by itself when you open this tab.</p>
+
+<h3 class="label">How you work with this</h3>
+      <ol class="guide-steps">
+        <li><b>In the morning</b> say "good morning". Claude fetches calendar and mails, briefs you and builds this dashboard. Optionally you plan the day through afterwards.</li>
+        <li><b>During the day</b> just talk, no command needed: "chapter 3 is done", "waiting on IT", "meeting went well, we are doing X". Claude files it away.</li>
+        <li><b>Documents</b> go into the <code>inbox/</code> folder, then say "read this in". Decisions and to-dos land in the right project.</li>
+        <li><b>In the evening</b> "end of day": a short wrap-up, what happened and what is left over. What is coming up in the next few days you simply ask in the chat ("what is on this week?").</li>
+        <li><b>If something is wrong</b>, just say so: "that is not right", "I answered that long ago". It gets corrected, no discussion. If the same mistake comes up repeatedly, the cause gets fixed.</li>
+        <li><b>In a hurry?</b> "Good morning, quick" skips the inbox analysis: calendar and tasks in about 30 seconds. <b>Been away longer?</b> Just say "good morning", you will be asked what piled up.</li>
+      </ol>
+      <p class="guide-foot">You do not have to remember any commands. "What is on today?" does the same as "good morning", and one fresh conversation per day is plenty.</p>
+    </div>
+
+    <h3 class="label sec">What the setup puts in place</h3>
+    <p class="sec-sub">The whole run, in the order it happens. Once, twenty to thirty minutes. Click any step to read why it is there. The Workspace tab shows the same list as a live state, so you can see how far you got.</p>
+
+    <div class="plan">
+      <div class="plan-hd"><span class="plan-n">11</span><div><b>The setup, step by step</b><span>four phases, twenty to thirty minutes, and you can stop after any one of them</span></div></div>
+      <p class="ph"><b>You answer a few questions</b><span>about five minutes</span></p>
+      <ol class="plan-steps">
+        <li value="1"><details><summary><b>Which language you want</b><i>Everything the system says to you afterwards follows it.</i></summary><p>Briefing, dashboard, the entries in your files, mail drafts. The package's own files stay English; that is a different thing and does not concern you.</p></details></li>
+        <li value="2"><details><summary><b>Fresh start, or a folder you already have</b><i>Decides which of two different jobs this is.</i></summary><p>If you already have a folder with your work in it, nothing new gets built next to it, that one gets taken over. Skipping this question is how people end up with two half systems and neither one complete.</p></details></li>
+        <li value="3"><details><summary><b>Six questions about you</b><i>Name, work, location, projects, the tools you use daily, your plan.</i></summary><p>The tools question is the one that pays off later: your systems get connected by name further down, instead of being asked about abstractly fifteen minutes after you already said it. And the plan question decides how generously the system works, because you know your plan, it is on your invoice.</p></details></li>
+      </ol>
+      <p class="ph"><b>It sets itself up</b><span>nothing asked, it just runs</span></p>
+      <ol class="plan-steps">
+        <li value="4"><details><summary><b>It writes itself up from your answers</b><i>Your settings, your model, a quiet look at your machine.</i></summary><p>Three things at once, and none of them needs you. Everything you said lands in <b>one</b> config file that every command reads from afterwards. The model gets worked out from your plan rather than asked about: on the twenty-euro plan always the fast one, because the expensive one burns through that quota in an hour or two. And it checks quietly what this machine can do, which connections already answer and whether the dashboard can be built here at all, so nobody has to ask you twice.</p></details></li>
+        <li value="5"><details><summary><b>Your projects become folders</b><i>One per project, each with what it is and where it stands.</i></summary><p>That page is the difference between a folder of files and something that can answer where everything stands on a Monday.</p></details></li>
+        <li value="6"><details><summary><b>Whatever documents you brought<span class="tg opt">if you have any</span></b><i>Filed into the right project, not onto a heap.</i></summary><p>And what is inside them gets pulled out on the way: decisions, open points with an owner, the people involved.</p></details></li>
+      </ol>
+      <p class="ph"><b>It connects your world</b><span>the part that otherwise never happens</span></p>
+      <ol class="plan-steps">
+        <li value="7"><details><summary><b>Your writing style, read once<span class="tg">mail</span><span class="tg opt">asked first</span></b><i>So drafts sound like you, not like a template.</i></summary><p>Your own sent mail is read once, read only, nothing is ever sent, and you say yes before it happens. Without this step every draft still works, it just sounds generic.</p></details></li>
+        <li value="8"><details><summary><b>The tools, the plugins, two accounts<span class="tg">CLI</span></b><i>playwright and firecrawl, eight plugins, and the keys they need.</i></summary><p>Three things in one step, because they only work together: a tool without its key does nothing, and a key without its tool has nothing to unlock.</p>
+<dl class="det">
+  <dt>playwright</dt><dd>A real browser Claude can drive. Log into a portal, fill a form, check whether a page actually looks right after a change. This is what turns "I cannot see that" into "I looked".</dd>
+  <dt>firecrawl <span class="tg">needs a key</span></dt><dd>Reads web pages and searches, without opening a window. A competitor's site, a supplier's price list, what changed in a regulation. Your own free account, so nobody shares a limit with you.</dd>
+  <dt>Eight plugins</dt><dd>The curated set, listed one by one in the first card below. New ones appear almost daily and telling this week's real thing from the noise is a job of its own — handing you a list to install yourself would give you back exactly the work you were meant to be spared.</dd>
+  <dt>OpenRouter <span class="tg">a key</span></dt><dd>Images, and models that do not come from Anthropic. Only matters if you generate visuals or want a second opinion from a different model.</dd>
+</dl>
+<p><b>Where the keys live:</b> in a file outside this folder, with permissions only you can read. That way a repo that gets cloned, backed up or shared never carries them.</p></details></li>
+        <li value="9"><details><summary><b>Your systems, connected by name<span class="tg">connector</span></b><i>Mailbox, calendar, and whatever else you named.</i></summary><p>Connecting happens once, in Claude Cowork under Settings, and Claude Code then uses the same connection. Read access only, and the two promises hold everywhere: <b>nothing is ever sent</b> and <b>nothing is ever written into your calendar</b>.</p>
+<dl class="det">
+  <dt>Your mailbox <span class="tg">not optional</span></dt><dd>Outlook, Gmail, Microsoft 365, Google Workspace. Without it the morning briefing cannot tell what needs an answer from what is just noise, and no draft can be written at all.</dd>
+  <dt>Your calendar <span class="tg">not optional</span></dt><dd>Appointments in the briefing and the day timeline, including the gaps between them. Reminders are shown apart from real meetings, so a to-do does not masquerade as an appointment.</dd>
+  <dt>Where your customers live</dt><dd>HubSpot, Salesforce, Pipedrive. Then "where do we stand with them" is answered before a call instead of during it, and a draft carries the real history rather than your memory of it.</dd>
+  <dt>Where the work is tracked</dt><dd>Linear, Jira, Asana, ClickUp, Notion. Read as context, deliberately never as a second task list: your own open points stay in one place, otherwise you have two lists and neither one is right.</dd>
+  <dt>Where your files are</dt><dd>SharePoint, OneDrive, Google Drive. A document gets filed straight from where it already lives, instead of being downloaded first and forgotten in a folder afterwards.</dd>
+  <dt>Where the talking happens</dt><dd>Teams or Slack. What gets agreed in a thread at four in the afternoon otherwise never reaches any project.</dd>
+  <dt>Where your code is</dt><dd>GitHub, Supabase, Vercel. Only comes up if you build software; skipped without comment if you do not.</dd>
+</dl>
+<p><b>Not in the catalogue?</b> Then that system's own connector gets added directly instead. You fetch a token, Claude runs the command. It only ends at "no way in" once that has actually been checked.</p><svg class="map" viewBox="0 0 600 250" role="img" aria-label="Your folder in the middle, the systems it reaches around it">
+  <defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L6,3 L0,6 z" fill="currentColor" opacity=".45"/></marker></defs>
+  <g stroke="currentColor" opacity=".3" stroke-width="1.4" marker-end="url(#ar)" fill="none">
+    <path d="M300,105 L152,52"/><path d="M300,105 L448,52"/>
+    <path d="M300,145 L152,198"/><path d="M300,145 L448,198"/>
+    <path d="M262,125 L112,125"/><path d="M338,125 L488,125"/>
+  </g>
+  <rect x="238" y="103" width="124" height="44" rx="9" fill="currentColor" opacity=".92"/>
+  <text x="300" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">your folder</text>
+  <g font-size="11.5" text-anchor="middle">
+    <g><rect x="72" y="30" width="112" height="34" rx="8" class="req"/><text x="128" y="51">mailbox</text></g>
+    <g><rect x="416" y="30" width="112" height="34" rx="8" class="req"/><text x="472" y="51">calendar</text></g>
+    <g><rect x="32" y="108" width="112" height="34" rx="8" class="opt"/><text x="88" y="129">your customers</text></g>
+    <g><rect x="456" y="108" width="112" height="34" rx="8" class="opt"/><text x="512" y="129">your files</text></g>
+    <g><rect x="72" y="186" width="112" height="34" rx="8" class="opt"/><text x="128" y="207">the work board</text></g>
+    <g><rect x="416" y="186" width="112" height="34" rx="8" class="opt"/><text x="472" y="207">team chat</text></g>
+  </g>
+  <g font-size="10.5" opacity=".62">
+    <rect x="238" y="222" width="10" height="10" rx="3" class="req"/><text x="256" y="231">not optional</text>
+    <rect x="344" y="222" width="10" height="10" rx="3" class="opt"/><text x="362" y="231">only if you have it</text>
+  </g>
+</svg></details></li>
+        <li value="10"><details><summary><b>Git: your code in, your state out<span class="tg">repo</span></b><i>Your projects attached, your own private backup created.</i></summary><p>Two directions. A project with its own repository gets cloned <b>into</b> that project keeping its full history, nothing copied, nothing merged. And a private repo gets created <b>for</b> you under your own account, visible to nobody else, where the end of the day pushes your state so a lost laptop is not a lost year.</p></details></li>
+      </ol>
+      <p class="ph"><b>You watch it work</b><span>one minute, then you are done</span></p>
+      <ol class="plan-steps">
+        <li value="11"><details><summary><b>The first dashboard, built while someone is watching</b><i>Built from your fresh data and opened.</i></summary><p>Two things at once: you see a result immediately, and the fact that it renders is proven on your machine while there is still someone next to you if it does not.</p></details></li>
+      </ol>
+    </div>
+
+    <div class="kitgrid">
+      <details class="kit">
+        <summary class="kit-h"><code>8</code><b>The plugins, one by one</b><span>step 9, and what each one is actually for</span></summary>
+        <ul>
+          <li class="on"><b>skill-creator</b><i>You describe something you do every week; it builds you your own command for it. This is the one that turns the folder from a fixed set of features into something that grows with you.</i></li>
+          <li class="on"><b>ponytail</b><i>Keeps whatever gets built small. Without it an AI answers "add a cache" with a cache class; with it, with one line. Matters most for people who do not read code and cannot tell the difference.</i></li>
+          <li class="on"><b>claude-code-setup</b><i>Reads how you have actually been working after a few weeks and says which of your repeated steps is worth turning into a command. Useless on day one, valuable in month two.</i></li>
+          <li class="on"><b>code-review</b><i>Reviews your own changes before they go out: several viewpoints first, then a separate pass that throws out everything it cannot actually prove. Pairs with <code class="mini">/security-review</code>, which Claude Code brings itself.</i></li>
+          <li class="on"><b>claude-md-management</b><i>Your rules file grows every time you say "from now on". After months it sprawls and starts contradicting itself. This tidies it.</i></li>
+          <li class="on"><b>impeccable</b><i>Design guidance for anything with a screen: layout, spacing, colour, accessibility. Only pays off if you actually build interfaces.</i></li>
+          <li class="on"><b>superpowers</b><i>Development method: test first, debug systematically, plan before writing. For the people on your team who write code.</i></li>
+          <li class="on"><b>claude-mem</b><i>Remembers across sessions, so a new chat does not start from nothing. <b>The one that gets asked about first:</b> it keeps running in the background and writes down what it reads, including client documents. Yes or no, both are fine, everything works without it.</i></li>
+        </ul>
+      </details>
+
+      <details class="kit">
+        <summary class="kit-h"><code>0</code><b>Already in the folder</b><span>nothing to install, nothing to decide</span></summary>
+        <ul>
+          <li class="on"><b>8 commands</b><i><code class="mini">/morning</code> <code class="mini">/eod</code> <code class="mini">/ingest</code> <code class="mini">/email</code> <code class="mini">/checkup</code> <code class="mini">/audit</code> <code class="mini">/adopt</code> <code class="mini">/setup</code></i></li>
+          <li class="on"><b>17 specialist skills</b><i>Word, PDF, slides, web research, browser control, databases. Not called by name, they kick in when a task needs them.</i></li>
+          <li class="on"><b>Two review commands</b><i><code class="mini">/review</code> and <code class="mini">/security-review</code> are part of Claude Code itself, nothing to install. The fuller <code class="mini">/code-review</code> comes from the plugin set above.</i></li>
+        </ul>
+      </details>
+
+      
+      <details class="kit">
+        <summary class="kit-h"><code>+</code><b>Also yours, one sentence away</b><span>curated and documented, set up whenever you want it</span></summary>
+        <ul>
+          <li><b>headroom</b><i>A connection, not a plugin: it compresses tool output, logs and search results before they reach the model. Claims sixty to ninety-five percent fewer tokens at the same answer quality, measured on public benchmarks. Worth a look once the bill starts raising questions. <code class="mini">chopratejas/headroom</code></i></li>
+          <li><b>Two more plugins</b><i>Not part of the run because they install differently: <code class="mini">codeburn</code> needs no installation at all (<code class="mini">npx codeburn</code> shows what your usage costs), and <code class="mini">find-skills</code> comes through the open skill registry.</i></li>
+          <li><b>More connections</b><i>Notion, Linear, Jira, Asana, Stripe, GitHub, Supabase, Vercel. Which one is worth what, and where the limits are, is written down in <code class="mini">reference/mcp.md</code> — say the name and it gets connected.</i></li>
+          <li><b>Systems not in the catalogue</b><i>Not the end of it: their own MCP server gets added directly in Claude Code. You fetch a token, Claude runs the command. <code class="mini">/checkup</code> is the route for all of this after the setup has archived itself.</i></li>
+        </ul>
+      </details>
+    </div>
+
+  
+</div></body></html>

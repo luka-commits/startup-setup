@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
-# Meldet beim Sitzungsstart, wenn die Einrichtung noch aussteht.
+# Reports at session start if the setup is still pending.
 #
-# Warum es diesen Hook gibt: Die Anweisung in CLAUDE.md allein ist nicht
-# zuverlaessig — in Tests am 21.07.2026 sprang die Einrichtung bei "hallo" mal an
-# und mal nicht, bei identischem Stand. Fuer einen neuen Nutzer ist das der
-# schlimmste Fall: Er tippt "hallo", bekommt einen normalen Chat und haelt das
-# System fuer kaputt. Ein Hook laeuft dagegen immer.
+# Why this hook exists: the instruction in CLAUDE.md alone is not reliable — in
+# tests on 2026-07-21 the setup sometimes fired on "hello" and sometimes did not,
+# with an identical state. For a new user that is the worst case: they type
+# "hello", get a normal chat, and think the system is broken. A hook, by
+# contrast, always runs.
 #
-# Der Marker ist der setup-Ordner selbst: Der Skill archiviert sich am Ende weg,
-# seine Anwesenheit heisst also verlaesslich "noch nicht fertig".
+# The marker is the setup folder itself: the skill archives itself away at the
+# end, so its presence reliably means "not done yet".
 set -u
 DIR="${CLAUDE_PROJECT_DIR:-.}"
 
 if [ -d "$DIR/.claude/skills/setup" ]; then
-  MSG="EINRICHTUNG STEHT AUS. Dieser Workspace gehoert noch niemandem: der Ordner .claude/skills/setup/ ist noch da, und der Skill archiviert sich am Ende selbst weg. Begruesse den Nutzer bei seiner ersten Nachricht in hoechstens zwei Saetzen (was das hier ist) und starte danach SOFORT den Skill 'setup' ueber das Skill-Tool. Nicht auf einen Befehl warten, nicht nachfragen, ob er moechte, und keine Einrichtung improvisieren."
+  MSG="SETUP IS STILL PENDING. This workspace does not belong to anyone yet: the folder .claude/skills/setup/ is still there, and the skill archives itself away at the end. Greet the user on their first message in at most two sentences (what this is) and then IMMEDIATELY start the skill 'setup' via the skill tool. Do not wait for a command, do not ask whether they want to, and do not improvise a setup."
   printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}\n' "$MSG"
 fi
 exit 0

@@ -1,71 +1,71 @@
-# Design-System
+# Design system
 
-Die Farben, Abstände und Muster, aus denen das Dashboard gebaut ist. Zwei Gründe, warum das hier steht:
+The colors, spacings and patterns the dashboard is built from. Two reasons why this is here:
 
-1. **Wenn ihr eigene Tools baut**, könnt ihr sie mit diesen Werten gestalten. Dann sehen sie aus wie ein Teil desselben Systems und nicht wie fünf verschiedene Programme.
-2. **Wenn Claude etwas für euch gestaltet**, sagt ihr einfach „halt dich an `reference/design.md`" und bekommt einen konsistenten Stand statt einer neuen Optik pro Anlauf.
+1. **If you build your own tools**, you can style them with these values. Then they look like part of the same system and not like five different programs.
+2. **If Claude designs something for you**, you just say "stick to `reference/design.md`" and get a consistent result instead of a new look on every attempt.
 
-Alle Werte sind im Dashboard als CSS-Variablen definiert (`context/today_template.html`, ganz oben). Ändert ihr sie dort, ändert sich das ganze Dashboard mit.
+All values are defined in the dashboard as CSS variables (`context/today_template.html`, right at the top). Change them there and the whole dashboard changes with them.
 
-## Haltung
+## Attitude
 
-Ruhig, sachlich, wenig Farbe. Farbe bedeutet hier immer etwas: Grün ist das System selbst, Amber und Rot sind Warnstufen. Alles andere ist neutral. Wer Farbe zur Dekoration einsetzt, nimmt ihr die Aussagekraft.
+Calm, matter-of-fact, little color. Color always means something here: green is the system itself, amber and red are warning levels. Everything else is neutral. Whoever uses color as decoration takes away its meaning.
 
-## Farben
+## Colors
 
-**Akzent (das System selbst)**
+**Accent (the system itself)**
 
-| Token | Wert | Wofür |
+| Token | Value | What for |
 |---|---|---|
-| `--brand` | `#177B57` | Aktive Elemente, Akzentlinien, der laufende Tab |
-| `--brand-deep` | `#0B3F2D` | Text auf hellen Grün-Flächen |
-| `--brand-soft` | `#E8F1ED` | Grün hinterlegte Flächen |
+| `--brand` | `#177B57` | Active elements, accent lines, the current tab |
+| `--brand-deep` | `#0B3F2D` | Text on light green surfaces |
+| `--brand-soft` | `#E8F1ED` | Surfaces with a green backing |
 
-**Flächen und Text**
+**Surfaces and text**
 
-| Token | Wert | Wofür |
+| Token | Value | What for |
 |---|---|---|
-| `--bg` | `#F7F8F7` | Seitenhintergrund, leicht warm statt reinweiß |
-| `--card` | `#FFFFFF` | Karten und Panels |
-| `--text` | `#0D1F1A` | Überschriften, wichtige Werte |
-| `--text-2` | `#3F4D47` | Fließtext |
-| `--text-3` | `#7A857F` | Beschriftungen, Nebensächliches |
-| `--border` | `#E2E6E3` | Normale Trennlinien |
-| `--border-strong` | `#C8CFCB` | Wenn eine Kante deutlicher sein muss |
+| `--bg` | `#F7F8F7` | Page background, slightly warm instead of pure white |
+| `--card` | `#FFFFFF` | Cards and panels |
+| `--text` | `#0D1F1A` | Headings, important values |
+| `--text-2` | `#3F4D47` | Body text |
+| `--text-3` | `#7A857F` | Labels, secondary information |
+| `--border` | `#E2E6E3` | Normal dividing lines |
+| `--border-strong` | `#C8CFCB` | When an edge has to be more distinct |
 
-**Warnstufen**
+**Warning levels**
 
-| Token | Wert | Wofür |
+| Token | Value | What for |
 |---|---|---|
-| `--sev-amber` / `--amber-soft` / `--amber-border` / `--amber-deep` | `#B54708` · `#FEF3E2` · `#F8D5A4` · `#92400E` | Achtung, aber nicht dringend |
-| `--sev-red` / `--red-soft` / `--red-border` / `--red-deep` | `#B42318` · `#FBE8E5` · `#F5C5BE` · `#911C13` | Überfällig, fehlgeschlagen, blockiert |
+| `--sev-amber` / `--amber-soft` / `--amber-border` / `--amber-deep` | `#B54708` · `#FEF3E2` · `#F8D5A4` · `#92400E` | Attention, but not urgent |
+| `--sev-red` / `--red-soft` / `--red-border` / `--red-deep` | `#B42318` · `#FBE8E5` · `#F5C5BE` · `#911C13` | Overdue, failed, blocked |
 
-Mehr Farben gibt es nicht. Braucht ihr eine weitere Bedeutung, prüft zuerst, ob eine der vorhandenen sie schon trägt.
+There are no more colors than these. If you need another meaning, first check whether one of the existing ones already carries it.
 
-## Abstände, Ecken, Schatten
+## Spacing, corners, shadows
 
-| Token | Wert | Wofür |
+| Token | Value | What for |
 |---|---|---|
-| `--pad` | `20px` | Innenabstand von Karten |
-| `--gap` | `14px` | Abstand zwischen Karten |
-| `--shadow-1` | `0 1px 2px rgba(13,31,26,.04)` | Ruhende Flächen |
-| `--shadow-2` | `0 4px 16px rgba(13,31,26,.06)` | Hervorgehobene Flächen |
-| `--ease` | `cubic-bezier(.2,0,0,1)` | Jede Bewegung, damit nichts hektisch wirkt |
+| `--pad` | `20px` | Inner padding of cards |
+| `--gap` | `14px` | Spacing between cards |
+| `--shadow-1` | `0 1px 2px rgba(13,31,26,.04)` | Resting surfaces |
+| `--shadow-2` | `0 4px 16px rgba(13,31,26,.06)` | Highlighted surfaces |
+| `--ease` | `cubic-bezier(.2,0,0,1)` | Every movement, so nothing feels hectic |
 
-**Radien:** `999px` für Chips und Pillen, `10px` für Karten und Panels, `6px` für kleine Flächen wie Code-Chips. Mehr Stufen braucht es nicht.
+**Radii:** `999px` for chips and pills, `10px` for cards and panels, `6px` for small surfaces like code chips. No more steps than that are needed.
 
-**Schrift:** `Inter`, falls auf dem Rechner vorhanden, sonst die Systemschrift. Bewusst nicht nachgeladen, damit die Datei offline funktioniert.
+**Typeface:** `Inter`, if it is on the machine, otherwise the system font. Deliberately not loaded from outside, so the file works offline.
 
-## Muster
+## Patterns
 
-**Karte:** weiße Fläche, `--border`, `--shadow-1`, `--pad` innen. Überschrift in `--text`, Inhalt in `--text-2`, Beschriftungen klein in `--text-3`.
+**Card:** white surface, `--border`, `--shadow-1`, `--pad` inside. Heading in `--text`, content in `--text-2`, labels small in `--text-3`.
 
-**Status auf einen Blick:** ein farbiger Punkt oder eine farbige Kante, nie ein farbiger Block. Eingerichtet ist grün, nicht eingerichtet ist grau, nicht rot. Rot ist für kaputt reserviert, nicht für unfertig.
+**Status at a glance:** a colored dot or a colored edge, never a colored block. Set up is green, not set up is grey, not red. Red is reserved for broken, not for unfinished.
 
-**Technische Werte** (Befehle, Pfade, Schlüssel) immer in Monospace und meist auf einer eigenen ruhigen Fläche. Der Nutzer soll sofort sehen, was er kopieren kann.
+**Technical values** (commands, paths, keys) always in monospace and usually on their own calm surface. The user should see immediately what they can copy.
 
-**Leere Bereiche** bekommen einen ruhigen Satz, was dort erscheinen wird und wie man es füllt. Nie ein leeres Feld und nie eine Fehlermeldung, wenn einfach noch nichts da ist. Ein frisch eingerichtetes System darf nicht wie ein defektes aussehen.
+**Empty areas** get a calm sentence about what will appear there and how to fill it. Never an empty field and never an error message when there is simply nothing there yet. A freshly set-up system must not look like a broken one.
 
-## Grenzen
+## Limits
 
-Das Dashboard ist eine einzelne HTML-Datei, die per Doppelklick funktioniert. Deshalb: **keine externen Schriften, keine Icon-Bibliotheken, kein CDN, kein Build-Schritt.** Icons sind eingebettete SVG, Schriften sind Systemschriften. Wer eine externe Abhängigkeit einbaut, macht die Datei offline unbrauchbar.
+The dashboard is a single HTML file that works on a double-click. Therefore: **no external fonts, no icon libraries, no CDN, no build step.** Icons are embedded SVG, fonts are system fonts. Whoever builds in an external dependency makes the file useless offline.

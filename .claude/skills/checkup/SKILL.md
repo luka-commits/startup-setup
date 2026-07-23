@@ -1,58 +1,68 @@
 ---
 name: checkup
-description: "Prüft auf Zuruf, ob mit dem Workspace selbst alles in Ordnung ist. Use when the user asks 'ist alles in Ordnung', 'läuft alles', 'check mal das System', 'checkup', 'irgendwas stimmt nicht', 'warum geht das nicht', or when a support contact asked them to run it. Prüft nur lokale Dateien (Einstellungen, Kern-Dateien, Einrichtungsstand) und meldet in Alltagssprache, was läuft und was offen ist. Ändert nichts ohne Ansage, ruft weder Mail noch Kalender ab."
+description: "Checks on request whether the workspace itself is in order. Use when the user asks 'is everything ok', 'is everything running', 'check the system', 'checkup', 'something is off', 'why doesn't this work', 'ist alles in Ordnung', 'läuft alles', 'check mal das System', 'irgendwas stimmt nicht', 'warum geht das nicht', or when a support contact asked them to run it. Checks local files only (settings, core files, setup state) and reports in everyday language what is running and what is open. Changes nothing without saying so, retrieves neither mail nor calendar."
 ---
 
 # /checkup
 
-Der Nebeneingang zum Selbsttest. Im Alltag läuft die Prüfung ohnehin still bei jedem `/morning` mit und meldet sich nur bei Befund. Dieser Befehl ist für zwei Momente: **„bei mir spinnt was"** und **„lass mal /checkup laufen und schick mir das Ergebnis"** (Support).
+The side entrance to the self-test. In everyday use the check runs silently with every `/morning` anyway and only speaks up when there is a finding. This command is for two moments: **"something is acting up on my end"** and **"run /checkup and send me the result"** (support).
 
-## Was du tust
+## What you do
 
-1. **`reference/selbsttest.md` lesen** — dort steht die vollständige Prüfliste. Nichts davon hier duplizieren, nichts dazuerfinden.
-2. **Jeden Punkt prüfen.** Ausschließlich lokale Dateien. **Weder Mail noch Kalender abrufen** — auch nicht, um „mal eben" die Anbindung zu testen. Ob sie erreichbar ist, sieht der Nutzer beim nächsten Briefing.
-3. **Antworten wie ein Mensch**, nicht wie ein Prüfprotokoll:
-   - Zuerst EIN Satz Gesamturteil: alles in Ordnung, oder was fehlt.
-   - Dann, nur wenn es etwas gibt, die offenen Punkte als kurze Liste. Pro Punkt: was es für ihn bedeutet und was er sagen kann, damit es weggeht.
-   - Anders als im Briefing wird hier **auch das Gute genannt** — er hat ja gefragt. Aber knapp: eine Zeile für alles, was läuft, keine Aufzählung jeder geprüften Datei.
-4. **Nie Systemjargon.** Keine Dateinamen, Pfade, Feldnamen, Fehlertexte. Ausnahme: Der Nutzer sagt ausdrücklich, er braucht es für einen Problembericht — dann darf die technische Fassung dazu, klar abgesetzt.
-5. **Reparieren ja, heimlich nein.** Was sich gefahrlos selbst beheben lässt (fehlende abgeleitete Datei aus den Quellen regenerieren, Safeguard 4), machst du sofort und sagst in einem Satz, was du repariert hast. Alles, was eine Entscheidung braucht (fehlende Angabe, verworfene Datei, Neu-Einrichtung), wird nur vorgeschlagen.
+1. **Read `reference/self-test.md`** — the complete checklist is there. Duplicate nothing of it here, invent nothing on top.
+2. **Check every point.** Local files exclusively. **Retrieve neither mail nor calendar** — not even to "quickly" test the connection. Whether it is reachable, the user sees at the next briefing.
+3. **Answer like a human**, not like a test protocol:
+   - First ONE sentence of overall verdict: everything in order, or what is missing.
+   - Then, only if there is anything, the open points as a short list. Per point: what it means for him and what he can say to make it go away.
+   - Unlike in the briefing, the good news gets named here too — he did ask, after all. But briefly: one line for everything that runs, no enumeration of every file checked.
+4. **Never system jargon.** No filenames, paths, field names, error texts. Exception: the user explicitly says he needs it for a problem report — then the technical version may come along, clearly set apart.
+5. **Repair yes, secretly no.** What can safely be fixed by itself (regenerating a missing derived file from the sources, safeguard 4), you do immediately and say in one sentence what you repaired. Anything that needs a decision (missing detail, discarded file, re-setup) is only proposed.
 
-## Nachrüsten — der Weg, den es sonst nicht mehr gäbe
+The reply follows `config.yaml → language` (canonical rule: CLAUDE.md).
 
-Der Einrichtungs-Skill archiviert sich nach dem Setup selbst weg. Ohne diesen Abschnitt hätte der Nutzer für alles, was er später ergänzen will, **keinen geführten Weg mehr** — nur noch eine Meldung, dass etwas fehlt.
+## Retrofitting — the route that would otherwise be gone
 
-Deshalb: Sagt der Nutzer zu einem gemeldeten Punkt „mach das" (oder direkt „verbinde mein CRM", „ich brauche einen Firecrawl-Zugang", „häng das Repo dazu"), **führst du ihn durch**, statt ihn auf eine Anleitung zu verweisen. Die Abläufe stehen in der Einrichtung und gelten unverändert:
+The setup skill archives itself away after the setup. Without this section the user would have **no guided route left** for anything he wants to add later — only a message that something is missing.
 
-| Was fehlt | Was du tust |
+So: if the user says "do that" about a reported point (or directly "connect my CRM", "I need a Firecrawl access", "attach the repo"), **you walk him through it** instead of pointing him at a manual. The procedures come from the setup and apply unchanged:
+
+| What is missing | What you do |
 |---|---|
-| Ein Anschluss (Mail, Kalender, Ablage, Chat, CRM, Entwicklung) | Durch Claude Cowork führen: Einstellungen → Connectors → System wählen → mit dem Arbeits-Account anmelden. Danach **per ToolSearch prüfen**, ob die Werkzeuge jetzt da sind, und `inventory.connectors` mit `slot:` schreiben. Kategorien und Nutzen: `reference/mcp.md` |
-| Ein Werkzeug (firecrawl, playwright) | `npm install -g <name>`, bei playwright zusätzlich `playwright install chromium`. Danach Version prüfen, `inventory.clis` schreiben. Details: `reference/tools.md` |
-| Ein Zugang (Firecrawl, OpenRouter, Supabase, Vercel) | Registrierungsseite öffnen, er legt an und erzeugt den Schlüssel, du hängst ihn an `~/.config/credentials.env` (Rechte `600`). Dann `inventory.accounts` mit `key_env`. **Den Schlüsselwert nie in den Chat schreiben und nie wiederholen.** |
-| Ein Projekt-Repo | `git clone <url> projects/<slug>/code`, danach `inventory.repos` mit `path`. Warum getrennt: `projects/README.md` |
+| A connection (mail, calendar, storage, chat, CRM, development) | Walk through Claude Cowork: Settings → Connectors → pick the system → sign in with the work account. Afterwards **check via ToolSearch** whether the tools are there now, and write `inventory.connectors` with `slot:`. **No connector in the catalogue? Then it does not stop here** — the system's own MCP server added directly in Claude Code is the second rung, and you run that command, the user only fetches a token. The full route: `reference/mcp.md` § "If your system is not in the catalogue". Never end at "there is no connector"; that sentence was the reason a system stayed unreachable for months. |
+| A tool (firecrawl, playwright) | `npm install -g <name>`, for playwright additionally `playwright install chromium`. Then check the version, write `inventory.clis`. Details: `reference/tools.md` |
+| An access (Firecrawl, OpenRouter, Supabase, Vercel) | Open the registration page, he creates the account and generates the key, you append it to `~/.config/credentials.env` (permissions `600`). Then `inventory.accounts` with `key_env`. **Never write the key value into the chat and never repeat it.** |
+| A project repo | `git clone <url> projects/<slug>/code`, then `inventory.repos` with `path`. Why kept separate: `projects/README.md` |
 
-**Die eine harte Grenze:** Befehle, die eine Anmeldung oder Eingabe verlangen (`gh auth login`, `firecrawl login`, jeder OAuth-Fluss), bleiben in deiner Bash hängen — dort ist kein Terminal, das antworten könnte. Solche Befehle **nie selbst ausführen**: die Zeile zum Einfügen geben, sagen was danach passiert, auf seine Rückmeldung warten.
+**The one hard limit:** commands that require a login or an input (`gh auth login`, `firecrawl login`, any OAuth flow) hang in your Bash — there is no terminal there that could answer. **Never run such commands yourself**: give the line to paste, say what happens afterwards, wait for his reply.
 
-Und die Umkehrung gilt auch: Ein offener Anschluss ist **kein Mangel**. Fragt der Nutzer nicht danach, bleibt es bei der einen Zeile im Befund. Nichts wird zweimal angeboten.
+And the reverse holds too: an open connection is **not a defect**. If the user does not ask about it, it stays at the one line in the finding. Nothing is offered twice.
 
-## Ton
+**Once, after about a month: the automation question.** From roughly four weeks of use there is something to read that did not exist on day one — the user's own patterns.
 
-Ein Handwerker, der kurz unter die Haube schaut und dann sagt, was Sache ist. Nicht: „Diagnose abgeschlossen, 7 von 9 Prüfungen bestanden."
+**"Once" needs somewhere to live, otherwise it is either every time or never.** Both halves hang on `context/config.yaml → asked.automation` (absolute date, or `declined`): no entry and the oldest line in `JOURNAL.md` more than 28 days old → ask; anything else → say nothing. Write the answer in immediately, `declined` when the user says no. Same mechanism for every other "offer this only once" in this package — a rule with no place to record itself is not a rule.
 
-Beispiel bei sauberem Stand:
+Then offer it, once, in one sentence: _"You have been working with this for a few weeks now. Want me to look at which of your recurring steps are worth turning into a command?"_ Say yes → install `claude-code-setup` from the official catalogue (`/plugin install claude-code-setup@claude-plugins-official`) and use its `claude-automation-recommender`: it knows the full catalogue of hooks, subagents, skills, plugins and MCP servers, so it beats a list you make up yourself. Say no → never again.
 
-> Sieht gut aus. Deine Angaben sind vollständig, alle Arbeitsdateien sind da, das Dashboard ist von heute früh.
+**Why not earlier and not in the setup:** the skill derives its suggestions from what has actually happened. On day one nothing has. Asking then produces generic advice, and generic advice is what teaches people to ignore the next suggestion too.
+
+## Tone
+
+A tradesman who takes a quick look under the hood and then says what's what. Not: "Diagnosis complete, 7 of 9 checks passed."
+
+Example with a clean state:
+
+> Looks good. Your details are complete, all working files are there, the dashboard is from this morning.
 >
-> Eine Kleinigkeit: Ich schreibe Mail-Entwürfe noch im Standardton, weil ich deinen Stil nie gelernt habe. Sag „leite meinen Mail-Stil ab", dann klingen sie nach dir.
+> One small thing: I still write mail drafts in the default tone, because I never learned your style. Say "derive my mail style", then they will sound like you.
 
-Beispiel mit echtem Befund:
+Example with a real finding:
 
-> Zwei Dinge stimmen nicht.
+> Two things are not right.
 >
-> Deine Einrichtung ist damals nicht ganz fertig geworden, mir fehlt die Mail-Domain deiner Firma. Deshalb behandle ich Mails von Kollegen wie Mails von außen und sortiere dein Briefing falsch. Sag mir eure Domain, dann ist es in zehn Sekunden erledigt.
+> Your setup never quite got finished back then, I am missing your company's mail domain. That is why I treat mails from colleagues like mails from outside and sort your briefing wrongly. Tell me your domain, then it is done in ten seconds.
 >
-> Und dein Dashboard ist von Freitag. Sag „guten Morgen", dann baue ich es neu.
+> And your dashboard is from Friday. Say "good morning", then I will rebuild it.
 
-## Nicht zuständig
+## Not responsible for
 
-Fachliche Fragen („stimmt der Projektstatus?"), Inhalte, Mail- oder Kalender-Probleme. Der Selbsttest prüft die **Mechanik** des Workspace, nichts sonst. Ist das Problem woanders, sag das klar und verweise auf den Problembericht (CLAUDE.md Safeguard 1) — der geht an die Person, von der der Nutzer das Paket hat.
+Subject-matter questions ("is the project status right?"), content, mail or calendar problems. The self-test checks the **mechanics** of the workspace, nothing else. If the problem is elsewhere, say so clearly and point to the problem report (CLAUDE.md safeguard 1) — that goes to the person the user got the package from.

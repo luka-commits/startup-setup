@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What the model can reach</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="slide-base.css" />
+  <style>
+    .slide { padding: 70px 56px 34px; }
+    .slide h1 { font-size: clamp(30px, 3.2vw, 44px); }
+    .slide-head { margin-bottom: 16px; }
+    .stage { gap: 12px; }
+    .takeaway { margin-top: 14px; padding: 15px 30px; }
+
+    /* ---------- the breakdown picture ---------- */
+    .breakcard { padding: 20px 24px 16px; }
+    .breakwrap { position: relative; width: 1140px; height: 280px; margin: 0 auto; }
+    .breakwrap svg.joins { position: absolute; inset: 0; width: 1140px; height: 280px; }
+
+    .win { position: absolute; top: 0; width: 258px; height: 166px;
+           background: #fff; border: 1px solid var(--hairline); border-radius: 13px;
+           box-shadow: var(--shadow-sm); overflow: hidden; }
+    .win.w1 { left: 0; } .win.w2 { left: 294px; } .win.w3 { left: 588px; } .win.w4 { left: 882px; }
+
+    .win-bar { display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 11px;
+               background: #f6f3ec; border-bottom: 1px solid var(--hairline); }
+    .win-bar i { width: 7px; height: 7px; border-radius: 50%; background: var(--muted-soft); display: block; }
+    .win-bar span { margin-left: 5px; font-family: var(--mono); font-size: 9.5px; letter-spacing: .9px;
+                    text-transform: uppercase; color: var(--muted); }
+
+    .win-body { padding: 11px 12px 0; }
+    .empty { display: flex; align-items: center; justify-content: center; height: 30px;
+             border: 1px dashed var(--muted-soft); border-radius: 8px;
+             font-family: var(--mono); font-size: 9.5px; letter-spacing: 1px; text-transform: uppercase;
+             color: var(--muted-soft); }
+    .bub { margin-top: 9px; background: var(--hl-soft); border: 1px solid var(--hl); border-radius: 10px;
+           padding: 7px 10px; font-size: 12px; line-height: 1.35; color: var(--ink); }
+    .again { margin-top: 8px; font-family: var(--mono); font-size: 9.5px; letter-spacing: .9px;
+             text-transform: uppercase; color: var(--muted-soft); text-align: center; }
+
+    /* the breaks between the windows */
+    .brk { position: absolute; top: 74px; width: 36px; height: 20px;
+           display: flex; align-items: center; justify-content: center; color: var(--red); }
+    .brk.b1 { left: 258px; } .brk.b2 { left: 552px; } .brk.b3 { left: 846px; }
+
+    /* the black node that holds the fragments together */
+    .headnode { position: absolute; left: 400px; top: 222px; width: 340px; height: 58px;
+                background: var(--ink); border-radius: 15px;
+                display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; }
+    .headnode .hn-t { font-size: 15.5px; font-weight: 800; color: var(--canvas); }
+    .headnode .hn-s { font-family: var(--mono); font-size: 9.5px; letter-spacing: .9px;
+                      text-transform: uppercase; color: var(--muted-soft); }
+
+    .painline { margin-top: 14px; text-align: center; font-size: 15.5px; font-weight: 600; color: var(--ink); }
+
+    /* ---------- the four points ---------- */
+    .ptsgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 22px; padding: 16px 26px; }
+    .pt { position: relative; }
+    .pt + .pt::before { content: ""; position: absolute; left: -11px; top: 2px; bottom: 2px; width: 1px; background: var(--hairline); }
+    .pt .pn { display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.1px;
+              text-transform: uppercase; color: var(--muted-soft); margin-bottom: 5px; }
+    .pt .ph { font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+    .pt .pb { font-size: 12.5px; line-height: 1.4; color: var(--muted); }
+    .pt.last .pn { color: var(--red); }
+    .pt.last .ph { color: var(--red); }
+
+    /* ---------- motion: windows land one by one, then the lines draw to the node ---------- */
+    .anim .win, .anim .brk, .anim .headnode, .anim .painline { opacity: 0; }
+    .anim .win { transform: translateY(10px); }
+    .anim.ready .win { opacity: 1; transform: none; transition: opacity .38s ease, transform .38s cubic-bezier(.2,.6,.2,1); transition-delay: calc(var(--d) * 110ms); }
+    .anim.ready .brk { opacity: 1; transition: opacity .3s ease; transition-delay: calc(var(--d) * 110ms + 220ms); }
+    .anim .joins path { stroke-dasharray: 260; stroke-dashoffset: 260; }
+    .anim.ready .joins path { stroke-dashoffset: 0; transition: stroke-dashoffset .5s cubic-bezier(.2,.6,.2,1); transition-delay: calc(var(--d) * 70ms + 640ms); }
+    .anim.ready .headnode { opacity: 1; transition: opacity .4s ease .96s; }
+    .anim.ready .painline { opacity: 1; transition: opacity .4s ease 1.2s; }
+    .noanim .win, .noanim .brk, .noanim .headnode, .noanim .painline { opacity: 1 !important; transform: none !important; }
+    .noanim .joins path { stroke-dashoffset: 0 !important; }
+    @media (prefers-reduced-motion: reduce) {
+      .anim .win, .anim .brk, .anim .headnode, .anim .painline { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .anim .joins path { stroke-dashoffset: 0 !important; transition: none !important; }
+    }
+    @media (max-width: 1250px) {
+      .breakwrap { width: 100%; height: auto; }
+      .breakwrap svg.joins { display: none; }
+      .win, .brk, .headnode { position: static; width: auto; height: auto; margin-bottom: 12px; }
+      .ptsgrid { grid-template-columns: 1fr; gap: 14px; }
+      .pt + .pt::before { display: none; }
+    }
+  </style>
+</head>
+<body data-prev="index.html" data-next="slide-2.html">
+  <a href="index.html" class="brand">Start Here · Your workspace</a>
+  <div class="pageno">01 / 11</div>
+
+  <div class="slide">
+    <div class="slide-head rise" style="--i:0">
+      <div class="eyebrow">Where you are right now</div>
+      <h1>Your AI is brilliant.<br/>It has <span class="hl">never seen your work.</span></h1>
+    </div>
+
+    <div class="stage">
+      <div class="card breakcard rise" style="--i:1">
+        <div class="breakwrap">
+
+          <svg class="joins" viewBox="0 0 1140 280" fill="none" aria-hidden="true">
+            <path style="--d:0" d="M129 172 C 129 198, 420 196, 470 220" stroke="#b4b0a6" stroke-width="1.4" stroke-linecap="round"/>
+            <path style="--d:1" d="M423 172 C 423 196, 500 202, 528 220" stroke="#b4b0a6" stroke-width="1.4" stroke-linecap="round"/>
+            <path style="--d:2" d="M717 172 C 717 196, 640 202, 612 220" stroke="#b4b0a6" stroke-width="1.4" stroke-linecap="round"/>
+            <path style="--d:3" d="M1011 172 C 1011 198, 720 196, 670 220" stroke="#b4b0a6" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+
+          <div class="win w1" style="--d:0">
+            <div class="win-bar"><i></i><i></i><i></i><span>New chat</span></div>
+            <div class="win-body">
+              <div class="empty">Context: empty</div>
+              <div class="bub">"We are a 12 person agency, the client is Meridian, here is the brief again ..."</div>
+              <div class="again">Typed from scratch</div>
+            </div>
+          </div>
+
+          <div class="win w2" style="--d:1">
+            <div class="win-bar"><i></i><i></i><i></i><span>New chat</span></div>
+            <div class="win-body">
+              <div class="empty">Context: empty</div>
+              <div class="bub">"Same setup as before. Pasting the spec once more, plus the last two decisions ..."</div>
+              <div class="again">Pasted again</div>
+            </div>
+          </div>
+
+          <div class="win w3" style="--d:2">
+            <div class="win-bar"><i></i><i></i><i></i><span>New chat</span></div>
+            <div class="win-body">
+              <div class="empty">Context: empty</div>
+              <div class="bub">"Ignore what I said yesterday, I cannot find that thread. Starting over ..."</div>
+              <div class="again">Explained again</div>
+            </div>
+          </div>
+
+          <div class="win w4" style="--d:3">
+            <div class="win-bar"><i></i><i></i><i></i><span>New chat</span></div>
+            <div class="win-body">
+              <div class="empty">Context: empty</div>
+              <div class="bub">"I would paste the mail thread, but I cannot. Here is roughly what it said ..."</div>
+              <div class="again">Retold from memory</div>
+            </div>
+          </div>
+
+          <div class="brk b1" style="--d:0" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+          </div>
+          <div class="brk b2" style="--d:1" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+          </div>
+          <div class="brk b3" style="--d:2" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+          </div>
+
+          <div class="headnode">
+            <div class="hn-t">Your head</div>
+            <div class="hn-s">The only thing carrying context between them</div>
+          </div>
+        </div>
+
+        <div class="painline">The model is not the bottleneck. <span class="hl">The context is.</span></div>
+      </div>
+
+      <div class="card ptsgrid rise" style="--i:2">
+        <div class="pt">
+          <span class="pn">The pattern</span>
+          <div class="ph">Every chat starts from zero</div>
+          <div class="pb">You re-explain your projects and paste the same context again.</div>
+        </div>
+        <div class="pt">
+          <span class="pn">The pattern</span>
+          <div class="ph">No single data basis</div>
+          <div class="pb">The model only ever sees the fragment you happened to paste.</div>
+        </div>
+        <div class="pt">
+          <span class="pn">The pattern</span>
+          <div class="ph">The tools are scattered</div>
+          <div class="pb">It cannot reach your mailbox, your files, your CRM, your code.</div>
+        </div>
+        <div class="pt last">
+          <span class="pn">The consequence</span>
+          <div class="ph">So you use a fraction</div>
+          <div class="pb">A fraction of what the thing can already do today.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="takeaway rise" style="--i:3">A better model does not fix this. <span class="hl">A place that holds the context does.</span></div>
+  </div>
+
+  <script src="deck.js"></script>
+</body>
+</html>

@@ -1,123 +1,125 @@
 ---
 name: eod
-description: "Tagesabschluss am Abend: gleicht den Tagesplan gegen die Realität ab, hält fest was passiert ist, was liegen bleibt und was entschieden wurde. Trigger: /eod, 'Feierabend', 'Tagesabschluss', 'das war's für heute', 'end of day'. Lädt Kalender + Tagesplan + Tasks + Session-Verlauf, zeigt EINEN fertigen Vorschlag, holt nur Korrekturen ab, schreibt JOURNAL.md + PROJECTS.md und gibt einen kurzen Vorblick auf morgen. Kein Stunden-Tracking."
+description: "End of day in the evening: reconciles the day plan against reality, records what happened, what is left over and what was decided. Trigger: /eod, 'end of day', 'wrapping up', 'that's it for today', 'feierabend', 'Tagesabschluss', 'das war's für heute'. Loads calendar + day plan + tasks + session history, shows ONE finished proposal, collects corrections only, writes JOURNAL.md + PROJECTS.md and gives a short outlook on tomorrow. No hour tracking."
 ---
 
-# /eod — Tagesabschluss
+# /eod — end of day
 
-Kurzer Abschluss am Abend. Lädt den Kontext selbst, zeigt einen fertigen Vorschlag, holt nur noch Korrekturen — und schreibt weg, was der Tag ergeben hat.
+A short close in the evening. Loads the context itself, shows a finished proposal, only collects corrections — and writes away what the day produced.
 
-**Wann verwenden:** abends vor Feierabend, wenn der Tag Spuren hinterlassen hat, die das System kennen sollte.
+**When to use:** in the evening before finishing, when the day left traces the system should know about.
 
----
-
-## Phase 1 — Kontext laden (automatisch, parallel)
-
-Alle Reads parallel, bevor du fragst:
-
-1. **Datum + Wochentag** aus System-Context
-2. **`context/STATUS.md`** — **Tagesplan** (falls heute gesetzt: Basis für den Plan-vs-Ist-Abgleich), Tasks (offen), Inbox (unbehandelte Funde), Current Focus
-3. **`context/PROJECTS.md`** — wie die Projekte stehen: Status, Blocker, Timeline
-4. **`context/JOURNAL.md`** — heutiger Eintrag schon da? (nicht duplizieren)
-5. **Kalender heute** über den verbundenen Kalender-Connector (nur mit erteilter Erlaubnis):
-   - Deferred Tool: erst das Kalender-Such-Tool laden. Bei Microsoft 365 ist das `ToolSearch select:mcp__claude_ai_Microsoft_365__outlook_calendar_search`; bei einem anderen Connector den Tool-Namen per `ToolSearch query:calendar` ermitteln und den nutzen
-   - Query `*`, afterDateTime = heute 00:00, **beforeDateTime = morgen 23:59** (heute für den Rückblick, morgen für den Vorblick in Phase 5 — sonst müsstest du die Zahl erfinden), order = oldest
-   - Meetings mit Titel + Uhrzeit extrahieren, nach heute/morgen trennen
-   - **Scheitert der Abruf** (Connector fehlt, Auth abgelaufen, Erlaubnis nicht erteilt): NICHT abbrechen, nicht wiederholen — ohne Kalender abschließen und im Vorschlag einen ruhigen Satz einbauen (_„An den Kalender komme ich gerade nicht — der Rückblick kommt aus deinen Aufgaben und dem Journal."_). Kein Tool-Name, kein Fehlertext. Der Abschluss ohne Kalender ist vollwertig, kein Fehlerzustand.
-6. **Session-Verlauf — nur als Bonus, nie als Basis:** Die verlässlichen Quellen sind die Files aus 2–4 (Regel-1-Updates von heute stehen bereits dort) plus der Kalender. Steht im Chat-Verlauf zusätzlich Heutiges (Erledigtes, Termin-Ergebnisse, Entscheidungen), einarbeiten — aber der Abschluss muss in einem frisch geöffneten Fenster mit leerem Verlauf genauso gut funktionieren. Ist der Verlauf leer, deshalb NICHT nachbohren („was hast du heute gemacht?") — der Vorschlag entsteht aus den Files, Lücken schließt der User in der Korrektur-Runde.
+Everything the user sees (proposal, confirmation, entries written into `context/` files) is written in `config.yaml → language` (canonical rule: CLAUDE.md).
 
 ---
 
-## Phase 2 — Vorschlag zeigen (nicht abfragen)
+## Phase 1 — load context (automatic, parallel)
 
-EIN fertiger Vorschlag, den der User nur noch korrigiert:
+All reads in parallel, before you ask:
+
+1. **Date + weekday** from system context
+2. **`context/STATUS.md`** — **Day Plan** (if set today: the basis for the plan-vs-actual reconciliation), Tasks (open), Inbox (unhandled findings), Current Focus
+3. **`context/PROJECTS.md`** — how the projects stand: status, blockers, timeline
+4. **`context/JOURNAL.md`** — is today's entry already there? (do not duplicate)
+5. **Calendar today** via the connected calendar connector (only with permission granted):
+   - Deferred tool: load the calendar search tool first. For Microsoft 365 that is `ToolSearch select:mcp__claude_ai_Microsoft_365__outlook_calendar_search`; for another connector determine the tool name via `ToolSearch query:calendar` and use that one
+   - Query `*`, afterDateTime = today 00:00, **beforeDateTime = tomorrow 23:59** (today for the review, tomorrow for the outlook in phase 5 — otherwise you would have to invent the number), order = oldest
+   - Extract meetings with title + time, split into today/tomorrow
+   - **If the retrieval fails** (connector missing, auth expired, permission not granted): do NOT abort, do not retry — close without the calendar and build one calm sentence into the proposal (_"I cannot reach your calendar right now — the review comes from your tasks and the journal."_). No tool name, no error text. A close without the calendar is fully valid, not an error state.
+6. **Session history — a bonus only, never the basis:** the reliable sources are the files from 2–4 (today's Rule 1 updates are already in there) plus the calendar. If the chat history additionally holds things from today (what was done, meeting outcomes, decisions), work them in — but the close has to work just as well in a freshly opened window with an empty history. If the history is empty, do NOT dig for it ("what did you do today?") — the proposal comes from the files, and the user closes the gaps in the correction round.
+
+---
+
+## Phase 2 — show the proposal (do not interrogate)
+
+ONE finished proposal that the user only corrects:
 
 ```
-Das war dein Tag — passt das so?
+That was your day — does that work?
 
-📅 [Wochentag] [DD.MM.]
+📅 [Weekday] [DD.MM.]
 
-🎯 Tagesplan: [N] von [M] — [was offen blieb, in einem Halbsatz]
-   (Section weglassen, wenn kein Plan gesetzt war)
+🎯 Day Plan: [N] of [M] — [what stayed open, in a half sentence]
+   (drop the section if no plan was set)
 
-Was passiert ist:
-- [Projekt A]: [Aktivität, abgeleitet aus Kalender/Session/Tasks]
-- [Meeting-Titel, HH:MM] — [Outcome, falls im Chat erwähnt; sonst: "Outcome?"]
+What happened:
+- [Project A]: [activity, derived from calendar/session/tasks]
+- [Meeting title, HH:MM] — [outcome, if mentioned in the chat; otherwise: "Outcome?"]
 
-Bleibt liegen: [offene Plan-Items / überfällige Tasks, kurz]
-[Falls Inbox-Einträge unbehandelt: "N Mail-Funde warten noch in der Inbox."]
+Left over: [open plan items / overdue tasks, briefly]
+[If inbox entries are unhandled: "N mail findings are still waiting in the inbox."]
 
-Blocker, Entscheidungen oder Erkenntnisse, die noch fehlen?
+Any blockers, decisions or insights still missing?
 ```
 
-**Regeln:**
-- Nur aktive Projekte aus PROJECTS.md vorschlagen
-- Nichts erfinden: Aktivitäten nur aus Kalender, Session oder Files. Wo ein Meeting-Outcome fehlt, danach fragen statt zu raten.
-- Leerer Kalender + keine Session-Spuren → trotzdem Vorschlag aus dem Tagesplan; wenn auch der leer ist: "Ruhiger Tag? Dann halte ich nur fest, was offen bleibt."
+**Rules:**
+- Only propose active projects from PROJECTS.md
+- Invent nothing: activities only from calendar, session or files. Where a meeting outcome is missing, ask for it instead of guessing.
+- Empty calendar + no session traces → still a proposal from the day plan; if that is empty too: "Quiet day? Then I will only record what stays open."
 
 ---
 
-## Phase 3 — Nur Delta abholen
+## Phase 3 — collect the delta only
 
-Der User korrigiert (streichen, ergänzen, Outcome nachtragen). Kein Frage-Katalog — was im Vorschlag stimmt, bleibt unkommentiert.
+The user corrects (strike, add, supply an outcome). No catalogue of questions — what is right in the proposal stays uncommented.
 
 ---
 
-## Phase 4 — Schreiben
+## Phase 4 — write
 
-**A) `context/JOURNAL.md`** — Tages-Recap unter dem heutigen Datum (append, nie überschreiben; existiert der Eintrag schon, ergänzen):
+**A) `context/JOURNAL.md`** — day recap under today's date (append, never overwrite; if the entry already exists, add to it):
 
 ```markdown
 ## [YYYY-MM-DD]
-- [Projekt]: [was passiert ist, 1 Satz]
-- [Meeting]: [Outcome]
-- Entscheidung: [was, warum] — nur wenn genannt
-- Erkenntnis: [was] — nur wenn genannt
+- [Project]: [what happened, 1 sentence]
+- [Meeting]: [outcome]
+- Decision: [what, why] — only if mentioned
+- Insight: [what] — only if mentioned
 ```
 
-**Ton:** konkrete Halbsätze mit Namen und Zahlen (`Schwellenwert auf 250k bestätigt (Nicole)`), keine Nominal-Prosa (`Besprechung von Parametern`). Wer das in drei Wochen liest, muss ohne dich verstehen, was gemeint war.
+**Tone:** concrete half sentences with names and numbers (`threshold confirmed at 250k (Nicole)`), no nominal prose (`discussion of parameters`). Whoever reads this in three weeks has to understand what was meant without you.
 
-**B) `context/PROJECTS.md`** — nur bei Status-relevanten Updates. **Vorher sichern** (CLAUDE.md Safeguard 3): `mkdir -p context/.backup` + die drei Kern-Files (`PROJECTS.md`, `STATUS.md`, `JOURNAL.md`) dorthin kopieren, je eine Generation genügt. Dann: Status-Zeile (ersetzen), Blocker, Timeline, "Letzte Aktualisierung".
+**B) `context/PROJECTS.md`** — only for status-relevant updates. **Back up first** (CLAUDE.md safeguard 3): `mkdir -p context/.backup` + copy the three core files (`PROJECTS.md`, `STATUS.md`, `JOURNAL.md`) there, one generation each is enough. Then: status line (replace), blockers, timeline, "Last updated:".
 
-**C) `context/STATUS.md`** — hier lebt die Arbeit: erledigte Tasks nach "Frisch erledigt" (max 6, ältere raus), Tagesplan-Items abhaken, neue Tasks aus dem Gespräch anlegen. Dashboard mitziehen (Regel 1).
+**C) `context/STATUS.md`** — this is where the work lives: completed tasks to "Recently Done" (max 6, older ones out), tick off day plan items, create new tasks from the conversation. Pull the dashboard along (rule 1).
 
-**D) Git-Sicherung (still, nie blockierend)** — Versionierung ohne Git-Wissen: der Tagesstand wandert ins eigene private Repo, „nichts geht verloren" wird damit beweisbar, und zeitgesteuerte Läufe in der Cloud sehen nur, was gepusht ist.
+**D) Git backup (silent, never blocking)** — versioning without git knowledge: the day's state moves into your own private repo, "nothing gets lost" becomes provable, and scheduled runs in the cloud only see what has been pushed.
 
 ```bash
 git add -A && git commit -m "eod YYYY-MM-DD" && git push
 ```
 
-- Nur wenn der Workspace ein Git-Repo ist (sonst still überspringen, kein Wort dazu).
-- Commit klappt, Push scheitert (offline, Auth abgelaufen): kein Drama — der Commit ist die Sicherung, der Push holt beim nächsten Mal auf. EINMAL pro Session ruhig sagen: _„Gesichert ist alles — nur die Kopie auf GitHub hinkt gerade hinterher, das holt sich beim nächsten Mal auf."_ Bei dauerhaft scheiterndem Push (mehrere Tage): einmal `gh auth login` vorschlagen (steht in SETUP.md Schritt 0).
-- Nie `--force`, nie Konflikte selbst auflösen: meldet der Push einen Konflikt (zweiter Rechner?), sagen was los ist und den Ansprechpartner aus `VERSION.md` empfehlen.
-- Der Commit umfasst den ganzen Workspace — `.gitignore` hält Laufzeit-Artefakte (Cache, Ledger, today.html, Backups) ohnehin draußen.
+- Only if the workspace is a git repo (otherwise skip silently, not a word about it).
+- Commit works, push fails (offline, auth expired): no drama — the commit is the backup, the push catches up next time. Say it calmly ONCE per session: _"Everything is backed up — only the copy on GitHub is lagging behind right now, that catches up next time."_ If the push keeps failing (several days): suggest `gh auth login` once (it is in SETUP.md step 0).
+- Never `--force`, never resolve conflicts yourself: if the push reports a conflict (a second machine?), say what is going on and recommend the contact person from `VERSION.md`.
+- The commit covers the whole workspace — `.gitignore` keeps runtime artifacts (cache, ledger, today.html, backups) out anyway.
 
 ---
 
-## Phase 5 — Bestätigung + Vorblick
+## Phase 5 — confirmation + outlook
 
 ```
-✓ Festgehalten: [1 Halbsatz was ins Journal ging]
-✓ PROJECTS.md: [was geupdated | "keine Änderungen"]
+✓ Recorded: [1 half sentence on what went into the journal]
+✓ PROJECTS.md: [what was updated | "no changes"]
 
-Morgen [Wochentag]: [N Termine, erster um HH:MM] · [was vom heutigen Plan mitkommt]
+Tomorrow [weekday]: [N meetings, first at HH:MM] · [what carries over from today's plan]
 ```
 
-Kein Ranking im Vorblick (Regel 10) — beschreiben, was ansteht, nicht bewerten was wichtig ist.
+No ranking in the outlook (rule 10) — describe what is coming up, do not judge what is important.
 
 ---
 
-## Spezialfälle
+## Special cases
 
-**Nachholung:** User sagt "für gestern" → klar kommunizieren, für welchen Tag geschrieben wird. Ältere Einträge nur nach Bestätigung ändern.
+**Catching up:** user says "for yesterday" → communicate clearly which day is being written for. Change older entries only after confirmation.
 
-**Freitag:** nach Phase 5 anbieten, die Woche kurz zusammenzufassen (aus den JOURNAL-Einträgen der Woche) — nur wenn der User will, kein Ritual.
+**Friday:** after phase 5, offer to summarize the week briefly (from the JOURNAL entries of the week) — only if the user wants it, no ritual.
 
 ---
 
-## Output-Stil
+## Output style
 
-- Per Du, knapp, freundlich
-- Keine Em-Dashes
-- Bestätigung mit Häkchen (✓)
-- Kein Fluff, kein "great job!"
+- Informal, brief, friendly
+- No em-dashes
+- Confirmation with a check mark (✓)
+- No fluff, no "great job!"

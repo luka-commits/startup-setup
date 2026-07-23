@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What it never does</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="slide-base.css" />
+  <style>
+    .lawcard { padding: 34px 38px 28px; }
+
+    .heads { display: grid; grid-template-columns: 1fr 34px 1fr; gap: 0 14px; margin-bottom: 16px; }
+    .heads div { font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--muted-soft); }
+    .heads div:last-child { color: var(--green-ink); }
+
+    .row { display: grid; grid-template-columns: 1fr 34px 1fr; gap: 0 14px; align-items: stretch; }
+    .row + .row { margin-top: 14px; }
+
+    .no, .yes { border-radius: 15px; padding: 19px 21px; display: flex; align-items: center; gap: 12px; }
+    .no { background: var(--ink); }
+    .yes { background: var(--green-bg); border: 1px solid var(--green-br); }
+
+    .lock { width: 24px; height: 24px; flex-shrink: 0; opacity: .9; }
+    .no .txt { color: #faf9f5; font-size: 16px; line-height: 1.35; font-weight: 500; }
+    .no .txt b { font-family: var(--mono); font-size: 11.5px; letter-spacing: 1.2px; color: var(--hl); display: block; margin-bottom: 3px; font-weight: 500; }
+    .yes .txt { color: var(--ink); font-size: 16px; line-height: 1.35; }
+    .yes .txt b { font-weight: 700; }
+    .yes .txt q { font-family: var(--mono); font-size: 13.5px; color: var(--green-ink); font-style: normal; }
+
+    .arrow { display: flex; align-items: center; justify-content: center; color: var(--muted-soft); }
+
+    .foot { margin-top: 20px; font-size: 13px; line-height: 1.5; color: var(--muted); text-align: center; }
+    .foot strong { color: var(--ink); font-weight: 600; }
+
+    /* motion: row by row — the ban lands, then the alternative slides in beside it */
+    .anim .no { animation: land .34s cubic-bezier(.2,.6,.2,1) backwards; }
+    .anim .yes, .anim .arrow { animation: slidein .34s cubic-bezier(.2,.6,.2,1) backwards; }
+    .anim .row:nth-child(2) .no { animation-delay: .25s; }
+    .anim .row:nth-child(2) .yes, .anim .row:nth-child(2) .arrow { animation-delay: .43s; }
+    .anim .row:nth-child(3) .no { animation-delay: .55s; }
+    .anim .row:nth-child(3) .yes, .anim .row:nth-child(3) .arrow { animation-delay: .73s; }
+    .anim .row:nth-child(4) .no { animation-delay: .85s; }
+    .anim .row:nth-child(4) .yes, .anim .row:nth-child(4) .arrow { animation-delay: 1.03s; }
+    .anim .row:nth-child(5) .no { animation-delay: 1.15s; }
+    .anim .row:nth-child(5) .yes, .anim .row:nth-child(5) .arrow { animation-delay: 1.33s; }
+    @keyframes land { from { opacity: 0; transform: translateY(10px); } }
+    @keyframes slidein { from { opacity: 0; transform: translateX(-16px); } }
+    @media (prefers-reduced-motion: reduce) {
+      .anim .no, .anim .yes, .anim .arrow { animation: none; }
+    }
+  </style>
+</head>
+<body data-prev="slide-9.html" data-next="slide-11.html">
+  <a href="index.html" class="brand rise" style="--i:0">Start Here · Your workspace</a>
+  <div class="pageno rise" style="--i:0">10 / 11</div>
+
+  <div class="slide">
+    <div class="slide-head rise" style="--i:0">
+      <h1>Four things it never does, <span class="hl">on purpose.</span></h1>
+    </div>
+
+    <div class="stage">
+      <div class="card lawcard rise" style="--i:1">
+        <div class="heads">
+          <div>Never</div>
+          <div></div>
+          <div>What happens instead</div>
+        </div>
+
+        <div class="row">
+          <div class="no">
+            <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="#fce29a" stroke-width="1.7" stroke-linecap="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+            <div class="txt">Sends a mail</div>
+          </div>
+          <div class="arrow"><svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 7h18M14 2l5 5-5 5"/></svg></div>
+          <div class="yes"><div class="txt">It writes the draft, <b>you press send.</b></div></div>
+        </div>
+
+        <div class="row">
+          <div class="no">
+            <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="#fce29a" stroke-width="1.7" stroke-linecap="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+            <div class="txt">Writes into your calendar</div>
+          </div>
+          <div class="arrow"><svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 7h18M14 2l5 5-5 5"/></svg></div>
+          <div class="yes"><div class="txt">It reads your appointments, <b>you make the changes.</b></div></div>
+        </div>
+
+        <div class="row">
+          <div class="no">
+            <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="#fce29a" stroke-width="1.7" stroke-linecap="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+            <div class="txt">Reads mail or calendar unasked</div>
+          </div>
+          <div class="arrow"><svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 7h18M14 2l5 5-5 5"/></svg></div>
+          <div class="yes"><div class="txt">It asks in every new session, <b>and no is a full answer.</b></div></div>
+        </div>
+
+        <div class="row">
+          <div class="no">
+            <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="#fce29a" stroke-width="1.7" stroke-linecap="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+            <div class="txt">Touches HR, salary or performance</div>
+          </div>
+          <div class="arrow"><svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 7h18M14 2l5 5-5 5"/></svg></div>
+          <div class="yes"><div class="txt">It counts them and keeps its hands off: <q>3 sensitive mails, have a look yourself.</q></div></div>
+        </div>
+
+        <div class="foot">One honest note on the last one: the detection runs on keywords and senders, so treat it as a <strong>safety net, not a guarantee.</strong></div>
+      </div>
+    </div>
+
+    <div class="takeaway rise" style="--i:2">Nothing irreversible happens quietly. <span class="hl">The decision stays with you, by design.</span></div>
+  </div>
+
+  <script src="deck.js"></script>
+</body>
+</html>

@@ -1,103 +1,107 @@
-# Die zwei empfohlenen CLIs
+# The two recommended CLIs
 
-Zwei Kommandozeilen-Werkzeuge gehören in dieser Variante zur Standard-Ausstattung: **firecrawl** und **playwright**. Sie sind keine Plugins und ändern nichts an Claude Code selbst. Sie liegen einfach auf dem Rechner, und Claude ruft sie auf, wenn eine Aufgabe sie braucht.
+Two command-line tools belong to the standard kit in this variant: **firecrawl** and **playwright**. They are not plugins and change nothing about Claude Code itself. They simply sit on the machine, and Claude calls them when a task needs them.
 
-Das Paket läuft auch ohne beide. Es fällt dann aber alles weg, was aus dem Internet kommt oder einen echten Browser braucht.
+The package also runs without either. But then everything that comes from the internet or needs a real browser falls away.
 
-**Du musst nichts davon von Hand machen.** Die Einrichtung installiert beide Werkzeuge und richtet die Zugänge mit dir ein. Diese Seite ist zum Nachschlagen, wenn du später etwas ändern willst oder wissen möchtest, wofür das Ganze gut ist. Fehlt dir hinterher etwas, genügt ein Satz im Chat („richte mir den Firecrawl-Zugang ein"), dann führt Claude dich durch.
+**You do not have to do any of this by hand.** The setup installs both tools and sets up the accounts with you. This page is for looking things up later, when you want to change something or want to know what all this is good for. If something is missing afterwards, one sentence in the chat is enough ("set up my Firecrawl access"), then Claude walks you through it.
 
-**Die Bedienungsanleitungen liegen schon bei.** Zu jedem Werkzeug gehört ein Skill, der Claude sagt, wie es richtig benutzt wird. Die sind im Paket enthalten, du musst nichts nachladen:
+**The manuals are already included.** Every tool comes with a skill that tells Claude how to use it properly. They are part of the package, you do not have to load anything:
 
-| Werkzeug | Mitgelieferte Skills |
+| Tool | Included skills |
 |---|---|
 | firecrawl | `firecrawl` plus `firecrawl-scrape`, `-search`, `-crawl`, `-map`, `-download`, `-agent`, `-browser` |
 | playwright | `playwright-cli` |
-| OpenRouter | kein eigener Skill nötig, der Zugang genügt |
-| Supabase (nur wenn du Datenbanken nutzt) | `supabase`, `supabase-postgres-best-practices` |
-| Eigene Agenten in der Cloud | `managed-agents` (braucht einen kostenpflichtigen API-Zugang zusätzlich zum Abo) |
+| OpenRouter | no skill of its own needed, the access is enough |
+| Supabase (only if you use databases) | `supabase`, `supabase-postgres-best-practices` |
+| Your own agents in the cloud | `managed-agents` (needs a paid API access on top of the subscription) |
 
-Welche Aufgabe über welches Werkzeug läuft, steht als Tabelle in `CLAUDE.md` unter „Werkzeug-Routing". Das ist die Stelle, die dafür sorgt, dass die Ausstattung im Alltag überhaupt benutzt wird.
+Which task runs through which tool is in `CLAUDE.md` as a table under "Tool Routing". That is the part that makes sure the kit actually gets used day to day.
 
-## firecrawl: Web-Inhalte und Suche
+## firecrawl: web content and search
 
-**Wofür im Alltag:**
+**What it is for day to day:**
 
-- Ein Kunde schickt einen Link statt eines Dokuments. Claude liest die Seite als sauberen Text und sortiert sie ins Projekt ein, statt dass du Copy-Paste machst.
-- Vor einem Termin: kurz nachsehen, was die Firma des Gesprächspartners öffentlich macht, und daraus eine Vorbereitungsnotiz.
-- Eine Frage, deren Antwort aktueller ist als das Modellwissen. firecrawl sucht und liefert die Volltexte der Treffer, nicht nur die Snippet-Zeilen einer Suchmaschine.
-- Eine ganze Dokumentationsseite in den Projektordner ziehen, um sie offline durchzuarbeiten.
+- A client sends a link instead of a document. Claude reads the page as clean text and files it into the project, instead of you doing copy-paste.
+- Before a meeting: quickly check what the other side's company says publicly, and turn that into a preparation note.
+- A question whose answer is more current than the model's knowledge. firecrawl searches and delivers the full texts of the hits, not just a search engine's snippet lines.
+- Pulling an entire documentation site into the project folder to work through it offline.
 
-**Was ohne nicht geht:** Alles, was hinter JavaScript liegt. Viele moderne Seiten liefern beim einfachen Abruf eine leere Hülle, der Inhalt wird erst im Browser nachgeladen. firecrawl rendert vorher, deshalb kommt Text zurück statt eines leeren Gerüsts. Ohne firecrawl bleibt der eingebaute Seitenabruf, der bei solchen Seiten regelmäßig nichts findet.
+**What does not work without it:** everything that sits behind JavaScript. Many modern pages return an empty shell on a simple request, the content is only loaded later in the browser. firecrawl renders first, which is why text comes back instead of an empty frame. Without firecrawl you are left with the built-in page fetch, which regularly finds nothing on such pages.
 
-**Verhältnis zu den eingebauten Fähigkeiten:** Claude Code kann selbst suchen und Seiten abrufen. firecrawl ist der bessere Weg, wenn es auf den vollständigen Inhalt ankommt oder die Seite modern gebaut ist. Für eine schnelle Faktenfrage tut es die eingebaute Suche.
+**Relation to the built-in capabilities:** Claude Code can search and fetch pages itself. firecrawl is the better route when the complete content matters or the page is built in a modern way. For a quick factual question the built-in search does the job.
 
-**Installation** (verifiziert, global über npm):
+**Installation** (verified, globally via npm):
 
 ```
 npm install -g firecrawl-cli
 ```
 
-Danach braucht firecrawl einen API-Key. Der Key stammt aus einem **eigenen Firecrawl-Account** eurer Firma, nicht aus einem geteilten — Abrechnung und Nutzungsdaten bleiben damit bei euch. Account anlegen auf [firecrawl.dev](https://firecrawl.dev) (kostenloser Einstieg reicht zum Testen), der Key steht dort unter **API Keys**.
+After that firecrawl needs an API key. The key comes from **your company's own Firecrawl account**, not a shared one — billing and usage data then stay with you. Create an account at [firecrawl.dev](https://firecrawl.dev) (the free tier is enough for testing), the key is there under **API Keys**.
 
-Den Key einmal dauerhaft setzen:
+Set the key once, permanently:
 
 **Mac** (Terminal):
 ```
-echo 'export FIRECRAWL_API_KEY="fc-DEIN-KEY"' >> ~/.zshrc
+echo 'export FIRECRAWL_API_KEY="fc-YOUR-KEY"' >> ~/.zshrc
 ```
 
 **Windows** (PowerShell):
 ```
-setx FIRECRAWL_API_KEY "fc-DEIN-KEY"
+setx FIRECRAWL_API_KEY "fc-YOUR-KEY"
 ```
 
-Danach das Terminal einmal schließen und neu öffnen. Ob der Key sitzt, zeigt:
+Then close the terminal once and open it again. Whether the key is in place is shown by:
 
 ```
 firecrawl --status
-``` Wer die Daten gar nicht aus dem Haus geben will, kann Firecrawl selbst hosten und `FIRECRAWL_API_URL` auf die eigene Instanz zeigen lassen.
+``` If you do not want to give the data out of the house at all, you can host Firecrawl yourself and point `FIRECRAWL_API_URL` at your own instance.
 
-## playwright: alles, was einen echten Browser braucht
+## playwright: everything that needs a real browser
 
-**Wofür im Alltag:**
+**What it is for day to day:**
 
-- Das Dashboard nach einem Umbau ansehen und prüfen, ob es wirklich so aussieht wie gedacht. Nicht „der Code sollte stimmen", sondern ein Screenshot.
-- Eine Seite, die einen Login verlangt. firecrawl kommt dort nicht rein, ein echter Browser schon.
-- Ein Formular ausfüllen, das kein Interface für Maschinen anbietet.
-- Ein PDF oder Screenshot von einer Seite erzeugen, um es in ein Projekt zu legen.
+- Looking at the dashboard after a rebuild and checking that it really looks the way it was meant to. Not "the code should be right", but a screenshot.
+- A page that requires a login. firecrawl does not get in there, a real browser does.
+- Filling in a form that offers no interface for machines.
+- Producing a PDF or screenshot of a page to put into a project.
 
-**Was ohne nicht geht:** Jede visuelle Prüfung. Ohne playwright kann Claude behaupten, das Dashboard sei in Ordnung, ohne es je gesehen zu haben. Das ist der häufigste Weg, wie ein „fertig" nicht stimmt.
+**What does not work without it:** every visual check. Without playwright, Claude can claim the dashboard is fine without ever having seen it. That is the most common way a "done" turns out to be wrong.
 
-**Verhältnis zu firecrawl:** Die Regel ist einfach. Geht es um den **Inhalt** einer Seite, ist firecrawl schneller und billiger. Geht es um **Interaktion oder Aussehen** (klicken, tippen, anmelden, ansehen), dann playwright. Beides gleichzeitig braucht man selten.
+**Relation to firecrawl:** the rule is simple. If it is about the **content** of a page, firecrawl is faster and cheaper. If it is about **interaction or appearance** (clicking, typing, signing in, looking), then playwright. You rarely need both at once.
 
-**Installation** (verifiziert, global über npm):
+**Installation** (verified, globally via npm):
 
 ```
 npm install -g playwright
 playwright install chromium
 ```
 
-Der zweite Befehl lädt den Browser herunter, den playwright steuert. Ohne ihn ist das Werkzeug installiert, aber ohne Browser nutzlos. Ein schneller Test:
+The second command downloads the browser that playwright drives. Without it the tool is installed but useless, since it has no browser. A quick test:
 
 ```
 playwright screenshot https://example.com test.png
 ```
 
-> **Auf verwalteten Firmen-Laptops** kann dieser Browser-Download blockiert sein oder über einen internen Proxy laufen müssen. Schlägt er fehl, liegt es fast nie an dir: melde dich beim Ansprechpartner aus `VERSION.md`. Der Rest des Systems läuft ohne playwright vollständig weiter.
+> **On managed company laptops** this browser download can be blocked or forced through an internal proxy. If it fails, it is almost never your fault: get in touch with the contact person from `VERSION.md`. The rest of the system continues to run fully without playwright.
 
-## OpenRouter: Bilder und Spezial-Modelle (optional)
+## OpenRouter: images and specialist models (optional)
 
-Claude kann keine Bilder erzeugen. Wenn im Alltag Produktbilder, Illustrationen oder Social-Grafiken gebraucht werden — oder ein selbstgebauter Skill mal ein anderes Modell (Gemini-Bildmodelle, Kimi, …) aufrufen soll — läuft das über **einen** OpenRouter-Account statt fünf einzelner Anbieter-Konten: ein Key, alle Modelle, Abrechnung an einer Stelle.
+Claude cannot generate images. If product shots, illustrations or social graphics are needed day to day — or a self-built skill should call a different model (Gemini image models, Kimi, …) — that runs through **one** OpenRouter account instead of five separate provider accounts: one key, all models, billing in one place.
 
-**Einrichten:** Account auf [openrouter.ai](https://openrouter.ai), Key unter **Keys**, dann dauerhaft setzen (gleiches Muster wie beim Firecrawl-Key):
+**Setting it up:** account at [openrouter.ai](https://openrouter.ai), key under **Keys**, then set it permanently (same pattern as the Firecrawl key):
 
 ```
-echo 'export OPENROUTER_API_KEY="sk-or-DEIN-KEY"' >> ~/.zshrc     # Mac
-setx OPENROUTER_API_KEY "sk-or-DEIN-KEY"                          # Windows (PowerShell)
+echo 'export OPENROUTER_API_KEY="sk-or-YOUR-KEY"' >> ~/.zshrc     # Mac
+setx OPENROUTER_API_KEY "sk-or-YOUR-KEY"                          # Windows (PowerShell)
 ```
 
-**Ehrliche Einordnung:** Das ist nichts für Tag 1. Der Chat selbst läuft immer über Claude (dein Abo, kein Doppel-Zahlen); OpenRouter kommt erst ins Spiel, wenn ein konkreter Bedarf da ist — dann sagt Claude von selbst, dass dafür der Key fehlt, und dieser Abschnitt ist die Anleitung.
+**Honest classification:** this is not a day-1 thing. The chat itself always runs through Claude (your subscription, no double payment); OpenRouter only comes into play when there is a concrete need — then Claude will say by itself that the key is missing, and this section is the instruction.
 
-## Reihenfolge beim Einrichten
+## Order when setting up
 
-Beide gehören zur Standard-Ausstattung dieser Variante und werden im Setup mitinstalliert. Das Kernsystem (Briefing, Projekte, Entwürfe, Einsortieren) läuft auch ohne sie, es kann dann nur weniger. Wenn du wirklich nur eines aufsetzt, nimm firecrawl. Web-Inhalte kommen im Alltag häufiger vor als Browser-Automatisierung.
+Both belong to the standard kit in this variant and are installed during the setup. The core system (briefing, projects, drafts, filing) also runs without them, it can just do less. If you really only set up one, take firecrawl. Web content comes up more often day to day than browser automation.
+
+## Optional: gws (Google Workspace CLI)
+
+Only relevant on Google Workspace, and only as the **advanced route** — the normal route to mail and calendar is the Cowork connector (`reference/mcp.md`). `gws` adds the full API surface (write to Sheets, upload to Drive, scripted routines without a Cowork session) at the price of a one-time Google Cloud Console setup. Guide: [`reference/gws-cli.md`](gws-cli.md).

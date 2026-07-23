@@ -1,94 +1,94 @@
-# Wohin das hier führt
+# Where this leads
 
-Diese Datei beantwortet zwei Fragen: **warum es dieses Paket gibt** und **wie man mit KI arbeitet, damit sie sich rechnet.** Wer nur loslegen will, liest `SETUP.md` und kommt später hierher zurück.
+This file answers two questions: **why this package exists** and **how to work with AI so that it pays off.** Whoever just wants to get going reads `SETUP.md` and comes back here later.
 
-## Das Problem, das die meisten haben
+## The problem most people have
 
-Der Zugang zu KI ist gelöst. Fast jede Firma hat inzwischen Zugriff auf gute Modelle, und fast überall wird damit gearbeitet.
+Access to AI is solved. Almost every company now has access to good models, and almost everywhere people work with them.
 
-Trotzdem passieren drei Dinge gleichzeitig:
+Nevertheless three things happen at the same time:
 
-**Jedes Gespräch fängt bei null an.** Man erklärt wieder, welches Projekt gemeint ist, wer beteiligt ist, was letzte Woche entschieden wurde. Der Assistent wird nicht klüger, er wird jeden Morgen neu geboren.
+**Every conversation starts from zero.** You explain again which project is meant, who is involved, what was decided last week. The assistant doesn't get smarter, it is born anew every morning.
 
-**Die Kosten wachsen mit der Nutzung, nicht mit dem Ergebnis.** Ohne Ordnung liest ein Assistent bei jeder Frage alles neu, was er finden kann, auch das, was er schon zehnmal gelesen hat. Die Rechnung steigt, der Nutzen nicht im gleichen Maß.
+**Costs grow with usage, not with the result.** Without order, an assistant reads everything it can find anew with every question, including what it has already read ten times. The bill goes up, the benefit not to the same degree.
 
-**KI erzeugt selbst Unordnung.** Sie produziert schneller Dateien, Entwürfe und Notizen, als ein Mensch sie einsortieren kann. Nach drei Monaten findet niemand mehr etwas, und das Werkzeug, das Zeit sparen sollte, kostet welche.
+**AI creates disorder itself.** It produces files, drafts and notes faster than a human can file them. After three months nobody can find anything any more, and the tool that was supposed to save time costs some.
 
-Auffällig ist: Es wird viel darüber gesprochen, **wie** man mit KI umgeht. Prompts, Werkzeuge, Verknüpfungen. Kaum jemand spricht darüber, **worauf** sie eigentlich zugreift. Genau dort liegt der Hebel.
+What stands out: there is a lot of talk about **how** to deal with AI. Prompts, tools, connections. Hardly anyone talks about **what** it actually accesses. That is exactly where the leverage sits.
 
-## Was dieses Paket dagegen setzt
+## What this package sets against that
 
-Kein weiteres Werkzeug. Eine **Grundordnung**.
+Not another tool. A **basic order**.
 
-Ein Ordner, in dem alles liegt, was deine Arbeit ausmacht: deine Projekte, dein Stand, deine Entscheidungen, deine Dokumente. Der Assistent arbeitet darin, kennt die Struktur und weiß, wo was steht. Er muss nicht suchen und nicht raten.
+One folder holding everything that makes up your work: your projects, your state, your decisions, your documents. The assistant works inside it, knows the structure and knows where what is. It doesn't have to search and doesn't have to guess.
 
-Dahinter steckt ein einfaches Prinzip, das den Unterschied macht: **ein kurzes und ein langes Gedächtnis.** Wenige Dateien tragen den aktuellen Stand und werden laufend gepflegt. Sie werden bei jedem Start gelesen und bleiben klein. Alles andere liegt als Nachschlagematerial daneben und wird nur gelesen, wenn es wirklich gebraucht wird.
+Behind it sits a simple principle that makes the difference: **a short and a long memory.** A few files carry the current state and are maintained continuously. They are read on every start and stay small. Everything else sits alongside as reference material and is only read when it is really needed.
 
-Die Folge: **Dein Wissensstand wächst mit der Zeit. Der Aufwand pro Anfrage nicht.**
+The consequence: **your body of knowledge grows over time. The effort per request does not.**
 
-## Wohin es wächst
+## Where it grows
 
-Das Paket startet mit fünf Befehlen und einem Dashboard. Das ist absichtlich wenig, denn ein System, das man an einem Vormittag versteht, wird auch benutzt.
+The package starts with a handful of commands and a dashboard. That is deliberately little, because a system you can understand in a morning actually gets used.
 
-Von dort wächst es in **deine** Richtung, nicht in eine vorgegebene:
+From there it grows in **your** direction, not in a predefined one:
 
-- Wiederkehrende Abläufe werden zu eigenen Befehlen. Du beschreibst, was du jede Woche tust, und bekommst einen Befehl dafür.
-- Eigene kleine Werkzeuge entstehen dort, wo Anklicken besser ist als Beschreiben, und erscheinen im Dashboard.
-- Verbindungen kommen dazu, wenn sie gebraucht werden: Mail, Kalender, Ablage, CRM.
-- Wiederkehrende Läufe können zeitgesteuert passieren, sodass der Tag schon sortiert ist, bevor jemand danach fragt.
+- Recurring routines become commands of their own. You describe what you do every week and get a command for it.
+- Small tools of your own emerge where clicking is better than describing, and appear in the dashboard.
+- Connections come along when they are needed: mail, calendar, storage, CRM.
+- Recurring runs can happen on a schedule, so that the day is already sorted before anyone asks for it.
 
-Wie das geht, ohne zu programmieren, steht in **[`reference/system-erweitern.md`](reference/system-erweitern.md)**.
+How that works without programming is described in **[`reference/extending-the-system.md`](reference/extending-the-system.md)**.
 
-Das Ziel ist nicht ein möglichst großes System. Das Ziel ist ein System, in dem jeder Teil benutzt wird.
-
----
-
-# Arbeitsprinzipien
-
-Diese sechs Punkte machen den Unterschied zwischen KI, die beeindruckt, und KI, die etwas bringt. Sie kosten am Anfang etwas Disziplin und sparen danach dauerhaft Zeit.
-
-## 1. Erst nachsehen, ob es das schon gibt
-
-Der teuerste Weg zu einer Lösung ist, sie zu bauen, obwohl es sie gibt. Bevor etwas Neues entsteht, lohnt sich immer die Frage: Gibt es dafür ein fertiges Werkzeug, ein offenes Projekt auf GitHub, eine bestehende Datei bei uns im Ordner?
-
-Sag es einfach mit: *„Schau erst, ob es dafür schon etwas Fertiges gibt, bevor du etwas baust."* Der Assistent kann suchen und dir die Kandidaten mit Vor- und Nachteilen zeigen. Meistens ist die Antwort ein bestehendes Werkzeug, manchmal eine Datei, die letzten Monat schon jemand angelegt hat.
-
-## 2. Große Vorhaben erst planen, dann bauen
-
-Bei einer kleinen Aufgabe legt man los. Bei allem, was mehrere Schritte hat, mehrere Personen betrifft oder länger als einen Tag dauert, ist der erste Schritt ein Plan.
-
-Sag: *„Bevor du anfängst, schreib mir auf, wie du vorgehen würdest, und wo du dir unsicher bist."* Der Plan kostet fünf Minuten und du siehst sofort, ob ihr vom Gleichen redet. Ein Missverständnis im Plan ist ein Satz. Dasselbe Missverständnis im fertigen Ergebnis ist ein verlorener Tag.
-
-## 3. Gegen die erste Antwort arbeiten
-
-Die erste Antwort ist selten die beste, und sie klingt trotzdem überzeugend. Drei Fragen, die zuverlässig etwas finden:
-
-**Steelman:** *„Was spricht am stärksten dagegen? Formulier die Gegenposition so gut du kannst."* Besonders wertvoll, bevor man eine Entscheidung trifft, die man schon getroffen hat.
-
-**Pre-Mortem:** *„Angenommen, das ist in einer Woche schiefgegangen. Was war die Ursache?"* Nicht „was könnte passieren", sondern rückblickend erzählt. Das findet deutlich mehr, weil es zum Erklären zwingt statt zum Aufzählen.
-
-**Mehrere Sichtweisen:** *„Wie sieht das der Kunde, wie der Vertrieb, wie die Buchhaltung?"* Bei Entscheidungen, bei denen zwei kluge Leute unterschiedlich entscheiden würden.
-
-Diese drei kosten je einen Satz und sind der billigste Qualitätsgewinn, den es gibt.
-
-## 4. Ergebnisse prüfen, bevor sie rausgehen
-
-Alles, was den eigenen Schreibtisch verlässt, wird vorher gelesen. Nicht überflogen, gelesen. KI erfindet gelegentlich Zahlen, Namen und Quellen, und sie tut es in genau demselben souveränen Ton wie beim Rest.
-
-Hilfreich ist, den Assistenten selbst prüfen zu lassen: *„Geh das nochmal durch und markier alles, was du nicht belegen kannst."* Er ist beim Prüfen ehrlicher, als man erwartet, aber er tut es nur, wenn man ihn darum bittet.
-
-## 5. Struktur schlägt Formulierung
-
-Die meisten versuchen, ein schlechtes Ergebnis mit einem besseren Prompt zu retten. Meistens liegt es nicht am Prompt, sondern daran, dass die nötige Information nirgends steht.
-
-Wenn eine Antwort dauerhaft ungenau ist, ist die richtige Frage nicht „wie formuliere ich das besser", sondern „woher soll er das eigentlich wissen". Meist fehlt eine Zeile im Projekt-Steckbrief oder eine Datei im richtigen Ordner. Ist sie da, wird die Antwort ohne jede Prompt-Kunst besser.
-
-## 6. Nicht alles muss automatisiert werden
-
-Etwas, das fünf Minuten dauert und dreimal im Jahr vorkommt, macht man von Hand. Der Aufbau, die Erklärung und die Pflege einer Automatisierung kosten mehr als die Aufgabe selbst.
-
-Die Faustregel: Automatisiert wird, was **oft** vorkommt und **jedes Mal gleich** läuft. Alles andere sagt man einfach.
+The goal is not the biggest possible system. The goal is a system in which every part gets used.
 
 ---
 
-Diese Prinzipien sind keine Theorie. Sie sind das, was übrig bleibt, wenn man ein Jahr lang täglich mit diesen Werkzeugen arbeitet und aufschreibt, was funktioniert hat.
+# Working principles
+
+These six points make the difference between AI that impresses and AI that delivers. They cost a little discipline at the start and save time permanently afterwards.
+
+## 1. First check whether it already exists
+
+The most expensive route to a solution is to build it even though it exists. Before something new comes into being, the question is always worth asking: is there a ready-made tool for this, an open project on GitHub, an existing file in our folder?
+
+Just say it along with the request: *"First look whether something ready-made already exists for this before you build anything."* The assistant can search and show you the candidates with their pros and cons. Most of the time the answer is an existing tool, sometimes a file that someone already created last month.
+
+## 2. Plan big undertakings first, then build
+
+With a small task you just get going. With anything that has several steps, involves several people or takes longer than a day, the first step is a plan.
+
+Say: *"Before you start, write down for me how you would proceed and where you are unsure."* The plan costs five minutes and you see immediately whether you are talking about the same thing. A misunderstanding in the plan is one sentence. The same misunderstanding in the finished result is a lost day.
+
+## 3. Work against the first answer
+
+The first answer is rarely the best, and it still sounds convincing. Three questions that reliably find something:
+
+**Steelman:** *"What is the strongest argument against it? Formulate the opposing position as well as you can."* Especially valuable before you make a decision you have already made.
+
+**Pre-mortem:** *"Assume this went wrong a week from now. What was the cause?"* Not "what could happen", but told in retrospect. That finds considerably more, because it forces explanation instead of enumeration.
+
+**Several viewpoints:** *"How does the customer see this, how does sales, how does accounting?"* For decisions where two clever people would decide differently.
+
+These three cost one sentence each and are the cheapest gain in quality there is.
+
+## 4. Check results before they go out
+
+Everything that leaves your own desk gets read beforehand. Not skimmed, read. AI occasionally invents numbers, names and sources, and it does so in exactly the same confident tone as with the rest.
+
+It helps to have the assistant check itself: *"Go through that again and mark everything you can't back up."* It is more honest when checking than you would expect, but it only does it if you ask.
+
+## 5. Structure beats phrasing
+
+Most people try to rescue a bad result with a better prompt. Usually it isn't the prompt, it is that the necessary information isn't written down anywhere.
+
+If an answer is persistently imprecise, the right question is not "how do I phrase this better" but "where is it supposed to know that from". Usually a line is missing in the project profile or a file in the right folder. Once it is there, the answer gets better without any prompt artistry.
+
+## 6. Not everything has to be automated
+
+Something that takes five minutes and comes up three times a year, you do by hand. Building, explaining and maintaining an automation costs more than the task itself.
+
+The rule of thumb: automate what happens **often** and runs **the same way every time**. Everything else you simply say.
+
+---
+
+These principles are not theory. They are what is left over when you work with these tools daily for a year and write down what worked.

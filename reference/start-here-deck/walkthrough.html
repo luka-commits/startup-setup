@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start Here · What you are about to set up</title>
+  <meta name="description" content="Why your AI keeps starting from zero, and what closes that gap. Eleven slides, eight minutes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* Diese Seite ist der erste Eindruck des Pakets: sie laeuft, BEVOR irgendetwas
+       eingerichtet ist. Deshalb haengt sie an nichts — keine Config, keine Daten,
+       kein Dashboard. Nur die MP4 daneben. */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --canvas: #faf9f5; --ink: #1a1a17; --body: #3d3d3a; --muted: #8a8780;
+      --hairline: #eae3d8; --card: #fff; --hl: #fce29a;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace; }
+    body { font-family: var(--sans); background: var(--canvas); color: var(--body);
+      display: flex; flex-direction: column; align-items: center; padding: 36px 22px 56px; }
+    .head, .stage, .bar, .note { width: 100%; max-width: 1180px; }
+    .eyebrow { font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.4px;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 9px; }
+    h1 { font-size: clamp(26px, 3.4vw, 40px); font-weight: 800; letter-spacing: -0.032em;
+      color: var(--ink); line-height: 1.1; text-wrap: balance; }
+    h1 .hl { background: var(--hl); padding: 0 .12em; border-radius: 2px; }
+    .sub { margin: 12px 0 18px; font-size: 15.5px; line-height: 1.6; max-width: 66ch; }
+
+    .stage { position: relative; aspect-ratio: 16 / 9; border: 1px solid var(--hairline);
+      border-radius: 13px; overflow: hidden; background: #14140f;
+      box-shadow: 0 1px 2px rgba(26,26,23,.04), 0 12px 34px rgba(26,26,23,.08); }
+    .stage video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+    .bar { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
+    .speed { display: inline-flex; border: 1px solid #ddd5c7; border-radius: 999px; overflow: hidden; }
+    .speed button { border: 0; border-right: 1px solid var(--hairline); background: var(--card);
+      cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600; color: var(--muted); padding: 8px 15px; }
+    .speed button:last-child { border-right: 0; }
+    .speed button:hover { color: var(--ink); }
+    .speed button.on { background: var(--ink); color: var(--canvas); }
+    .bar a { font-size: 13px; font-weight: 600; color: var(--ink); }
+    .note { margin-top: 12px; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="head">
+    <div class="eyebrow">Start here</div>
+    <h1>You have the AI. <span class="hl">Nobody ever set it up.</span></h1>
+    <p class="sub">Eleven slides, eight minutes, three people talking it through. Watch it while the setup asks you its questions, or skip it and come back later.</p>
+  </div>
+
+  <div class="stage">
+    <video id="v" controls autoplay muted playsinline preload="auto" src="start-here-walkthrough.mp4"></video>
+  </div>
+
+  <div class="bar">
+    <span class="speed" id="speed" role="group" aria-label="Playback speed">
+      <button type="button" data-rate="1" class="on">1×</button><button type="button" data-rate="1.25">1.25×</button><button type="button" data-rate="1.5">1.5×</button><button type="button" data-rate="2">2×</button>
+    </span>
+    <a href="index.html">Or click through the slides yourself</a>
+  </div>
+  <p class="note">It starts muted, because a browser will not play sound on a page you did not click into yet. Press the speaker in the player to turn it on.</p>
+
+<script>
+(function () {
+  const v = document.getElementById('v');
+  const speed = document.getElementById('speed');
+  let rate = 1;
+  try { rate = parseFloat(localStorage.getItem('walkthrough-rate')) || 1; } catch (e) {}
+  const apply = (r) => {
+    v.playbackRate = r;
+    speed.querySelectorAll('button').forEach((b) => b.classList.toggle('on', parseFloat(b.dataset.rate) === r));
+    try { localStorage.setItem('walkthrough-rate', r); } catch (e) {}
+  };
+  apply(rate);
+  // loading the source resets the rate, so set it once more when it is ready
+  v.addEventListener('loadedmetadata', () => { v.playbackRate = rate; });
+  speed.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-rate]');
+    if (b) { rate = parseFloat(b.dataset.rate); apply(rate); }
+  });
+  // First click anywhere is the permission a browser waits for: unmute then.
+  document.addEventListener('click', function once() {
+    if (v.muted) { v.muted = false; }
+    document.removeEventListener('click', once);
+  });
+})();
+</script>
+</body>
+</html>

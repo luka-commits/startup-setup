@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Setup-Roadmap · Dein Workspace</title>
+<title>Setup roadmap · Your workspace</title>
 <style>
-  /* Offline-Paket ohne Webfonts: System-Font, passend zu Dashboard und Ordnerkarte */
+  /* Offline package without webfonts: system font, matching the dashboard and the folder map */
   :root {
     --blue: #2A5B8C;   --blue-soft: #EEF3F9;
     --violet: #6B4C9A; --violet-soft: #F1ECF8;
@@ -16,7 +16,7 @@
   body { font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
   .wrap { max-width: 800px; margin: 0 auto; padding: 0 20px 60px; }
 
-  /* --- Sticky Header mit segmentiertem Fortschritt --- */
+  /* --- Sticky header with segmented progress --- */
   header {
     position: sticky; top: 0; z-index: 20;
     background: rgba(250,250,248,.93); backdrop-filter: blur(6px);
@@ -55,7 +55,7 @@
 
   .intro { color: var(--muted); font-size: 14px; margin: 24px 4px 8px; }
 
-  /* --- Phasen --- */
+  /* --- Phases --- */
   .phase { margin-top: 30px; }
   .phase-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 0 4px 4px; }
   .phase-chip {
@@ -114,7 +114,7 @@
 
   code { font-family: Consolas, monospace; background: #f1f1ef; padding: 1px 5px; border-radius: 4px; font-size: 89%; }
 
-  /* --- Optional-Karten --- */
+  /* --- Optional cards --- */
   .optional-head { margin: 36px 4px 14px; }
   .optional-head h3 { font-size: 15px; color: var(--muted); }
   .optional-head p { font-size: 13px; color: var(--muted); margin-top: 2px; }
@@ -152,32 +152,32 @@
 
 <header>
   <div class="head-inner">
-    <h1>Setup-Roadmap</h1>
-    <p class="sub">Hak jeden Schritt ab, während du ihn machst. Dein Fortschritt bleibt gespeichert, auch nach dem Neuladen.</p>
+    <h1>Setup roadmap</h1>
+    <p class="sub">Tick off every step as you do it. Your progress stays saved, even after a reload.</p>
     <div class="bar-row">
       <div class="segments">
         <div class="seg p1" style="flex:9"><span class="fill" data-phase="p1"></span></div>
         <div class="seg p2" style="flex:10"><span class="fill" data-phase="p2"></span></div>
         <div class="seg p3" style="flex:2"><span class="fill" data-phase="p3"></span></div>
       </div>
-      <div class="bar-count" id="count">0 von 0</div>
+      <div class="bar-count" id="count">0 of 0</div>
     </div>
     <div class="celebrate">
       <span class="ico">✓</span>
-      <span>Fertig. Tipp <code>hallo</code> in Claude Code und leg los.</span>
+      <span>Done. Type <code>hello</code> in Claude Code and get going.</span>
     </div>
   </div>
 </header>
 
 <div class="wrap">
-  <p class="intro">Einmal einrichten, etwa 20 bis 30 Minuten, danach startest du jeden Tag nur noch Claude Code. Mach die Schritte der Reihe nach. Der wichtigste ist Schritt 3: Claude im richtigen Ordner starten. Sieht harmlos aus, hier scheitern die meisten.</p>
+  <p class="intro">Set up once, about 20 to 30 minutes, after that all you start each day is Claude Code. Do the steps in order. The most important one is step 3: starting Claude in the right folder. It looks harmless, and it is where most people fail.</p>
 
-  <!-- ============ TEIL 1 ============ -->
+  <!-- ============ PART 1 ============ -->
   <div class="phase p1">
     <div class="phase-head reveal">
-      <span class="phase-chip">Teil 1 · Installieren</span>
+      <span class="phase-chip">Part 1 · Install</span>
     </div>
-    <p class="phase-gain reveal">Danach liegen alle Programme auf deinem Rechner und dein Ordner ist da.</p>
+    <p class="phase-gain reveal">After this, all the programs are on your machine and your folder is there.</p>
 
     <div class="step reveal" data-phase="p1">
       <div class="badge">
@@ -185,14 +185,14 @@
         <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
       </div>
       <div class="card">
-        <h2>Programme installieren</h2>
-        <p>Vier kleine Programme, einmal pro Rechner. Auf dem Mac erledigst du das mit einem Befehl (<code>brew install node git gh</code>), auf Windows über die Installer von den jeweiligen Webseiten.</p>
+        <h2>Install the programs</h2>
+        <p>Four small programs, once per machine. On the Mac you do it with one command (<code>brew install node git gh</code>), on Windows through the installers from the respective websites.</p>
         <div class="checks">
-          <label><input type="checkbox"><span><b>git</b> (holt und aktualisiert deinen Ordner)</span></label>
-          <label><input type="checkbox"><span><b>GitHub-Konto</b> anlegen und einmalig anmelden mit <code>gh auth login</code> (GitHub ist die Online-Ablage für deinen Ordner)</span></label>
-          <label><input type="checkbox"><span><b>Node.js</b> (baut dein Tages-Dashboard)</span></label>
-          <label><input type="checkbox"><span><b>Claude Code</b> (der Assistent selbst)</span></label>
-          <label><input type="checkbox"><span>Kurz prüfen: <code>node --version</code>, <code>git --version</code>, <code>gh auth status</code>, <code>claude --version</code> geben je eine Antwort</span></label>
+          <label><input type="checkbox"><span><b>git</b> (fetches and updates your folder)</span></label>
+          <label><input type="checkbox"><span>Create a <b>GitHub account</b> and log in once with <code>gh auth login</code> (GitHub is the online storage for your folder)</span></label>
+          <label><input type="checkbox"><span><b>Node.js</b> (builds your daily dashboard)</span></label>
+          <label><input type="checkbox"><span><b>Claude Code</b> (the assistant itself)</span></label>
+          <label><input type="checkbox"><span>Quick check: <code>node --version</code>, <code>git --version</code>, <code>gh auth status</code>, <code>claude --version</code> each give an answer</span></label>
         </div>
       </div>
     </div>
@@ -203,11 +203,11 @@
         <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
       </div>
       <div class="card">
-        <h2>Deinen Ordner herunterladen</h2>
-        <p>Du holst dir den fertigen Workspace als eigenen Ordner. Leg ihn an einen ruhigen Ort wie <code>~/code</code>, nicht auf den Schreibtisch oder in Dokumente, wenn die mit iCloud oder OneDrive synchronisiert werden.</p>
+        <h2>Download your folder</h2>
+        <p>You fetch the finished workspace as a folder of its own. Put it in a quiet place like <code>~/code</code>, not on the desktop or in Documents if those are synced with iCloud or OneDrive.</p>
         <div class="checks">
-          <label><input type="checkbox"><span>Ordner mit <code>gh repo clone</code> heruntergeladen (die genaue Adresse bekommst du bei der Übergabe)</span></label>
-          <label><input type="checkbox"><span>Kurz prüfen: <code>ls -a</code> zeigt <code>CLAUDE.md</code>, <code>context/</code>, <code>projects/</code> und den versteckten Ordner <code>.claude</code></span></label>
+          <label><input type="checkbox"><span>Folder downloaded with <code>gh repo clone</code> (you get the exact address at handover)</span></label>
+          <label><input type="checkbox"><span>Quick check: <code>ls -a</code> shows <code>CLAUDE.md</code>, <code>context/</code>, <code>projects/</code> and the hidden folder <code>.claude</code></span></label>
         </div>
       </div>
     </div>
@@ -218,22 +218,22 @@
         <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
       </div>
       <div class="card">
-        <h2>Claude im richtigen Ordner starten</h2>
-        <p>Der wichtigste Schritt. Der Assistent liest immer den Ordner, in dem du ihn startest. Startest du ihn woanders, kennt er dein System nicht, ganz ohne Fehlermeldung, und antwortet wie ein normaler Chat.</p>
+        <h2>Start Claude in the right folder</h2>
+        <p>The most important step. The assistant always reads the folder you start it in. If you start it somewhere else, it doesn't know your system, entirely without an error message, and answers like a normal chat.</p>
         <div class="checks">
-          <label><input type="checkbox"><span>Ordner in VS Code geöffnet und das Claude-Fenster gestartet, oder im Terminal mit <code>cd</code> in den Ordner gewechselt und <code>claude</code> getippt</span></label>
-          <label><input type="checkbox"><span>Kurz prüfen: der angezeigte Ordnername ist dein heruntergeladener Ordner</span></label>
+          <label><input type="checkbox"><span>Folder opened in VS Code and the Claude window started, or in the terminal switched into the folder with <code>cd</code> and typed <code>claude</code></span></label>
+          <label><input type="checkbox"><span>Quick check: the folder name shown is your downloaded folder</span></label>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ============ TEIL 2 ============ -->
+  <!-- ============ PART 2 ============ -->
   <div class="phase p2">
     <div class="phase-head reveal">
-      <span class="phase-chip">Teil 2 · Verbinden</span>
+      <span class="phase-chip">Part 2 · Connect</span>
     </div>
-    <p class="phase-gain reveal">Danach kennt der Assistent dich und hängt an deinen Systemen und Werkzeugen.</p>
+    <p class="phase-gain reveal">After this, the assistant knows you and is hooked up to your systems and tools.</p>
 
     <div class="step reveal" data-phase="p2">
       <div class="badge">
@@ -241,12 +241,12 @@
         <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
       </div>
       <div class="card">
-        <h2>Einfach „hallo" schreiben</h2>
-        <p>Tipp <code>hallo</code> und drück Enter, mehr nicht. Der Assistent merkt, dass der Ordner noch niemandem gehört, und fragt dich alles Wichtige selbst ab: Name, Rolle, deine Projekte. Rechne mit 10 bis 20 Minuten.</p>
+        <h2>Just write "hello"</h2>
+        <p>Type <code>hello</code> and press Enter, nothing more. The assistant notices that the folder doesn't belong to anyone yet, and asks you everything important itself: name, role, your working language, your projects. Reckon with 10 to 20 minutes.</p>
         <div class="checks">
-          <label><input type="checkbox"><span><code>hallo</code> getippt und die Einrichtung hat begonnen</span></label>
-          <label><input type="checkbox"><span>Fragen zu dir und deinen Projekten beantwortet</span></label>
-          <label><input type="checkbox"><span>Kurz prüfen: fragt er dich nach dir, bist du richtig. Antwortet er wie ein normaler Chat, bist du im falschen Ordner, zurück zu Schritt 3</span></label>
+          <label><input type="checkbox"><span>Typed <code>hello</code> and the setup has begun</span></label>
+          <label><input type="checkbox"><span>Answered the questions about you and your projects</span></label>
+          <label><input type="checkbox"><span>Quick check: if it asks you about yourself, you are in the right place. If it answers like a normal chat, you are in the wrong folder, back to step 3</span></label>
         </div>
       </div>
     </div>
@@ -257,10 +257,10 @@
         <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
       </div>
       <div class="card">
-        <h2>Mail und Kalender anbinden</h2>
-        <p>Damit dein Morgen-Briefing deine Termine kennt und Mail-Entwürfe im richtigen Postfach landen. Das machst du einmal in Claude Cowork unter Einstellungen. Ohne läuft alles andere trotzdem, es fehlt nur der Mail- und Kalender-Teil.</p>
+        <h2>Connect mail and calendar</h2>
+        <p>So that your morning briefing knows your appointments and mail drafts land in the right mailbox. You do this once in Claude Cowork under Settings. Without it everything else still runs, only the mail and calendar part is missing.</p>
         <div class="checks">
-          <label><input type="checkbox"><span>In Claude Cowork verbunden (Microsoft 365, Google Workspace, oder was ihr nutzt), oder bewusst weggelassen</span></label>
+          <label><input type="checkbox"><span>Connected in Claude Cowork (Microsoft 365, Google Workspace, or whatever you use), or deliberately left out</span></label>
         </div>
       </div>
     </div>
@@ -271,12 +271,12 @@
         <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
       </div>
       <div class="card">
-        <h2>Zwei Helfer nachrüsten</h2>
-        <p>Zwei kleine Zusatz-Werkzeuge gehören dazu: eines holt Web-Inhalte (firecrawl), eines steuert einen echten Browser für Formulare, Logins und Screenshots (playwright).</p>
+        <h2>Add two helpers</h2>
+        <p>Two small additional tools are part of it: one fetches web content (firecrawl), one drives a real browser for forms, logins and screenshots (playwright).</p>
         <div class="checks">
-          <label><input type="checkbox"><span><code>npm install -g firecrawl-cli playwright</code> ausgeführt</span></label>
-          <label><input type="checkbox"><span><code>playwright install</code> ausgeführt (lädt die Browser nach, dauert beim ersten Mal ein paar Minuten)</span></label>
-          <label><input type="checkbox"><span>Kurz prüfen: <code>firecrawl --version</code> und <code>playwright --version</code> geben je eine Version aus</span></label>
+          <label><input type="checkbox"><span>Ran <code>npm install -g firecrawl-cli playwright</code></span></label>
+          <label><input type="checkbox"><span>Ran <code>playwright install</code> (downloads the browsers, takes a few minutes the first time)</span></label>
+          <label><input type="checkbox"><span>Quick check: <code>firecrawl --version</code> and <code>playwright --version</code> each print a version</span></label>
         </div>
       </div>
     </div>
@@ -287,23 +287,23 @@
         <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
       </div>
       <div class="card">
-        <h2>Einen Zugangs-Schlüssel hinterlegen</h2>
-        <p>firecrawl braucht einen eigenen Schlüssel. Der gehört nie in deinen Ordner, sondern in eine eigene Datei daneben. Der Zugang gehört euch, so laufen Abrechnung und Nutzung bei euch.</p>
+        <h2>Store an access key</h2>
+        <p>firecrawl needs a key of its own. It never belongs in your folder, but in a separate file alongside it. The access belongs to you, so billing and usage run on your side.</p>
         <div class="checks">
-          <label><input type="checkbox"><span>Eigenen Zugang auf firecrawl.dev angelegt und einen Schlüssel erzeugt (beginnt mit <code>fc-</code>)</span></label>
-          <label><input type="checkbox"><span>Schlüssel in <code>~/.config/credentials.env</code> gespeichert und mit <code>chmod 600</code> geschützt (nur du darfst die Datei lesen)</span></label>
-          <label><input type="checkbox"><span>Kurz prüfen: <code>grep -c KEY ~/.config/credentials.env</code> zählt deine Einträge</span></label>
+          <label><input type="checkbox"><span>Created your own account on firecrawl.dev and generated a key (starts with <code>fc-</code>)</span></label>
+          <label><input type="checkbox"><span>Key saved in <code>~/.config/credentials.env</code> and protected with <code>chmod 600</code> (only you may read the file)</span></label>
+          <label><input type="checkbox"><span>Quick check: <code>grep -c KEY ~/.config/credentials.env</code> counts your entries</span></label>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ============ TEIL 3 ============ -->
+  <!-- ============ PART 3 ============ -->
   <div class="phase p3">
     <div class="phase-head reveal">
-      <span class="phase-chip">Teil 3 · Loslegen</span>
+      <span class="phase-chip">Part 3 · Get going</span>
     </div>
-    <p class="phase-gain reveal">Ein letzter Test, dann läuft alles und dein Arbeitstag kann starten.</p>
+    <p class="phase-gain reveal">One last test, then everything runs and your working day can start.</p>
 
     <div class="step reveal" data-phase="p3">
       <div class="badge">
@@ -311,11 +311,11 @@
         <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
       </div>
       <div class="card">
-        <h2>Einmal alles testen</h2>
-        <p>Zum Schluss prüfst du, dass wirklich alles läuft. Klappt das, ist das Setup fertig. Ab morgen tippst du früh nur noch <code>/morning</code> und dein Tag ist vorbereitet.</p>
+        <h2>Test everything once</h2>
+        <p>Finally you check that everything really runs. If that works, the setup is done. From tomorrow on you only type <code>/morning</code> in the morning and your day is prepared.</p>
         <div class="checks">
-          <label><input type="checkbox"><span>Im Terminal: <code>claude</code>, <code>node</code> und <code>firecrawl</code> geben Versionen aus, <code>ls context/config.yaml</code> findet die Datei</span></label>
-          <label><input type="checkbox"><span>Im Chat <code>/morning</code>: der Assistent begrüßt dich mit deinem Namen, zeigt deine Projekte und öffnet dein Dashboard im Browser</span></label>
+          <label><input type="checkbox"><span>In the terminal: <code>claude</code>, <code>node</code> and <code>firecrawl</code> print versions, <code>ls context/config.yaml</code> finds the file</span></label>
+          <label><input type="checkbox"><span>In the chat <code>/morning</code>: the assistant greets you by your name, shows your projects and opens your dashboard in the browser</span></label>
         </div>
       </div>
     </div>
@@ -323,32 +323,32 @@
 
   <!-- ============ OPTIONAL ============ -->
   <div class="optional-head reveal">
-    <h3>Optional, zählt nicht mit</h3>
-    <p>Zwei Extras, die den Alltag angenehmer machen. Kannst du jederzeit später nachholen.</p>
+    <h3>Optional, doesn't count towards the total</h3>
+    <p>Two extras that make everyday use more pleasant. You can add them later at any time.</p>
   </div>
 
   <div class="opt-card reveal">
     <span class="lbl">OPTIONAL</span>
-    <h2>Das Briefing von allein laufen lassen</h2>
-    <p>Wer morgens <code>/morning</code> tippen muss, vergisst es irgendwann. Eine Routine macht das zeitgesteuert für dich, in der Cloud. Das Ergebnis liegt danach in deinem Online-Ordner und kommt mit einem <code>git pull</code> zu dir.</p>
+    <h2>Let the briefing run by itself</h2>
+    <p>Whoever has to type <code>/morning</code> in the morning will eventually forget it. A routine does it for you on a schedule, in the cloud. The result then sits in your online folder and comes to you with a <code>git pull</code>.</p>
     <div class="checks">
-      <label><input type="checkbox"><span>Routine mit <code>/schedule</code> angelegt (z.B. jeden Werktag um 8:00 das Briefing bauen)</span></label>
-      <label><input type="checkbox"><span>Mail- und Kalender-Anbindung an die Routine gehängt, nicht nur lokal verbunden</span></label>
-      <label><input type="checkbox"><span>Kurz prüfen: <code>/schedule list</code> zeigt die Routine, „Run now" startet einen Testlauf</span></label>
+      <label><input type="checkbox"><span>Routine created with <code>/schedule</code> (e.g. build the briefing every weekday at 8:00)</span></label>
+      <label><input type="checkbox"><span>Mail and calendar connection attached to the routine, not just connected locally</span></label>
+      <label><input type="checkbox"><span>Quick check: <code>/schedule list</code> shows the routine, "Run now" starts a test run</span></label>
     </div>
   </div>
 
   <div class="opt-card reveal">
     <span class="lbl">OPTIONAL</span>
-    <h2>Reden statt tippen</h2>
-    <p>Dieses System lebt davon, dass du dem Assistenten Sachen erzählst. Tippen ist die Bremse. <b>Wispr Flow</b> macht aus deiner Sprache sauberen Text, in jedem Eingabefeld, auch auf Deutsch. Der erste Monat ist kostenlos.</p>
+    <h2>Talk instead of typing</h2>
+    <p>This system lives on you telling the assistant things. Typing is the brake. <b>Wispr Flow</b> turns your speech into clean text, in any input field, in German too. The first month is free.</p>
     <div class="checks">
-      <label><input type="checkbox"><span>Wispr Flow von <a href="https://wisprflow.ai/r?LUKA20150">wisprflow.ai</a> installiert und ausprobiert</span></label>
+      <label><input type="checkbox"><span>Installed Wispr Flow from <a href="https://wisprflow.ai/r?LUKA20150">wisprflow.ai</a> and tried it out</span></label>
     </div>
   </div>
 
   <footer>
-    <a id="reset">Von vorn beginnen</a>
+    <a id="reset">Start over</a>
   </footer>
 </div>
 
@@ -370,13 +370,13 @@
   }
 
   function refresh() {
-    // Schritt-Zustand (Badge + Timeline + Karte)
+    // Step state (badge + timeline + card)
     document.querySelectorAll('.step[data-phase]').forEach(function (step) {
       var cb = step.querySelectorAll('input[type=checkbox]');
       var allDone = cb.length > 0 && Array.prototype.every.call(cb, function (b) { return b.checked; });
       step.classList.toggle('done', allDone);
     });
-    // Fortschritt pro Phase (segmentierter Balken)
+    // Progress per phase (segmented bar)
     fills.forEach(function (fill) {
       var phase = fill.getAttribute('data-phase');
       var cb = document.querySelectorAll('.step[data-phase="' + phase + '"] input[type=checkbox]');
@@ -384,10 +384,10 @@
       var pct = cb.length ? done / cb.length : 0;
       fill.style.transform = 'scaleX(' + pct + ')';
     });
-    // Gesamt-Zählung + Fertig-Zustand
+    // Overall count + done state
     var doneCount = requiredBoxes.filter(function (b) { return b.checked; }).length;
     var total = requiredBoxes.length;
-    count.textContent = doneCount + ' von ' + total;
+    count.textContent = doneCount + ' of ' + total;
     document.body.classList.toggle('done', total > 0 && doneCount === total);
   }
 
@@ -402,7 +402,7 @@
   load();
   refresh();
 
-  // Entrance-Animation beim Scrollen, einmalig
+  // Entrance animation on scroll, one-off
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var reveals = document.querySelectorAll('.reveal');
   if (reduce || !('IntersectionObserver' in window)) {

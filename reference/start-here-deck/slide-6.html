@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The same request, twice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="slide-base.css" />
+  <style>
+    .slide { padding: 66px 48px 28px; }
+    .slide h1 { font-size: clamp(28px, 3.1vw, 42px); }
+    .slide-head { margin-bottom: 14px; }
+    .takeaway { margin-top: 16px; padding: 15px 30px; }
+
+    .scene { padding: 26px 26px 22px; }
+
+    /* ---------- the one request both paths start from ---------- */
+    .ask { display: flex; flex-direction: column; align-items: center; }
+    .ask .lbl { font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.3px;
+                text-transform: uppercase; color: var(--muted-soft); margin-bottom: 7px; }
+    .ask .bar { background: var(--ink); color: var(--canvas); border-radius: 12px;
+                padding: 11px 26px; font-size: 15px; font-weight: 600; text-align: center; }
+    .fork { width: 100%; height: 30px; display: block; }
+    .fork path { stroke: var(--muted-soft); stroke-width: 1.4; fill: none; stroke-linecap: round; }
+
+    /* ---------- the two paths: same width, opposite rhythm ---------- */
+    .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; }
+
+    .pane { border-radius: 14px; padding: 14px 16px 13px; display: flex; flex-direction: column; }
+    .pane.cold { background: #f4f1ea; border: 1px solid var(--hairline); }
+    .pane.warm { background: #fff; border: 1px solid var(--hl); box-shadow: 0 2px 0 var(--hl-soft), 0 8px 20px rgba(26,26,23,.06); }
+
+    .ph { display: flex; align-items: baseline; gap: 9px; margin-bottom: 10px; }
+    .ph .t { font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .ph .s { font-family: var(--mono); font-size: 10px; color: var(--muted-soft); }
+    .cold .ph .t { color: var(--muted); }
+    .warm .ph .t { color: var(--ink); }
+
+    /* left: five packed slabs, each one drifting further right */
+    .chain { display: flex; flex-direction: column; gap: 8px; }
+    .link { display: flex; align-items: center; gap: 10px;
+            background: #fbf9f4; border: 1px solid #e4ded2; border-radius: 9px;
+            padding: 9px 11px; margin-left: calc(var(--k) * 11px); }
+    .link .n { font-family: var(--mono); font-size: 10px; color: var(--muted-soft); flex-shrink: 0; }
+    .link .w { font-size: 12.5px; line-height: 1.3; color: var(--body); flex: 1; }
+    .link .c { font-family: var(--mono); font-size: 9.5px; letter-spacing: .4px; color: var(--muted-soft);
+               white-space: nowrap; flex-shrink: 0; }
+    .link.last { border-color: #ddd4c4; }
+    .link.last .c { color: var(--red); }
+
+    /* right: four steps on one spine, with air around them */
+    .flowline { position: relative; padding-left: 24px; display: flex; flex-direction: column; gap: 16px;
+                flex: 1; justify-content: center; }
+    .flowline::before { content: ""; position: absolute; left: 5px; top: 8px; bottom: 8px;
+                        width: 2px; background: var(--hl); border-radius: 2px; }
+    .stepx { position: relative; font-size: 14.5px; line-height: 1.35; color: var(--ink); font-weight: 500; }
+    .stepx::before { content: ""; position: absolute; left: -24px; top: 5px; width: 12px; height: 12px;
+                     border-radius: 50%; background: var(--ink); border: 3px solid #fff;
+                     box-shadow: 0 0 0 2px var(--hl); }
+    .stepx q { font-weight: 700; }
+    .stepx .q { background: var(--hl-soft); border-radius: 5px; padding: 1px 5px; font-weight: 700; }
+
+    /* ---------- the two verdicts ---------- */
+    .verdicts { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; margin-top: 12px; }
+    .vd { text-align: center; font-size: 14px; line-height: 1.35; padding: 9px 12px; border-radius: 10px; }
+    .vd.a { color: var(--muted); background: #f4f1ea; }
+    .vd.a b { color: var(--body); font-weight: 700; }
+    .vd.b { color: var(--ink); font-weight: 600; background: var(--hl-soft); }
+
+    /* ---------- motion: the chain is worked through link by link, then the flow arrives at once ---------- */
+    .anim .link { animation: linkin .34s cubic-bezier(.2,.6,.2,1) backwards; }
+    .anim .link.k0 { animation-delay: .30s; }
+    .anim .link.k1 { animation-delay: .50s; }
+    .anim .link.k2 { animation-delay: .70s; }
+    .anim .link.k3 { animation-delay: .90s; }
+    .anim .link.k4 { animation-delay: 1.10s; }
+    .anim .vd.a { animation: fadein .3s ease-out backwards; animation-delay: 1.34s; }
+    .anim .pane.warm { animation: panein .45s cubic-bezier(.2,.6,.2,1) backwards; animation-delay: 1.60s; }
+    .anim .vd.b { animation: fadein .3s ease-out backwards; animation-delay: 1.90s; }
+    @keyframes linkin { from { opacity: 0; transform: translateX(-16px); } }
+    @keyframes panein { from { opacity: 0; transform: translateY(14px) scale(.985); } }
+    @keyframes fadein { from { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .anim .link, .anim .vd, .anim .pane.warm { animation: none; }
+    }
+    @media (max-width: 900px) {
+      .paths, .verdicts { grid-template-columns: 1fr; gap: 12px; }
+      .link { margin-left: 0; }
+      .fork { display: none; }
+    }
+  </style>
+</head>
+<body data-prev="slide-5.html" data-next="slide-7.html">
+  <a href="index.html" class="brand">Start Here · Your workspace</a>
+  <div class="pageno">06 / 11</div>
+
+  <div class="slide">
+    <div class="slide-head rise" style="--i:0">
+      <div class="eyebrow">The same request, twice</div>
+      <h1>One everyday job, before and after. <span class="hl">That difference is the product.</span></h1>
+    </div>
+
+    <div class="stage">
+      <div class="card scene rise" style="--i:1">
+
+        <div class="ask">
+          <div class="lbl">The request</div>
+          <div class="bar">A client asks where their project stands, and wants it in writing today.</div>
+        </div>
+
+        <svg class="fork" viewBox="0 0 1000 30" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M500 2 C 500 18, 250 10, 250 25" />
+          <path d="M500 2 C 500 18, 750 10, 750 25" />
+        </svg>
+
+        <div class="paths">
+          <div class="pane cold">
+            <div class="ph"><span class="t">Without the workspace</span><span class="s">five stops, one after another</span></div>
+            <div class="chain">
+              <div class="link k0" style="--k:0"><span class="n">01</span><span class="w">open the mail thread, scroll back three weeks</span><span class="c">a few minutes</span></div>
+              <div class="link k1" style="--k:1"><span class="n">02</span><span class="w">check the calendar for what was actually agreed in the last call</span><span class="c">a few more</span></div>
+              <div class="link k2" style="--k:2"><span class="n">03</span><span class="w">find the file you sent, hope it is the latest version</span><span class="c">a few more</span></div>
+              <div class="link k3" style="--k:3"><span class="n">04</span><span class="w">open the project tool for what is still open</span><span class="c">a few more</span></div>
+              <div class="link k4 last" style="--k:4"><span class="n">05</span><span class="w">write the mail from memory and hedge the parts you are unsure about</span><span class="c">the longest part</span></div>
+            </div>
+          </div>
+
+          <div class="pane warm">
+            <div class="ph"><span class="t">With it</span><span class="s">one run</span></div>
+            <div class="flowline">
+              <div class="stepx">you say: <span class="q">write the status update for this client</span></div>
+              <div class="stepx">it reads the thread, the calendar, the files, the open tasks</div>
+              <div class="stepx">the draft is there, with the real dates and the real numbers</div>
+              <div class="stepx">you check it and press send</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="verdicts">
+          <div class="vd a"><b>Half of it comes from memory,</b> and you know it.</div>
+          <div class="vd b">Nothing came from memory. You only checked.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="takeaway rise" style="--i:2">The work did not get faster. <span class="hl">The looking things up disappeared.</span></div>
+  </div>
+
+  <script src="deck.js"></script>
+</body>
+</html>

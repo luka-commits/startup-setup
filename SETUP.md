@@ -1,38 +1,39 @@
 # Setup
 
-Einmalig pro Person, etwa 20 bis 30 Minuten. Danach startest du jeden Tag nur noch Claude Code in diesem Ordner.
+Once per person, about 20 to 30 minutes. After that, all you do each day is start Claude Code in this folder.
 
-Diese Anleitung deckt alles ab, was **vor** dem ersten Chat passieren muss: Werkzeuge installieren, Repo holen, Claude Code am richtigen Ort starten, Verbindungen herstellen. Dieselben Schritte gibt es als visuelle Karte zum Abhaken: **`SETUP-ROADMAP.html`** (Doppelklick, öffnet im Browser, merkt sich deinen Fortschritt). Die eigentliche Personalisierung (dein Name, deine Projekte, dein Mail-Stil) fragt Claude im ersten Chat selbst ab. Du musst hier nichts über dich eintragen.
+This guide covers everything that has to happen **before** the first chat: install the tools, fetch the repo, start Claude Code in the right place, establish the connections. The same steps exist as a visual map to tick off: **`SETUP-ROADMAP.html`** (double-click, opens in the browser, remembers your progress). The actual personalization (your name, your projects, your mail style) is something Claude asks about itself in the first chat. You don't have to enter anything about yourself here.
 
-**Reihenfolge zählt.** Schritt 2 ist der Punkt, an dem die meisten Setups scheitern. Nimm ihn ernst, auch wenn er trivial aussieht.
-
----
-
-## Lass dich durchführen (empfohlen)
-
-Sobald Schritt 0 erledigt ist, ist Claude Code selbst da und kann dich durch den Rest führen. Starte `claude` und sag:
-
-> „Führ mich durch das SETUP.md ab Schritt 1. Gib mir einen Befehl nach dem anderen, warte bis ich ihn ausgeführt habe, und prüf das Ergebnis, bevor wir weitergehen."
-
-Browser-Logins (OAuth, Connectors) machst du selbst, den Rest kann Claude übernehmen. Wer lieber liest und tippt, arbeitet die Schritte einfach von oben nach unten ab.
+**Order matters.** Step 2 is the point where most setups fail. Take it seriously, even though it looks trivial.
 
 ---
 
-## 0. Voraussetzungen
+## Let yourself be walked through it (recommended)
 
-Vier Bausteine, einmalig pro Rechner:
+As soon as step 0 is done, Claude Code itself is there and can walk you through the rest. Start `claude` and say:
 
-- **git** holt das Repo und hält es aktuell.
-- **GitHub-Konto + GitHub CLI (`gh`)** — dein Workspace lebt in einem privaten GitHub-Repo: dort holst du ihn dir, und dorthin sichert der Tagesabschluss deinen Stand (dein Konto, dein Zugriff). Die CLI erledigt die Anmeldung einmal, danach fragt nie wieder etwas nach einem Passwort.
-- **Node.js** führt die Zusatz-Werkzeuge aus und rendert das Dashboard. Ohne Node läuft alles außer der Dashboard-Datei.
-- **Claude Code** ist der Assistent selbst.
+> "Walk me through the SETUP.md from step 1. Give me one command at a time, wait until I have run it, and check the result before we move on."
 
-**Noch kein GitHub-Konto?** Auf [github.com/signup](https://github.com/signup) eines anlegen (kostenlos, die Firmen-Mail nehmen). Den Benutzernamen brauchst du gleich; der Person, von der du das Paket hast, sagst du ihn einmal — sie schaltet dich für das Repo frei.
+Browser logins (OAuth, connectors) you do yourself, the rest Claude can take over. Whoever prefers to read and type simply works through the steps from top to bottom.
+
+---
+
+## 0. Requirements
+
+Five building blocks, once per machine:
+
+- **git** fetches the repo and keeps it up to date.
+- **GitHub account + GitHub CLI (`gh`)** — your workspace lives in a private GitHub repo: that is where you fetch it from, and that is where the end of day backs up your state (your account, your access). The CLI handles the login once, after that nothing ever asks for a password again.
+- **Node.js** runs the additional tools and renders the dashboard. Without Node everything except the dashboard file works.
+- **Claude Code** is the assistant itself.
+- **Claude Cowork** is where you connect your mailbox and calendar, and it is the one item on this list people miss. Nothing on your machine reaches your mail on its own: the connection is made once in Cowork (Settings → Connectors, sign in with your work account), and Claude Code then uses the same connection. Without it the morning briefing still runs, but it knows neither your appointments nor your inbox, which is most of what makes it worth having. It comes with the same subscription as Claude Code, there is nothing extra to buy. **The setup walks you through it in step 7.2** — you do not have to prepare anything, you only have to know that this step is coming and that it needs your sign-in.
+
+**No GitHub account yet?** Create one at [github.com/signup](https://github.com/signup) (free, use your company mail). You'll need the username in a moment; tell it once to the person you got the package from — they will unlock the repo for you.
 
 **Mac:**
 
 ```bash
-# Homebrew, falls noch nicht vorhanden
+# Homebrew, if not already present
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 brew install node git gh
@@ -41,26 +42,26 @@ curl -fsSL https://claude.ai/install.sh | bash
 
 **Windows:**
 
-1. Node.js LTS von [nodejs.org](https://nodejs.org) installieren (Standard-Installer, alle Vorgaben übernehmen).
-2. Git for Windows von [git-scm.com/downloads/win](https://git-scm.com/downloads/win) installieren. Claude Code nutzt das mitgelieferte Git Bash als Shell, deshalb ist das kein optionaler Schritt.
+1. Install Node.js LTS from [nodejs.org](https://nodejs.org) (standard installer, accept all defaults).
+2. Install Git for Windows from [git-scm.com/downloads/win](https://git-scm.com/downloads/win). Claude Code uses the Git Bash that comes with it as its shell, so this is not an optional step.
 3. GitHub CLI in **PowerShell**: `winget install GitHub.cli`
-4. Claude Code in **PowerShell** installieren:
+4. Install Claude Code in **PowerShell**:
 
 ```powershell
 irm https://claude.ai/install.ps1 | iex
 ```
 
-Alternativ über WinGet: `winget install Anthropic.ClaudeCode` (aktualisiert sich dann nicht automatisch).
+Alternatively via WinGet: `winget install Anthropic.ClaudeCode` (which then does not update automatically).
 
-**Einmal bei GitHub anmelden** (Mac: Terminal, Windows: Git Bash — Fenster danach einmal neu öffnen, damit `gh` gefunden wird):
+**Log in to GitHub once** (Mac: Terminal, Windows: Git Bash — reopen the window once afterwards so that `gh` is found):
 
 ```bash
 gh auth login
 ```
 
-Die Fragen so beantworten: `GitHub.com` → `HTTPS` → `Login with a web browser`, dann den angezeigten Code im Browser eingeben. Das war's — diese Anmeldung gilt dauerhaft, auch für die tägliche Sicherung.
+Answer the questions like this: `GitHub.com` → `HTTPS` → `Login with a web browser`, then enter the displayed code in the browser. That's it — this login is permanent, and it also covers the daily backup.
 
-**Check** (Mac: Terminal, Windows: Git Bash oder PowerShell):
+**Check** (Mac: Terminal, Windows: Git Bash or PowerShell):
 
 ```bash
 node --version
@@ -69,31 +70,31 @@ gh auth status
 claude --version
 ```
 
-Drei Versionsnummern plus ein „Logged in to github.com", dann passt es. Beim ersten `claude`-Start meldest du dich einmal im Browser an. Claude Code braucht ein Pro-, Max-, Team- oder Enterprise-Konto.
+Three version numbers plus a "Logged in to github.com" and you're good. On the first `claude` start you log in once in the browser. Claude Code needs a Pro, Max, Team or Enterprise account.
 
 ---
 
-## 1. Repo klonen
+## 1. Clone the repo
 
-Das ist die Adresse:
+This is the address:
 
 ```
 https://github.com/luka-commits/startup-setup
 ```
 
-Das Repo ist privat. Damit du es sehen kannst, musst du einmal freigeschaltet sein — dafür hast du in Schritt 0 deinen GitHub-Benutzernamen durchgegeben. Bekommst du beim Klonen „repository not found", ist meistens genau das der Grund, nicht ein Tippfehler.
+The repo is private. To be able to see it, you have to be unlocked once — that is what you passed on your GitHub username for in step 0. If you get "repository not found" when cloning, that is usually exactly the reason, not a typo.
 
-**Weg A, in VS Code (kein Terminal nötig):**
+**Route A, in VS Code (no terminal needed):**
 
-1. VS Code öffnen.
-2. `Strg+Umschalt+P` (Mac: `Cmd+Umschalt+P`), `Git: Clone` tippen, Enter.
-3. Die Adresse oben einfügen, Enter.
-4. Als Zielort einen eigenen Ordner wählen, zum Beispiel `code` in deinem Benutzerverzeichnis.
-5. Auf „Öffnen" klicken, wenn VS Code fragt, ob es den geklonten Ordner öffnen soll.
+1. Open VS Code.
+2. `Ctrl+Shift+P` (Mac: `Cmd+Shift+P`), type `Git: Clone`, Enter.
+3. Paste the address above, Enter.
+4. Pick a folder of its own as the destination, for example `code` in your user directory.
+5. Click "Open" when VS Code asks whether it should open the cloned folder.
 
-Beim ersten Mal fragt VS Code nach deiner GitHub-Anmeldung und schickt dich in den Browser. Das ist normal, danach nie wieder.
+The first time, VS Code asks for your GitHub login and sends you to the browser. That is normal, and never happens again afterwards.
 
-**Weg B, im Terminal:**
+**Route B, in the terminal:**
 
 ```bash
 mkdir -p ~/code && cd ~/code
@@ -101,172 +102,173 @@ gh repo clone luka-commits/startup-setup
 cd startup-setup
 ```
 
-**Egal welcher Weg: nicht** nach `Desktop` oder `Dokumente` klonen, wenn diese Ordner mit iCloud oder OneDrive synchronisiert werden. Die Sync-Dienste legen bei schnellen Schreibvorgängen Konfliktkopien an (`STATUS 2.md`), und das System liest irgendwann die falsche Datei. Ein eigener Ordner wie `~/code` ist der sichere Ort.
+**Whichever route: do not** clone into `Desktop` or `Documents` if those folders are synced with iCloud or OneDrive. The sync services create conflict copies on fast writes (`STATUS 2.md`), and at some point the system reads the wrong file. A folder of its own like `~/code` is the safe place.
 
-**Check:** Im VS-Code-Explorer links siehst du `CLAUDE.md`, `context/`, `projects/` und den Ordner `.claude`. Im Terminal zeigt `ls -a` dasselbe. Fehlt `.claude`, ist der Klon unvollständig und nichts Weiteres funktioniert.
+**Check:** in the VS Code explorer on the left you see `CLAUDE.md`, `context/`, `projects/` and the folder `.claude`. In the terminal `ls -a` shows the same. If `.claude` is missing, the clone is incomplete and nothing further works.
 
-**Dieser Ordner bleibt nicht meiner.** Beim Einrichten in Schritt 3 legt Claude daraus dein eigenes privates Repo unter deinem GitHub-Konto an — dir gehörend, für niemanden sonst sichtbar. Von da an sichert der Tagesabschluss dorthin, und Updates von mir holst du dir bewusst mit einem Satz im Chat.
+**This folder does not stay mine.** During the setup in step 3, Claude creates your own private repo from it under your GitHub account — belonging to you, visible to nobody else. From then on the end of day backs up there, and you deliberately fetch updates from me with one sentence in the chat.
 
 ---
 
-## 2. Claude Code IN diesem Ordner öffnen
+## 2. Open Claude Code IN this folder
 
-**Das ist der wichtigste Schritt der ganzen Anleitung.**
+**This is the most important step of the whole guide.**
 
-Claude Code hat kein Programm-Icon und kein Fenster, das dir sagt, wo es gerade ist. Es liest immer den Ordner, in dem es gestartet wurde. Startest du es irgendwo anders, kennt es dieses System nicht: keine Befehle, keine Projekte, kein Briefing. Es antwortet dann wie ein ganz normaler Chat, ohne Fehlermeldung. Genau deshalb fällt der Fehler oft erst nach zwanzig Minuten auf.
+Claude Code has no program icon and no window that tells you where it currently is. It always reads the folder it was started in. If you start it somewhere else, it doesn't know this system: no commands, no projects, no briefing. It then answers like a perfectly ordinary chat, without an error message. That is exactly why the mistake often only becomes apparent after twenty minutes.
 
-Zwei Wege, beide führen zum selben Ergebnis:
+Two routes, both lead to the same result:
 
-**Weg A, VS Code (für die meisten der bequemste):**
-Wenn du in Schritt 1 über VS Code geklont hast, ist der Ordner schon offen — sonst „Datei → Ordner öffnen" und den geklonten Ordner wählen. Dann das Claude-Panel aufmachen (Claude-Symbol in der Seitenleiste; fehlt es, in den Erweiterungen nach „Claude Code" suchen und installieren). Links im Explorer siehst du `CLAUDE.md` und `context/`. Das ist dein Beweis, dass der richtige Ordner offen ist.
+**Route A, VS Code (the most convenient for most people):**
+If you cloned via VS Code in step 1, the folder is already open — otherwise "File → Open Folder" and choose the cloned folder. Then open the Claude panel (Claude icon in the sidebar; if it's missing, search for "Claude Code" in the extensions and install it). On the left in the explorer you see `CLAUDE.md` and `context/`. That is your proof that the right folder is open.
 
-**Weg B, Terminal:**
+**Route B, terminal:**
 
 ```bash
 cd ~/code/startup-setup
 claude
 ```
 
-Auf Windows geht das auch schneller: den Ordner im Explorer öffnen, oben in die Adresszeile klicken, `cmd` tippen, Enter, dann `claude` eingeben.
+On Windows there is a faster way too: open the folder in Explorer, click into the address bar at the top, type `cmd`, Enter, then enter `claude`.
 
-### Woran du erkennst, dass du richtig bist
+### How you know you are in the right place
 
-Nach dem Start zeigt Claude Code den aktuellen Arbeitsordner an. Steht dort der Name deines geklonten Ordners, passt es.
+After the start, Claude Code shows the current working folder. If the name of your cloned folder is there, you're good.
 
-Die verlässlichere Probe kommt in Schritt 3: **Wenn Claude auf deine erste Nachricht mit der geführten Einrichtung antwortet und dich nach Name und Projekten fragt, bist du richtig.** Antwortet es stattdessen wie ein normaler Chat, bist du im falschen Ordner. Dann Claude Code beenden (`/exit`), mit `cd` in den richtigen Ordner wechseln und neu starten.
+The more reliable test comes in step 3: **if Claude answers your first message with the guided setup and asks you for your name and projects, you are in the right place.** If it answers like a normal chat instead, you are in the wrong folder. Then quit Claude Code (`/exit`), `cd` into the right folder and start again.
 
 ---
 
-## 3. Erster Start
+## 3. First start
 
-Tipp `hallo` und drücke Enter. Mehr nicht.
+Type `hello` and press Enter. Nothing more.
 
-Claude erkennt selbst, dass dieser Ordner noch niemandem gehört, und startet die Einrichtung: ein paar Fragen zu Name, Rolle, Standort und deinen laufenden Projekten, danach legt es deine Ordner und Dateien an. Optional kannst du dabei Dokumente einsortieren lassen und deinen Mail-Stil aus deinen eigenen gesendeten Mails ableiten.
+Claude recognizes by itself that this folder doesn't belong to anyone yet, and starts the setup: a few questions about your name, role, location, your working language and your ongoing projects, after which it creates your folders and files. Optionally you can have documents sorted in during this and derive your mail style from your own sent mails.
 
-Rechne mit 10 bis 20 Minuten, je nachdem wie viele Projekte und Dokumente du mitbringst. Beides lässt sich später nachziehen.
+Reckon with 10 to 20 minutes, depending on how many projects and documents you bring along. Both can be added later.
 
-**Zwei Fragen am Ende sind wichtig, überlies sie nicht.** Claude bietet an, dir dein eigenes privates Repo anzulegen — das ist deine tägliche Sicherung, sie gehört deinem Konto. Sag hier Ja, sonst hat der Tagesabschluss nichts, wohin er sichern kann. Danach fragt es getrennt, ob der Ansprechpartner aus `VERSION.md` Zugriff auf dieses Repo bekommen soll, damit er dir bei Problemen helfen kann. Das ist eine echte Wahl: mit Zugriff kann er auch alles lesen, was mit der Zeit darin landet. Nein ist eine völlig normale Antwort, und du kannst es später jederzeit ändern.
+**Two questions at the end are important, don't skim over them.** Claude offers to create your own private repo for you — that is your daily backup, and it belongs to your account. Say yes here, otherwise the end of day has nowhere to back up to. After that it asks separately whether the contact person from `VERSION.md` should get access to this repo so they can help you with problems. That is a genuine choice: with access they can also read everything that lands in there over time. No is a perfectly normal answer, and you can change it later at any time.
 
-**Claude wartet immer auf deine erste Nachricht.** Ein leeres Eingabefeld nach dem Start ist kein Fehler.
+**Claude always waits for your first message.** An empty input field after the start is not a fault.
 
-**Noch im selben Fenster, ein Befehl:** den offiziellen Plugin-Katalog von Anthropic freischalten —
+**Still in the same window, one command:** unlock Anthropic's official plugin catalog —
 
 ```
 /plugin marketplace add anthropics/claude-plugins-official
 ```
 
-Das installiert nichts. Es macht den Katalog bekannt, damit Claude dir im Alltag das passende Werkzeug daraus empfehlen kann, wenn eine Aufgabe eines braucht — installiert wird nur, wenn du Ja sagst. Was aus dem Katalog wirklich zählt, steht in `reference/plugins.md`.
+This installs nothing. It makes the catalog known, so that Claude can recommend the fitting tool from it in everyday use when a task needs one — installation only happens if you say yes. What actually counts from the catalog is described in `reference/plugins.md`.
 
 ---
 
-## 4. Ausstattung: Werkzeuge, Verbindungen, Zugänge
+## 4. Equipment: tools, connections, access keys
 
-**Das machst du nicht von Hand.** Die Einrichtung aus Schritt 3 geht das mit dir durch, in dieser Reihenfolge:
+**You don't do this by hand.** The setup from step 3 goes through it with you, in this order:
 
-1. **Werkzeuge installieren** — `firecrawl` (holt Web-Inhalte) und `playwright` (steuert einen echten Browser). Claude installiert beide selbst. Nachschlagen: [`reference/tools.md`](reference/tools.md)
-2. **Verbindungen herstellen** — deine sechs Anschlüsse: Postfach, Kalender, Dateiablage, Team-Chat, CRM und Entwicklung. Verbunden wird in **Claude Cowork unter Einstellungen → Connectors**; Claude Code greift danach auf dieselbe Verbindung zu. Claude geht die sechs mit dir durch und verbindet nur, was du brauchst. Was welcher Anschluss freischaltet: [`reference/mcp.md`](reference/mcp.md)
-3. **Zugänge anlegen** — Firecrawl und OpenRouter (Bilder und Spezial-Modelle). Wer Anwendungen baut, bekommt zusätzlich Supabase und Vercel angeboten, sonst kommt das gar nicht erst zur Sprache. Die Schlüssel landen in `~/.config/credentials.env`, **nie im Repo**: das wird geklont und versioniert, und ein einmal eingecheckter Schlüssel bleibt für immer in der Historie stehen.
-4. **Projekt-Repos anbinden** — gehört zu einem deiner Projekte ein Repository, wird es nach `projects/<projekt>/code/` geklont. Eigene Historie, im selben Blickfeld. Warum getrennt: [`projects/README.md`](projects/README.md)
+1. **Install the tools** — `firecrawl` (fetches web content) and `playwright` (drives a real browser). Claude installs both itself. Reference: [`reference/tools.md`](reference/tools.md)
+2. **Establish the connections** — Claude starts from the tools you named in question 5 and connects those, rather than asking abstractly about six categories. Connecting happens in **Claude Cowork under Settings → Connectors**; Claude Code then accesses the same connection. Anything you did not mention gets one short question, so nothing stays open just because it never came up. And if a system is not in the catalogue, that is not the end of it: Claude adds its MCP server directly, you only fetch a token. What each connection unlocks, and the full route: [`reference/mcp.md`](reference/mcp.md)
+3. **Create the access keys** — Firecrawl and OpenRouter (images and special models). Whoever builds applications is additionally offered Supabase and Vercel, otherwise it doesn't even come up. The keys land in `~/.config/credentials.env`, **never in the repo**: that gets cloned and versioned, and a key checked in once stays in the history forever.
+4. **Attach project repos** — if one of your projects has a repository, it gets cloned to `projects/<project>/code/`. Its own history, in the same field of view. Why separate: [`projects/README.md`](projects/README.md)
 
-Die Anmeldungen im Browser machst immer **du**, die kann Claude dir nicht abnehmen. Alles andere übernimmt es.
+The browser logins are always done by **you**, Claude can't take those off your hands. Everything else it takes over.
 
-**Ohne Verbindung funktioniert der Rest weiter:** Projekte, Aufgaben, Dashboard und das Einsortieren von Dokumenten brauchen keine Anbindung. Es fehlt dann nur der Mail- und Kalender-Teil.
+**Without a connection the rest still works:** projects, tasks, dashboard and sorting in documents need no connection. All that's missing then is the mail and calendar part.
 
-**Später etwas nachholen?** Ein Satz im Chat genügt, zum Beispiel „verbinde mein CRM" oder „richte mir den Firecrawl-Zugang ein". Oder sag `/checkup`, dann zeigt Claude, was noch offen ist, und richtet es auf Zuruf ein.
+**Want to add something later?** One sentence in the chat is enough, for example "connect my CRM" or "set up the Firecrawl access for me". Or say `/checkup`, then Claude shows what is still open and sets it up on request.
 
 ---
 
-## 5. Smoke-Test
+## 5. Smoke test
 
-Einmal alles prüfen, damit nichts halb konfiguriert bleibt.
+Check everything once, so that nothing stays half configured.
 
-Im Terminal:
+In the terminal:
 
 ```bash
-claude --version                    # Claude Code installiert
-node --version                      # Dashboard-Laufzeit da
-firecrawl --version                 # aus Schritt 4
-ls context/config.yaml              # Setup hat geschrieben
+claude --version                    # Claude Code installed
+node --version                      # dashboard runtime present
+firecrawl --version                 # from step 4
+ls context/config.yaml              # setup has written
 ```
 
-Im Chat (Claude Code im Ordner gestartet):
+In the chat (Claude Code started in the folder):
 
 ```
 /morning
 ```
 
-**Das erwartete Ergebnis:**
+**The expected result:**
 
-- Claude begrüßt dich mit deinem Namen, nicht generisch.
-- Es zeigt deine Projekte und Aufgaben aus dem Setup.
-- Es öffnet `context/today.html` im Browser, dein Dashboard.
-- Bei verbundenem Connector kommen Kalender und Mail dazu, sonst sagt es in einem Satz, dass dieser Teil fehlt.
+- Claude greets you by your name, not generically.
+- It shows your projects and tasks from the setup.
+- It opens `context/today.html` in the browser, your dashboard.
+- With a connector connected, calendar and mail come on top; otherwise it says in one sentence that this part is missing.
 
-Läuft das durch, ist das Setup fertig. Ab morgen ist `/morning` dein täglicher Einstieg.
+If that runs through, the setup is done. From tomorrow on, `/morning` is your daily entry point.
 
 ---
 
-## Wenn etwas fehlt oder fehlschlägt
+## If something is missing or fails
 
-| Symptom | Ursache und Lösung |
+| Symptom | Cause and solution |
 |---|---|
-| Claude antwortet auf `hallo` wie ein normaler Chat, fragt nichts | Falscher Ordner. Zurück zu Schritt 2. Der mit Abstand häufigste Fall. |
-| `claude: command not found` | Terminal nach der Installation nicht neu geöffnet. Fenster schließen, neu öffnen. Hilft das nicht: `claude doctor` in einem Terminal, das es kennt, sonst Schritt 0 wiederholen. |
-| `ls -a` zeigt kein `.claude` | Klon unvollständig oder Ordner von Hand kopiert statt geklont. Neu klonen, Schritt 1. |
-| Beim Klonen: „repository not found" | Du bist noch nicht freigeschaltet, oder `gh auth login` fehlt. Benutzernamen durchgeben und Schritt 0 prüfen. Ein Tippfehler in der Adresse ist der seltenere Fall. |
-| Abends: „Push scheitert" oder „nichts gesichert" | Beim Setup wurde kein eigenes Repo angelegt. Sag im Chat „leg mir mein eigenes Repo an", dann wird es nachgeholt. |
-| Dashboard entsteht nicht | Node.js fehlt oder ist nicht im PATH. `node --version` prüfen, sonst Schritt 0. Briefing im Chat läuft trotzdem. |
-| Kein Kalender, keine Mail im Briefing | Connector nicht verbunden. Sag im Chat „verbinde mein Postfach", dann richtet Claude es ein. Hintergrund: `reference/mcp.md`. |
-| Dateien mit ` 2.` im Namen tauchen auf | Der Ordner liegt in einem Sync-Verzeichnis. Konfliktkopien löschen, Repo nach `~/code` verschieben, Schritt 1. |
-| `npm install -g` scheitert mit Rechte-Fehler | Nicht mit `sudo` wiederholen. Auf Mac hilft eine Homebrew-Node-Installation, sonst npm-Präfix auf einen Ordner im Home-Verzeichnis setzen. |
+| Claude answers `hello` like a normal chat, asks nothing | Wrong folder. Back to step 2. By far the most common case. |
+| `claude: command not found` | Terminal not reopened after the installation. Close the window, open it again. If that doesn't help: `claude doctor` in a terminal that knows it, otherwise repeat step 0. |
+| `ls -a` shows no `.claude` | Clone incomplete, or folder copied by hand instead of cloned. Clone again, step 1. |
+| `ls -a` shows a folder `_claude-template` instead of `.claude` | The package was shipped in the development state. Rename `_claude-template` to `.claude` (in Explorer/Finder: right-click → Rename), restart Claude Code. Not your fault. |
+| When cloning: "repository not found" | You are not unlocked yet, or `gh auth login` is missing. Pass on your username and check step 0. A typo in the address is the rarer case. |
+| In the evening: "push fails" or "nothing backed up" | No repo of your own was created during the setup. Say "create my own repo for me" in the chat, then it gets done. |
+| Dashboard doesn't appear | Node.js is missing or not on the PATH. Check `node --version`, otherwise step 0. The briefing in the chat runs anyway. |
+| No calendar, no mail in the briefing | Connector not connected. Say "connect my mailbox" in the chat, then Claude sets it up. Background: `reference/mcp.md`. |
+| Files with ` 2.` in the name turn up | The folder sits in a sync directory. Delete the conflict copies, move the repo to `~/code`, step 1. |
+| `npm install -g` fails with a permissions error | Do not repeat it with `sudo`. On Mac a Homebrew Node installation helps, otherwise set the npm prefix to a folder in your home directory. |
 
-Kommst du an einer Stelle nicht weiter: die fehlschlagende Zeile plus die vollständige Ausgabe melden, Ansprechpartner steht in `VERSION.md`. Ratet nicht drumherum, halb konfigurierte Setups fallen sonst erst Wochen später auf.
-
----
-
-## Optional: Das Briefing automatisch laufen lassen
-
-Wer morgens `/morning` tippen muss, vergisst es irgendwann. Dagegen gibt es **Routinen**: Claude Code führt eine Aufgabe zeitgesteuert aus, ohne dass jemand davor sitzt.
-
-**Wichtig zu verstehen, bevor ihr das einschaltet:** Eine Routine läuft **nicht auf eurem Rechner**, sondern in Anthropics Cloud, mit einem frischen Klon eures Repos. Sie sieht keine lokalen Dateien und keine lokal hinterlegten Zugangsdaten. Sie arbeitet im Klon, committet und pusht. Auf eurem Rechner erscheint das Ergebnis erst nach einem `git pull`.
-
-Daraus folgen drei Bedingungen:
-
-1. Der Workspace muss ein Repo sein, auf das die Cloud zugreifen kann. Bei dieser Auslieferung ist er das ohnehin.
-2. Mail- und Kalender-Connector müssen **an die Routine** gehängt werden, nicht nur lokal verbunden sein. Der Assistent fragt das beim Anlegen ab.
-3. Der Arbeitsstand liegt damit auf GitHub und wird in Anthropics Cloud verarbeitet. Das ist eine bewusste Abweichung von der sonst rein lokalen Arbeitsweise, siehe `WAS-DIESES-SYSTEM-TUT.md`. Wer das nicht will, lässt Routinen weg und tippt `/morning` selbst.
-
-Einrichten geht im Gespräch, direkt in diesem Ordner:
-
-```
-/schedule jeden Werktag um 8:00: Morgen-Briefing erstellen, committen und pushen
-```
-
-Claude fragt Repo, Umgebung, Modell und Connectors ab und legt die Routine an. Verwalten: `/schedule list`, `/schedule update`, `/schedule run`. Übersicht im Browser: [claude.ai/code/routines](https://claude.ai/code/routines) (Login nötig).
-
-**Check:** `/schedule list` zeigt die Routine. Auf der Detailseite startet „Run now" einen Testlauf.
-
-**Voraussetzung:** ein Abo-Login mit aktiviertem Claude Code im Web. Der kürzeste mögliche Abstand zwischen zwei Läufen ist eine Stunde.
-
-**Mehr fertige Routinen** (Wochenrückblick, Montags-Vorausblick) stehen mit Kopier-Sätzen in [`reference/routinen.md`](reference/routinen.md).
+If you get stuck somewhere: report the failing line plus the complete output, the contact person is in `VERSION.md`. Don't guess your way around it, half-configured setups otherwise only surface weeks later.
 
 ---
 
-## Optional: Diktieren statt Tippen
+## Optional: run the briefing automatically
 
-Dieses System läuft über Text im Chat. Genau da sitzt die Bremse: Wer den Kontext zu einem Projekt eintippen muss, tippt irgendwann weniger, und dann weiß das System weniger.
+Whoever has to type `/morning` in the morning will eventually forget it. There is a remedy: **routines**. Claude Code runs a task on a schedule without anyone sitting in front of it.
 
-**Wispr Flow** wandelt Sprache in sauberen Text um, in jedem Eingabefeld, auch auf Deutsch. Statt drei Sätze zu tippen, sagst du sie. Für längere Prompts, Meeting-Notizen und Mail-Entwürfe ist der Unterschied deutlich.
+**Important to understand before you switch this on:** a routine does **not run on your machine**, it runs in Anthropic's cloud, with a fresh clone of your repo. It sees no local files and no locally stored credentials. It works in the clone, commits and pushes. On your machine the result only appears after a `git pull`.
+
+Three conditions follow from that:
+
+1. The workspace has to be a repo the cloud can access. With this delivery it is one anyway.
+2. The mail and calendar connector has to be attached **to the routine**, not just connected locally. The assistant asks about that when creating it.
+3. Your working state therefore sits on GitHub and is processed in Anthropic's cloud. That is a deliberate deviation from the otherwise purely local way of working, see `WHAT-THIS-SYSTEM-DOES.md`. If you don't want that, leave routines out and type `/morning` yourself.
+
+Setting it up happens in conversation, right in this folder:
+
+```
+/schedule every weekday at 8:00: create the morning briefing, commit and push
+```
+
+Claude asks about the repo, environment, model and connectors and creates the routine. Managing them: `/schedule list`, `/schedule update`, `/schedule run`. Overview in the browser: [claude.ai/code/routines](https://claude.ai/code/routines) (login required).
+
+**Check:** `/schedule list` shows the routine. On the detail page, "Run now" starts a test run.
+
+**Requirement:** a subscription login with Claude Code activated on the web. The shortest possible interval between two runs is one hour.
+
+**More ready-made routines** (weekly review, Monday outlook) are in [`reference/routines.md`](reference/routines.md), with sentences to copy.
+
+---
+
+## Optional: dictate instead of typing
+
+This system runs on text in the chat. That is exactly where the brake sits: whoever has to type out the context for a project eventually types less, and then the system knows less.
+
+**Wispr Flow** turns speech into clean text, in any input field, in German too. Instead of typing three sentences, you say them. For longer prompts, meeting notes and mail drafts the difference is noticeable.
 
 - Download: [wisprflow.ai](https://wisprflow.ai/r?LUKA20150)
-- Der erste Monat ist kostenlos.
+- The first month is free.
 
-Rein optional. Wer lieber tippt, lässt es weg.
+Purely optional. Whoever prefers typing leaves it out.
 
 ---
 
-## Danach
+## Afterwards
 
-Jeden Tag: VS Code mit diesem Ordner öffnen, oder im Terminal `cd` in den Ordner und `claude` starten. Ein „Guten Morgen" genügt, den Rest kennt das System.
+Every day: open VS Code with this folder, or `cd` into the folder in the terminal and start `claude`. A "good morning" is enough, the system knows the rest.
 
-Wie der Ordner aufgebaut ist, steht in `ONBOARDING.md` und in der `ORDNERKARTE.html` (Doppelklick, öffnet im Browser). Was das System liest und was es nie tut, steht in `WAS-DIESES-SYSTEM-TUT.md`. **Für die erste Woche:** die Übungen in `reference/uebungen.md` — ein Szenario pro Tag, daran lernt man das Arbeiten mit dem System schneller als durch Lesen. Alle Links und Anleitungen an einem Ort: `reference/links.md`.
+How the folder is built is described in `ONBOARDING.md` and in the `FOLDER-MAP.html` (double-click, opens in the browser). What the system reads and what it never does is in `WHAT-THIS-SYSTEM-DOES.md`. **For the first week:** the exercises in `reference/exercises.md` — one scenario per day, which teaches you working with the system faster than reading does. All links and guides in one place: `reference/links.md`.

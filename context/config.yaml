@@ -1,121 +1,154 @@
 # ============================================================
-# Persönliche Konfiguration — die EINZIGE Stelle für personenbezogene Werte.
-# Wird von /setup beim ersten Start befüllt. Alle Skills lesen diese Datei.
-# Verhaltens-Tuning (Mail-Fenster, Section-Caps, Keywords) lebt in den Skills.
+# Personal configuration — the ONLY place for personal values.
+# Filled by /setup on first start. Every skill reads this file.
+# Behaviour tuning (mail windows, section caps, keywords) lives in the skills.
 # ============================================================
 
+# Working language — set once by /setup, then fixed.
+# "en" or "de". Controls everything the user sees: briefings, dashboard text,
+# mail drafts, journal/status entries, chat. Package files themselves stay English.
+language: "en"
+
 user:
-  name: "[DEIN NAME]"              # z.B. "Max Mustermann"
-  first_name: "[VORNAME]"          # für Mail-Signaturen ("LG Max")
-  email: "[dein.name@firma.de]"
-  role: "[Position/Rolle, Bereich]"   # z.B. "Teamleitung Vertrieb"
+  name: "[YOUR NAME]"              # e.g. "Alex Miller"
+  first_name: "[FIRST NAME]"       # for mail signatures ("Best, Alex")
+  email: "[your.name@company.com]"
+  role: "[Position/Role, Area]"    # e.g. "Head of Sales"
 
 location:
-  home_city: "[Stadt]"             # z.B. "Munich"
-  office_abbreviation: "[KRZ]"     # z.B. "MUN", "FRA", "BER"
-  office_room_patterns: ["Office"] # Raum-/Standort-Muster im Kalender, z.B. ["MUN", "L21", "Office"]
-  other_office_patterns: []        # weitere Standorte, z.B. [{prefix: "FRA", city: "Frankfurt"}]
-  office_days: []                  # z.B. ["Dienstag", "Donnerstag"] — Rest = Remote-Default
+  home_city: "[City]"              # e.g. "Munich"
+  office_abbreviation: "[ABBR]"    # e.g. "MUN", "FRA", "BER"
+  office_room_patterns: ["Office"] # room/location patterns in the calendar, e.g. ["MUN", "L21", "Office"]
+  other_office_patterns: []        # further locations, e.g. [{prefix: "FRA", city: "Frankfurt"}]
+  office_days: []                  # e.g. ["Tuesday", "Thursday"] — rest = remote by default
   timezone: "Europe/Berlin"
 
 calendar:
-  # Wiederkehrende eigene Blöcke, die im Briefing nur stören (Sport, Lunch, Fokuszeit, ...).
-  # Nach den ersten Tagen ergänzen — was hier steht, taucht nirgends im Dashboard auf.
-  noise_subjects: []               # z.B. ["LUNCH", "Fokusblock", "Sport"]
+  # Recurring blocks of your own that only clutter the briefing (sports, lunch, focus time, ...).
+  # Add these after the first few days — whatever is listed here shows up nowhere in the dashboard.
+  noise_subjects: []               # e.g. ["LUNCH", "Focus block", "Gym"]
 
 mail:
-  tag_processed: true              # triagierte Mails im Postfach sichtbar markieren, sofern der Weg dorthin es hergibt (Outlook unter Windows via COM; sonst still übersprungen, das Ledger bleibt der eigentliche Skip-Mechanismus)
-  processed_categories: ["KI-Triagiert"]   # Mails mit dieser Kategorie bzw. diesem Label gelten als verarbeitet und werden übersprungen
+  tag_processed: true              # mark triaged mails visibly in the mailbox, as far as the route there allows it (Outlook on Windows via COM; otherwise silently skipped, the ledger stays the actual skip mechanism)
+  processed_categories: ["AI-Triaged"]   # mails carrying this category or label count as processed and are skipped
+  # YOUR OWN triage patterns — they belong here, NOT in reference/mail-triage-rules.md.
+  # This file is yours and survives every package update; the rules file gets replaced by it.
+  # Claude fills these in itself when you say "newsletter X never interests me" or
+  # "mail from Y is always important" — that is Safeguard 10, and this is where it lands.
+  custom_noise_senders: []         # senders / distribution lists that are always noise
+  custom_fyi_keywords: []          # subject patterns that are always just for information
+  custom_vip_senders: []           # senders that always mean something needs doing
 
-# Eigene Tools — selbst gebaute Werkzeuge, die im Dashboard (Tab "Start Here") verlinkt werden.
-# Drei Zeilen pro Tool: name, purpose (wenige Worte), url. category ist optional.
-# url darf alles sein, was ein Browser öffnet: localhost, deployte Adresse oder lokaler Pfad.
-# Das Dashboard verlinkt nur, es startet und lädt nichts.
+# Your own tools — self-built tools that are linked in the dashboard (tab "Workspace").
+# Three lines per tool: name, purpose (a few words), url. category is optional.
+# url can be anything a browser opens: localhost, a deployed address or a local path.
+# The dashboard only links, it starts and loads nothing.
 own_tools: []
-  # - name: "Kapazitaets-Rechner"
-  #   purpose: "Auslastung pro Woche durchrechnen"
+  # - name: "Capacity calculator"
+  #   purpose: "Work out utilization per week"
   #   url: "http://localhost:8080"
-  #   category: "Planung"
-  # - name: "Statusbericht-Vorlage"
-  #   purpose: "Wochenbericht aus den Projektdaten bauen"
-  #   url: "./tools/statusbericht/index.html"
+  #   category: "Planning"
+  # - name: "Status report template"
+  #   purpose: "Build the weekly report from the project data"
+  #   url: "./tools/status-report/index.html"
 
-# Ausstattung — was bei dir eingerichtet ist. Zeigt sich im Dashboard (Tab "Start Here")
-# unter "Deine Ausstattung". Wird von /setup befüllt und ist jederzeit von Hand pflegbar.
-# status: true = eingerichtet (farbiges Symbol), false = noch offen (graues Symbol).
+# Equipment — what is set up on your side. Shows in the dashboard (tab "Workspace")
+# under "Your equipment". Filled by /setup and editable by hand at any time.
+# status: true = set up (colored symbol), false = still open (grey symbol).
 inventory:
 
-  # Verbindungen zu Mail, Kalender, Dateiablage, CRM. Anleitung: reference/mcp.md
-  # Optionales Feld `slot:` ordnet einen Eintrag einem der sechs festen Fähigkeits-Slots
-  # im Workspace-Tab zu: mail | kalender | ablage | chat | crm | dev.
-  # Beispiel: - {name: "Microsoft 365", slot: mail, status: true, purpose: "Postfach fürs Briefing"}
+  # Connections to mail, calendar, file storage, CRM. Instructions: reference/mcp.md
+  # The optional field `slot:` assigns an entry to one of the six fixed capability slots
+  # in the workspace tab: mail | calendar | storage | chat | crm | dev.
+  # These exact strings are the ones reference/self-test.md checks against — a different
+  # spelling makes the "no mailbox, no calendar" check pass silently and forever.
+  # Example: - {name: "Microsoft 365", slot: mail, status: true, purpose: "Mailbox for the briefing"}
   connectors: []
     # - name: "Microsoft 365"
-    #   purpose: "Mail und Kalender"
+    #   purpose: "Mail and calendar"
     #   status: true
     # - name: "SharePoint"
-    #   purpose: "Dateiablage"
+    #   purpose: "File storage"
     #   status: false
 
-  # Kommandozeilen-Werkzeuge. Installation: reference/tools.md
+  # Command-line tools. Installation: reference/tools.md
   clis: []
     # - name: "firecrawl"
-    #   purpose: "Webseiten lesen und im Netz suchen"
+    #   purpose: "Read web pages and search the web"
     #   status: true
     # - name: "playwright"
-    #   purpose: "Echter Browser: Logins, Formulare, Screenshots"
+    #   purpose: "Real browser: logins, forms, screenshots"
     #   status: false
 
-  # Installierte Claude-Code-Plugins. Empfehlungen: reference/plugins.md
+  # Installed Claude Code plugins. Recommendations: reference/plugins.md
   plugins: []
     # - name: "skill-creator"
-    #   purpose: "Neue Skills bauen und bestehende verbessern"
+    #   purpose: "Build new skills and improve existing ones"
     #   status: true
 
-  # Dienste mit eigenem Zugang. Die Schlüssel selbst stehen NIE hier, sondern in
-  # ~/.config/credentials.env — hier steht nur, wie der Eintrag dort heisst.
-  # status wird nicht getippt, sondern aus der Existenz des Schlüssels abgeleitet.
+  # Services with their own access. The keys themselves NEVER live here, they live in
+  # ~/.config/credentials.env — here it only says what the entry over there is called.
+  # status is not typed, it is derived from the existence of the key.
   accounts: []
     # - name: "Firecrawl"
-    #   purpose: "Webseiten lesen und im Netz suchen"
+    #   purpose: "Read web pages and search the web"
     #   key_env: "FIRECRAWL_API_KEY"
     #   status: true
     # - name: "OpenRouter"
-    #   purpose: "Bilder erzeugen und Spezial-Modelle nutzen"
+    #   purpose: "Generate images and use specialist models"
     #   key_env: "OPENROUTER_API_KEY"
     #   status: false
 
-  # Git-Repos, mit denen du arbeitest. Projekt-Repos liegen in projects/<slug>/code/
-  # und haben eine eigene Historie (siehe projects/README.md).
+  # Git repos you work with. Project repos live in projects/<slug>/code/
+  # and have their own history (see projects/README.md).
   repos: []
     # - name: "workspace"
-    #   url: "https://github.com/beispiel/workspace"
+    #   url: "https://github.com/example/workspace"
     # - name: "sqanit"
-    #   url: "https://github.com/beispiel/sqanit"
-    #   path: "projects/sqanit/code"
+    #   url: "https://github.com/example/sqanit"
+    #   path: "projects/sqanit"
 
-  # Zeitgesteuerte Läufe, Zeitplan im Klartext. Anleitung: SETUP.md
+  # Scheduled runs, schedule in plain language. Instructions: SETUP.md
   routines: []
-    # - name: "Morgen-Briefing"
-    #   schedule: "werktags 7:00 Uhr"
+    # - name: "Morning briefing"
+    #   schedule: "weekdays 7:00"
 
-# Eigene Domains — trennt intern von extern (steuert die Priorität im Briefing)
-company_domains: ["[deine-firma.de]"]   # alle eigenen Domains eintragen, z.B. ["firma.de", "firma.com"]
+# Your own domains — separates internal from external (drives priority in the briefing)
+company_domains: ["[your-company.com]"]   # enter all of your own domains, e.g. ["company.com", "company.de"]
 
-# Absoluter Pfad zu diesem Workspace — von /setup berechnet, nie manuell tippen
+# Absolute path to this workspace — computed by /setup, never typed by hand
 workspace_root: ""
 
-# Betriebssystem — von /setup erkannt ("windows" oder "mac").
-# Steuert Draft-Mechanik (PowerShell-COM vs. AppleScript) und Dashboard-Öffnen.
+# What the user works with every day, in their own words — asked for by /setup (question 5).
+# This is the starting point for connecting things: /setup step 7.2 works from these names instead of
+# asking abstractly slot by slot. Entries stay in even when nothing could be connected — then the
+# reason is the useful part. /checkup and /audit read this rather than asking again.
+#   - name: "HubSpot"
+#     purpose: "everything to do with customers, quotes and follow-ups"
+tools_in_use: []
+
+# One-time offers that must not repeat. A rule that says "ask this only once" needs a place
+# to record that it happened, otherwise it fires on every run or never at all. Value is either
+# an absolute date (asked on that day) or "declined" (never bring it up again).
+#   automation: "2026-08-20"   # /checkup offered the automation analysis
+asked: {}
+
+# Claude plan — asked for by /setup: "pro" (20 €), "max5" (100 €), "max20" (200 €), "team" or empty.
+# Determines the main model in .claude/settings.json (Pro = always sonnet, otherwise a choice) and is the
+# early warning before big runs: on "pro" a five-agent run burns through the quota in one go.
+plan: ""
+
+# Operating system — detected by /setup ("windows" or "mac").
+# Drives draft mechanics (PowerShell COM vs. AppleScript) and how the dashboard opens.
 os: ""
 
-# Womit das Dashboard-Fill-Script startet — von /setup ermittelt ("node", "uv run python", "python3" oder "python").
-# Node ist der Default (wird mit Claude Code mitinstalliert), Python nur Fallback.
-# Leer = keine Laufzeit gefunden; dann entsteht kein Dashboard, das Briefing im Chat läuft trotzdem.
+# What the dashboard fill script starts with — determined by /setup ("node", "uv run python", "python3" or "python").
+# Node is the default (ships with Claude Code), Python is only a fallback.
+# Empty = no runtime found; then no dashboard is created, the briefing in the chat still runs.
 script_command: ""
 
-# Wie Mail-Entwürfe angelegt werden — von /setup ermittelt:
-# "mcp" (Connector hat ein Draft-Tool), "com" (Windows-Default, Outlook), "mailto" (Mac-Default, braucht keine Rechte),
-# "applescript" (Mac, opt-in), "manual" (nichts davon geht — Text kommt in den Chat).
-# Leer = /email prüft die Leiter selbst (MCP-Tool? → sonst OS-Default: Windows "com", Mac "mailto").
+# How mail drafts are created — determined by /setup:
+# "mcp" (connector has a draft tool), "com" (Windows default, Outlook), "mailto" (Mac default, needs no permissions),
+# "applescript" (Mac, opt-in), "manual" (none of these work — the text lands in the chat).
+# Empty = /email walks the ladder itself (MCP tool? → otherwise OS default: Windows "com", Mac "mailto").
 draft_method: ""

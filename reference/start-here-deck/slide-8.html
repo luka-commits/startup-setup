@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curated, not frozen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="slide-base.css" />
+  <style>
+    .slide h1 { font-size: clamp(29px, 3.2vw, 43px); }
+    .slide-head { margin-bottom: 16px; }
+    .stage { gap: 13px; }
+    .takeaway { margin-top: 13px; padding: 15px 26px; }
+
+    /* the flood line: what happens out there, and who deals with it */
+    .flood {
+      display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 26px;
+      padding: 13px 24px; background: linear-gradient(#fffdf6, #fffaea); border-color: var(--hl);
+    }
+    .flood .ft { font-size: 14px; line-height: 1.45; color: var(--body); }
+    .flood .ft b { color: var(--ink); font-weight: 700; }
+    .flood .fb { font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.1px; text-transform: uppercase;
+                 color: #8a6a12; background: var(--hl); border-radius: 999px; padding: 6px 13px; white-space: nowrap; }
+
+    .plugcard { padding: 18px 24px 16px; }
+    .lane + .lane { margin-top: 11px; }
+    .ll { font-family: var(--mono); font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase;
+          color: var(--muted-soft); margin-bottom: 6px; }
+    .ll b { color: var(--ink); font-weight: 500; }
+
+    .row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 9px; align-items: stretch; }
+
+    .brick {
+      position: relative; display: flex; flex-direction: column;
+      background: #fff; border: 1px solid var(--hairline); border-radius: 11px;
+      padding: 9px 11px 11px;
+      box-shadow: 0 3px 0 #ece6da, 0 6px 12px rgba(26,26,23,.05);
+    }
+    .brick .bn { font-family: var(--mono); font-size: 10.5px; font-weight: 500; color: var(--ink); line-height: 1.25; }
+    .brick .bw { margin-top: 6px; font-size: 10.5px; line-height: 1.36; color: var(--muted); }
+    .lane-p .brick { min-height: 112px; }
+    .lane-s .brick { flex-direction: row; align-items: center; gap: 8px; min-height: 42px; }
+    .lane-s .brick .bw { margin-top: 0; }
+
+    /* the stud that plugs into what is already standing */
+    .brick::after {
+      content: ""; position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%);
+      width: 15px; height: 14px; background: #e4ddd0; border-radius: 0 0 3px 3px;
+    }
+    .lane-p .brick::after, .lane-c .brick::after { display: none; }
+
+    /* the open slot: what arrives tomorrow */
+    .brick.open {
+      background: transparent; border: 1.6px dashed var(--muted-soft); box-shadow: none;
+      align-items: center; justify-content: center; text-align: center;
+    }
+    .brick.open .plus { font-size: 18px; font-weight: 800; color: var(--muted-soft); line-height: 1; }
+    .brick.open .bw { color: var(--muted); font-weight: 600; }
+    .lane-s .brick.open { gap: 7px; }
+    .lane-s .brick.open .plus { font-size: 14px; }
+
+    /* the socket: what is already standing */
+    .socket {
+      margin-top: 14px; background: var(--ink); border-radius: 12px;
+      padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      box-shadow: 0 4px 0 #0f0f0d, 0 9px 18px rgba(26,26,23,.14);
+    }
+    .socket .st { font-size: 14px; font-weight: 700; color: var(--canvas); }
+    .socket .st i { font-style: normal; color: var(--hl); }
+    .socket .ss { font-family: var(--mono); font-size: 10.5px; letter-spacing: .8px; text-transform: uppercase; color: var(--muted-soft); }
+
+    .note { margin-top: 11px; font-size: 11.5px; line-height: 1.45; color: var(--muted); text-align: center; }
+    .note strong { color: var(--ink); font-weight: 600; }
+
+    /* motion: the pieces dock one after another, the open slots pulse last */
+    .anim .brick { opacity: 0; transform: translateY(-14px); }
+    .anim.ready .brick { opacity: 1; transform: none; transition: opacity .32s ease-out, transform .36s cubic-bezier(.2,.75,.3,1); transition-delay: calc(var(--d) * 85ms + 340ms); }
+    .anim.ready .brick.open { animation: slotpulse 1.1s ease-out 1.7s 1; }
+    @keyframes slotpulse {
+      0%, 100% { border-color: var(--muted-soft); background: transparent; }
+      45% { border-color: #d9ac33; background: var(--hl-soft); }
+    }
+    .noanim .brick { opacity: 1 !important; transform: none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      .anim .brick, .anim.ready .brick { opacity: 1 !important; transform: none !important; transition: none !important; animation: none !important; }
+    }
+    @media (max-width: 1250px) {
+      .row { grid-template-columns: repeat(2, 1fr); }
+      .brick::after { display: none; }
+      .flood { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-prev="slide-7.html" data-next="slide-9.html">
+  <a href="index.html" class="brand">Start Here · Your workspace</a>
+  <div class="pageno">08 / 11</div>
+
+  <div class="slide">
+    <div class="slide-head rise" style="--i:0">
+      <div class="eyebrow">The capability layer</div>
+      <h1>New capability lands daily. <span class="hl">We decide what matters.</span></h1>
+    </div>
+
+    <div class="stage">
+      <div class="card flood rise" style="--i:1">
+        <div class="ft">New plugins, new connections and new tools appear almost every day. <b>Telling this week's real thing from the noise is a full job,</b> and it is not a job anyone outside this field can do on the side.</div>
+        <div class="fb">that part is ours</div>
+      </div>
+
+      <div class="card plugcard rise" style="--i:2">
+
+        <div class="lane lane-p">
+          <div class="ll"><b>Plugins</b> · abilities the system can call on</div>
+          <div class="row">
+            <div class="brick" style="--d:0">
+              <div class="bn">code-review</div>
+              <div class="bw">Several agents review the same change from different angles, then a separate pass throws out the false positives.</div>
+            </div>
+            <div class="brick" style="--d:1">
+              <div class="bn">skill-creator</div>
+              <div class="bw">The routine you repeat becomes a command you can hand to someone else.</div>
+            </div>
+            <div class="brick" style="--d:2">
+              <div class="bn">claude-mem</div>
+              <div class="bw">The context stops dying at the end of a session.</div>
+            </div>
+            <div class="brick" style="--d:3">
+              <div class="bn">impeccable</div>
+              <div class="bw">An interface gets reviewed the way a designer would review it.</div>
+            </div>
+            <div class="brick" style="--d:4">
+              <div class="bn">claude-md-<br/>management</div>
+              <div class="bw">Keeps your instruction files honest as they grow.</div>
+            </div>
+            <div class="brick" style="--d:5">
+              <div class="bn">superpowers</div>
+              <div class="bw">A shelf of extra abilities, pulled in on demand.</div>
+            </div>
+            <div class="brick open" style="--d:6">
+              <div class="plus">+</div>
+              <div class="bw">whatever<br/>lands next</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lane lane-s lane-c">
+          <div class="ll"><b>Connections</b> · the systems you already pay for</div>
+          <div class="row">
+            <div class="brick" style="--d:7"><div class="bw">Mailbox</div></div>
+            <div class="brick" style="--d:8"><div class="bw">Calendar</div></div>
+            <div class="brick" style="--d:9"><div class="bw">File storage</div></div>
+            <div class="brick" style="--d:10"><div class="bw">Team chat</div></div>
+            <div class="brick" style="--d:11"><div class="bw">CRM</div></div>
+            <div class="brick" style="--d:12"><div class="bw">Code projects</div></div>
+            <div class="brick open" style="--d:13"><div class="plus">+</div><div class="bw">next one</div></div>
+          </div>
+        </div>
+
+        <div class="lane lane-s">
+          <div class="ll"><b>Command line tools</b> · hands for the work itself</div>
+          <div class="row">
+            <div class="brick" style="--d:14"><div class="bw">firecrawl</div></div>
+            <div class="brick" style="--d:15"><div class="bw">playwright</div></div>
+            <div class="brick" style="--d:16"><div class="bw">gws</div></div>
+            <div class="brick" style="--d:17"><div class="bw">supabase</div></div>
+            <div class="brick" style="--d:18"><div class="bw">gh</div></div>
+            <div class="brick" style="--d:19"><div class="bw">vercel</div></div>
+            <div class="brick open" style="--d:20"><div class="plus">+</div><div class="bw">next one</div></div>
+          </div>
+        </div>
+
+        <div class="socket">
+          <div class="st">You pull the new version with <i>one sentence in the chat.</i></div>
+          <div class="ss">nothing gets rebuilt, nothing gets migrated</div>
+        </div>
+
+        <div class="note">And none of it ties you to one provider: the same setup runs on whichever model is the right one that week. All three kinds are <strong>curated the same way</strong>: only what genuinely earns its place gets folded into the package. Everything here is optional, and each piece is suggested only when a task is actually better with it.</div>
+      </div>
+    </div>
+
+    <div class="takeaway rise" style="--i:3">You never had to follow the field. <span class="hl">You just keep getting the version that already did.</span></div>
+  </div>
+
+  <script src="deck.js"></script>
+</body>
+</html>

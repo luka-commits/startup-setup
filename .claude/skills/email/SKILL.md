@@ -1,85 +1,92 @@
 ---
 name: email
-description: "Hilft beim Schreiben von Business-E-Mails auf Deutsch und Englisch im persönlichen Stil des Users. Trigger: /email <kontext>, 'mail schreiben', 'draft mail', 'antwort formulieren', 'schick mal ne mail an', 'e-mail an <person>'. Nimmt Kontext (Empfänger, Betreff, Kernanliegen, Sprache), erzeugt Draft (kurz, direkt, Du-Form auf DE, kein Filler, Signatur aus config.yaml), zeigt Draft im Chat, nach OK legt es den Entwurf über den in config.yaml ermittelten Weg an (draft_method: MCP-Tool / COM / mailto / AppleScript, mit Fallback-Leiter) — der User klickt nur noch Senden. Kein automatisches Senden."
+description: "Helps write business emails in the user's personal style, in English or German. Trigger: /email <context>, 'write a mail', 'draft mail', 'draft a reply', 'send a mail to', 'mail schreiben', 'antwort formulieren', 'schick mal ne mail an', 'e-mail an <person>'. Takes context (recipient, subject, core message, language), produces a draft (short, direct, no filler, informal Du-form in German, signature from config.yaml), shows the draft in chat, and after an OK creates the draft via the path determined in config.yaml (draft_method: MCP tool / COM / mailto / AppleScript, with a fallback ladder) — the user only clicks Send. Never sends automatically."
 ---
 
-# Email Skill — Draft im persönlichen Stil
+# Email Skill — Draft in the User's Personal Style
 
-> **Config:** Vorname/Name/Rolle/Stadt für Signatur + Closer aus `context/config.yaml` (`user.*`, `location.home_city`). `{Vorname}` unten = `user.first_name`.
+> **Config:** first name / name / role / city for signature + closer come from `context/config.yaml` (`user.*`, `location.home_city`). `{FirstName}` below = `user.first_name`.
 >
-> **Stil-Quelle (Reihenfolge):** existiert `context/EMAIL_STYLE.md`, gilt DIE als Style-Reference — die Templates unten sind dann nur Struktur-Fallback. Ohne sie gilt der Beispiel-Stil unten (vom Original-Autor des Pakets, siehe Hinweis dort).
+> **Draft language — the one exception to the working language.** Everywhere else, output follows `config.yaml → language` (canonical rule: `CLAUDE.md` § Working language). Mail drafts do not: a draft follows **the language of the thread it answers** — reply to a German mail → German draft, reply to an English mail → English draft. Only when there is no thread to follow does it fall back to `config.yaml → language`.
 >
-> **"Leite meinen Mail-Stil ab" — der Ablauf lebt hier** (`/setup` archiviert sich nach dem Setup, deshalb nicht dort nachschlagen): **Zuerst prüfen, ob es schon geschehen ist** — existiert `context/EMAIL_STYLE.md`, nicht blind neu ableiten, sondern in einem Satz sagen: _„Dein Stil ist schon abgeleitet (Stand: [Datei-Datum]). Trotzdem neu machen, z.B. weil er nicht mehr passt?"_ Nur bei Ja weitermachen. **Ablauf:** Erlaubnis holen → Haiku-Subagent (Prompt beginnt damit, das Mail-Such-Tool des verbundenen Connectors zu laden; bei Microsoft 365 `ToolSearch select:mcp__claude_ai_Microsoft_365__outlook_email_search`, bei einem anderen Connector den Namen per `ToolSearch query:mail` ermitteln) holt damit über `sender = user.email` die letzten ~6 Monate (limit ~50), fetcht Volltexte, gibt 15–25 typische Ausschnitte zurück (Opener, Closer, Sign-offs, Einzeiler), nach DE/EN getrennt, Sensibles (HR/Gehalt/Performance) übersprungen → daraus Opener/Ton/Länge/Closer/Signatur ableiten (Urteilsarbeit, Hauptmodell) → nach `context/EMAIL_STYLE.md` schreiben (Struktur wie die Style-Reference unten) → dem User in 5–8 Bullets zeigen und "passt das?" fragen, Korrekturen direkt einarbeiten.
+> **Style source (in order):** if `context/EMAIL_STYLE.md` exists, THAT is the style reference — the templates below are then only a structural fallback. Without it, the example style below applies (from the package's original author, see the note there).
+>
+> **"Derive my mail style" — the procedure lives here** (`/setup` archives itself after setup, so don't look it up there): **first check whether it has already happened** — if `context/EMAIL_STYLE.md` exists, don't blindly re-derive, but say in one sentence: _"Your style is already derived (as of: [file date]). Redo it anyway, e.g. because it no longer fits?"_ Only continue on a yes. **Procedure:** get permission → Haiku subagent (the prompt starts by loading the mail search tool of the connected connector; for Microsoft 365 `ToolSearch select:mcp__claude_ai_Microsoft_365__outlook_email_search`, for another connector determine the name via `ToolSearch query:mail`) uses it to fetch the last ~6 months **by naming the sent FOLDER** — Microsoft 365 `folderName="Sent Items"` (German mailbox: "Gesendete Elemente"), Google Workspace `query="in:sent"`; **not** `sender = user.email`, because the search covers the inbox only and a sender filter returns zero of the user's own mail (verified 2026-07-21) — (limit ~50), fetches full texts, returns 15–25 typical excerpts (openers, closers, sign-offs, one-liners), separated by DE/EN, skipping anything sensitive (HR/salary/performance) → from that derive opener/tone/length/closer/signature (judgement work, main model) → write to `context/EMAIL_STYLE.md` (structured like the style reference below) → show the user 5–8 bullets and ask "does this fit?", incorporating corrections directly.
 
 ## Purpose
 
-Business-Mail-Drafts (DE + EN) im gelernten persönlichen Stil generieren. User gibt Kontext → Draft im Chat → nach OK Entwurf im Mailprogramm geöffnet.
+Generate business mail drafts (EN + DE) in the learned personal style. User gives context → draft in chat → after OK, a draft opened in the mail program.
 
 ## Trigger
 
-- `/email <kontext>` — z.B. `/email antwort an nicole zum termin`
-- `/email` leer → Prompt: "An wen, worum geht's, Sprache?"
-- Chat: "mail schreiben an X", "draft mail für Y", "wie antworte ich X", "schreib ne mail dass Z"
+- `/email <context>` — e.g. `/email reply to nicole about the meeting`
+- `/email` empty → prompt: "To whom, what about, which language?"
+- Chat: "write a mail to X", "draft mail for Y", "how do I reply to X", "write a mail saying Z"
 
-## Style-Reference (aus Sent-Items extrahiert)
+## Style Reference (extracted from Sent Items)
 
-### Deutsch
-
-**Opener:**
-- `Hi <Vorname>,` — Standard, alle direkten Kollegen
-- `Hallo <Vorname>,` — leicht formeller
-- `Dear <X> Team,` — Teams, formelle Anfragen
-- Inline OK: `Hi Vorname, gerne! Ich habe...`
-
-**Ton:**
-- **Du/Sie nach Empfänger:** Kollegen (Adresse auf einer Domain aus `company_domains`) und erkennbar vertraute Kontakte (bestehender Du-Thread) → **Du**. Externe, Erstkontakte und alles Unklare → **Sie** mit `Hallo Herr/Frau <Name>,` oder `Guten Tag <Name>,`. Im Zweifel Sie — ein Sie an einen Du-Kontakt ist eine Kleinigkeit, ein Du an den falschen Empfänger ist peinlich. (Sobald `EMAIL_STYLE.md` existiert, gilt deren Regelung.)
-- Kurz, oft 1-3 Sätze, sonst max. 1 Absatz
-- Direkte Verben statt Konjunktiv-Ketten
-- Sympathie durch `!` sparsam einsetzen (`gerne!`, `alles klar!`, `super, vielen Dank!`)
-- Bei Verspätung ehrliche Meta-Info: `sorry für die späte Rückmeldung`, `sorry ich war noch an anderen Blockern dran`
-- Kontext-Sätze für Verfügbarkeit: `Freitag bin ich beim Klienten`
-- Emojis rar, nur 🙂 gelegentlich
-
-**Verbotene Filler-Phrasen (nie verwenden):**
-- "Ich hoffe, diese E-Mail erreicht dich gut"
-- "Ich melde mich hiermit bezüglich..."
-- "Vielen Dank im Voraus für deine Bemühungen"
-- "Zögere nicht mich zu kontaktieren"
-- Em-Dashes (`—`)
-
-**Closer:**
-- `LG {Vorname}` — Standard 90% der Zeit
-- `LG\n{Vorname}` (auf 2 Zeilen)
-- `Vielen Dank\n{Vorname}` bei expliziter Bitte
-- `Beste Grüße\n{Vorname}` selten, nur bei formellen Anfragen
-
-### Englisch
+### English
 
 **Opener:**
-- `Hi <Firstname>,` — Standard
-- `Hello <Firstname>,` — leicht formeller (IT-Tickets, Externe)
-- `Dear <X> Team,` — Teams, RAI, DPO, etc.
+- `Hi <Firstname>,` — standard
+- `Hello <Firstname>,` — slightly more formal (IT tickets, externals)
+- `Dear <X> Team,` — teams, RAI, DPO, etc.
 
-**Ton:**
-- Kurz und direkt wie DE
+**Tone:**
+- Short and direct, often 1 to 3 sentences, otherwise one paragraph at most
+- Direct verbs instead of chains of conditionals: `I'll send it Thursday`, not `I would potentially be able to send it`
+- The greeting can run inline: `Hi Anna, happy to. I have ...`
+- When you are late, say so plainly instead of dressing it up: `sorry for the slow reply`
+- One sentence on availability where it saves a round trip: `Friday I'm at a client`
+- Exclamation marks sparingly, emoji rarely and at most a 🙂
 - Contractions ok: `I'd`, `don't`, `we'll`
-- `Thank you very much!` / `Thanks!` für Sympathie
-- `My apologies for the inconvenience` bei eigenem Fehler
-- Bei Unsicherheit: `I would say X in general` (abwägend)
+- `Thank you very much!` / `Thanks!` to convey warmth
+- `My apologies for the inconvenience` for your own mistake
+- When unsure: `I would say X in general` (weighing it up)
 
-**Verbotene Filler-Phrasen:**
+**Banned filler phrases (never use):**
 - "I hope this email finds you well"
 - "Please don't hesitate to reach out"
 - "Kindly find attached"
 - "As per my previous email"
-- Em-Dashes (`—`)
+- Em-dashes (`—`)
 
 **Closer:**
-- `Best regards\n{Vorname}` — Standard
-- `Best Regards\n{Vorname}` (Groß-Variante ok)
-- `Thanks!\n{Vorname}` bei kurzer Dank-Mail
+- `Best regards\n{FirstName}` — standard
+- `Best Regards\n{FirstName}` (capitalized variant ok)
+- `Thanks!\n{FirstName}` for a short thank-you mail
 
-### Signatur (immer, nach Closer)
+### German
+
+**Opener:**
+- `Hi <Vorname>,` — standard, all direct colleagues
+- `Hallo <Vorname>,` — slightly more formal
+- `Dear <X> Team,` — teams, formal requests
+- Inline is fine: `Hi Vorname, gerne! Ich habe...`
+
+**Tone:**
+- **Du/Sie depending on the recipient:** colleagues (address on a domain from `company_domains`) and recognisably familiar contacts (an existing Du thread) → **Du**. Externals, first contacts and anything unclear → **Sie** with `Hallo Herr/Frau <Name>,` or `Guten Tag <Name>,`. When in doubt, Sie — a Sie to a Du contact is a small thing, a Du to the wrong recipient is embarrassing. (As soon as `EMAIL_STYLE.md` exists, its rule applies.)
+- Short, often 1-3 sentences, otherwise max. 1 paragraph
+- Direct verbs instead of subjunctive chains
+- Convey warmth with `!` used sparingly (`gerne!`, `alles klar!`, `super, vielen Dank!`)
+- When late, honest meta-info: `sorry für die späte Rückmeldung`, `sorry ich war noch an anderen Blockern dran`
+- Context sentences for availability: `Freitag bin ich beim Klienten`
+- Emojis rare, only 🙂 occasionally
+
+**Banned filler phrases (never use):**
+- "Ich hoffe, diese E-Mail erreicht dich gut"
+- "Ich melde mich hiermit bezüglich..."
+- "Vielen Dank im Voraus für deine Bemühungen"
+- "Zögere nicht mich zu kontaktieren"
+- Em-dashes (`—`)
+
+**Closer:**
+- `LG {FirstName}` — standard, 90% of the time
+- `LG\n{FirstName}` (on 2 lines)
+- `Vielen Dank\n{FirstName}` when making an explicit request
+- `Beste Grüße\n{FirstName}` rare, only for formal requests
+
+### Signature (always, after the closer)
 
 ```
 __
@@ -88,33 +95,75 @@ __
 {user.role}
 ```
 
-Optional Zeile hinter der Rolle: `{location.home_city}, Germany` (nur bei erstem Kontakt mit Externen).
+Optional line after the role: `{location.home_city}, Germany` (only on first contact with externals).
 
-## Mail-Type-Templates (Common Patterns)
+## Mail-Type Templates (Common Patterns)
 
-### 1. Kurze Bestätigung / Danke
+Each type is given in both languages. The German versions are the original examples and stay German on purpose: they show how these mails are actually written in German (`LG`, no filler). Use the version that matches the draft language.
+
+### 1. Short confirmation / thanks
+
+EN:
+```
+Hi <Name>, thanks a lot!
+Best regards
+{FirstName}
+```
+DE:
 ```
 Hi <Name>, super vielen Dank!
-LG {Vorname}
+LG {FirstName}
 ```
-Deutsch — 1 Satz reicht.
+One sentence is enough.
 
-### 2. Follow-up mit Frage
+### 2. Follow-up with a question
+
+EN:
 ```
 Hi <Name>,
 
-kurze Nachricht — <ein Satz Kontext>. <Ein Satz Frage>?
+quick one, <one sentence of context>. <One-sentence question>?
 
-LG {Vorname}
+Best regards
+{FirstName}
+```
+DE:
+```
+Hi <Name>,
+
+kurze Nachricht: <ein Satz Kontext>. <Ein Satz Frage>?
+
+LG {FirstName}
 ```
 
-### 3. Meeting-Vorschlag
+### 3. Meeting proposal
+
+EN:
+```
+Hi <Name>, happy to! I've sent a proposal for <weekday>, unfortunately <alternative day> I'm <reason>.
+Best regards
+{FirstName}
+```
+DE:
 ```
 Hi <Name>, gerne! Ich habe mal einen Vorschlag für <Wochentag> geschickt, <alternativer Tag> habe ich leider <Grund>.
-LG {Vorname}
+LG {FirstName}
 ```
 
-### 4. Status-Info an Stakeholder
+### 4. Status update to stakeholders
+
+EN:
+```
+Hi <Name>,
+
+quick update, and sorry upfront for the long silence, the last few weeks were pretty full with the <project> project.
+
+I have now done <what>, <recommendation / request for feedback>.
+
+Best regards
+{FirstName}
+```
+DE:
 ```
 Hi <Name>,
 
@@ -122,212 +171,243 @@ kurze Nachricht und vorab schon mal sorry für die lange Funkstille, die letzten
 
 Ich habe jetzt <Was> gemacht, <Handlungsempfehlung / Bitte um Feedback>.
 
-LG {Vorname}
+LG {FirstName}
 ```
 
-### 5. IT-Ticket-Antwort (EN)
+### 5. IT ticket reply
+
+EN:
 ```
 Hello <Name>,
 
-Thank you for your message! <Konkrete Antwort/Frage>.
+Thank you for your message! <Concrete answer/question>.
 
 Best regards
-{Vorname}
+{FirstName}
+```
+DE:
+```
+Hallo <Name>,
+
+vielen Dank für deine Nachricht! <Konkrete Antwort/Frage>.
+
+LG {FirstName}
 ```
 
-### 6. Formelle Anfrage an Team (EN)
+### 6. Formal request to a team
+
+EN:
 ```
 Dear <X> Team,
 
-I am currently working on <Kontext-Satz>. <Konkrete Bitte / Frage>.
+I am currently working on <context sentence>. <Concrete request / question>.
 
 Best regards
-{Vorname}
+{FirstName}
+```
+DE:
+```
+Dear <X> Team,
+
+ich arbeite gerade an <Kontext-Satz>. <Konkrete Bitte / Frage>.
+
+Beste Grüße
+{FirstName}
 ```
 
-### 7. Sensitive/Diplomatisch (Terminverschiebung, Absage)
+### 7. Sensitive/diplomatic (rescheduling, cancellation)
+
+EN:
+```
+Hi <Name>, all good!
+<Short context / proposal>.
+Best regards
+{FirstName}
+```
+DE:
 ```
 Hi <Name>, alles klar!
 <Kurzer Kontext / Vorschlag>.
-LG {Vorname}
+LG {FirstName}
 ```
 
 ## Workflow
 
-### Step 1 — Kontext einholen
+### Step 1 — Gather context
 
-**Sprache wird automatisch erkannt, nicht abgefragt:**
-- Antwort auf eine existierende Mail → Sprache der Original-Mail übernehmen (DE Mail → DE Antwort, EN → EN), gleiche Regel wie in `/morning`'s Draft-Erstellung (Step 5b).
-- Frische Mail ohne Original (neue Anfrage, kein Reply) → Sprache aus dem User-Prompt selbst ableiten (deutscher Prompt → DE, englischer Prompt → EN). Nur nachfragen wenn wirklich beides möglich ist (z.B. Empfänger ist erkennbar nicht-deutschsprachig, aber Prompt ist DE) — dann kurz bestätigen lassen, nicht als Standard-Frage.
+**The language is detected automatically, never asked for:**
+- Reply to an existing mail → take over the language of the original mail (German mail → German reply, English → English), same rule as in `/morning`'s draft creation (Step 5b).
+- Fresh mail with no original (new request, not a reply) → derive the language from the user's prompt itself (German prompt → DE, English prompt → EN); if that is ambiguous, fall back to `config.yaml → language`. Only ask when both are genuinely possible (e.g. the recipient is clearly not a German speaker but the prompt is German) — then have it briefly confirmed, not as a standard question.
 
-Wenn User nur `/email` tippt (ohne Kontext) → strukturiert nachfragen:
+If the user only types `/email` (without context) → ask in a structured way:
 ```
-Kurz die Basics:
-1. An wen? (Name / E-Mail)
-2. Worum geht's? (1-2 Sätze reichen)
-3. Ist das eine Antwort auf eine Mail? (Ja → welche / URL — Sprache wird daraus übernommen)
-4. Mail-Typ? (Bestätigung / Follow-up / Meeting-Vorschlag / Status / Anfrage / andere)
+Quick basics:
+1. To whom? (name / email)
+2. What is it about? (1-2 sentences is enough)
+3. Is this a reply to a mail? (Yes → which one / URL — the language is taken from it)
+4. Mail type? (confirmation / follow-up / meeting proposal / status / request / other)
 ```
 
-Wenn Kontext teilweise im Trigger steht (z.B. `/email antwort an nicole zum termin`) → nur fehlende Punkte nachfragen.
+If part of the context is in the trigger (e.g. `/email reply to nicole about the meeting`) → only ask for the missing points.
 
-### Step 2 — Draft generieren
+### Step 2 — Generate the draft
 
-Regeln:
-1. **Match den passenden Mail-Type-Template** oben, nicht stumpf drüberkopieren
-2. **Empfänger-Vorname** in Opener (nie Nachname, außer explizit gewünscht)
-3. **Länge:** so kurz wie möglich. Faustregel: <100 Wörter außer für formale Anfragen
-4. **Emojis nur wenn passt** — 🙂 max. einmal, bei entspannter Kollegen-Kommunikation
-5. **Ausrufezeichen** sparsam, nur wo Sympathie klar dazugehört
-6. **KEINE Em-Dashes** (`—`). Stattdessen `,`, `.`, `:`
-7. **Signatur immer** (siehe oben)
-8. **Sensitive Themen** (Gehalt, HR, Performance, Feedback über Dritte): WARNUNG ausgeben, User bestätigen dass er wirklich per Mail und nicht persönlich diskutieren will
+Rules:
+1. **Match the appropriate mail-type template** above, don't just copy it over blindly
+2. **Recipient's first name** in the opener (never the last name, unless explicitly wanted)
+3. **Length:** as short as possible. Rule of thumb: <100 words except for formal requests
+4. **Emojis only where they fit** — 🙂 max. once, in relaxed communication with colleagues
+5. **Exclamation marks** sparingly, only where warmth clearly belongs
+6. **NO em-dashes** (`—`). Use `,`, `.`, `:` instead
+7. **Signature always** (see above)
+8. **Sensitive topics** (salary, HR, performance, feedback about third parties): issue a WARNING, have the user confirm that they really want to discuss this by mail rather than in person
 
-### Step 3 — Draft im Chat zeigen
+### Step 3 — Show the draft in chat
 
 Format:
 ```
-📧 Draft-Vorschlag
+📧 Draft proposal
 
-An: <recipient>
-Betreff: <subject>
-Sprache: <DE|EN>
+To: <recipient>
+Subject: <subject>
+Language: <EN|DE>
 
 ——————
-<Body inkl. Opener, Content, Closer, Signatur>
+<Body incl. opener, content, closer, signature>
 ——————
 
-OK zum Entwurf-Erstellen? [ja / edit / cancel]
+OK to create the draft? [yes / edit / cancel]
 ```
 
-User-Antworten:
-- `ja` / `ok` / `passt` → Step 4
-- `cancel` / `nein` → Abbrechen, nichts tun
-- Freier Text (z.B. `mach kürzer`, `ton lockerer`, `Betreff präziser`, `füg X hinzu`) → anwenden, Draft neu zeigen
+User replies:
+- `yes` / `ok` / `looks good` → Step 4
+- `cancel` / `no` → abort, do nothing
+- Free text (e.g. `make it shorter`, `more casual tone`, `sharper subject`, `add X`) → apply, show the draft again
 
-### Step 4 — Entwurf erstellen (Weg via `draft_method` aus config.yaml)
+### Step 4 — Create the draft (path via `draft_method` from config.yaml)
 
-Es gibt mehrere Wege, einen Entwurf anzulegen; welcher passt, hängt davon ab, was auf diesem Rechner verbunden und installiert ist. Welcher hier funktioniert, hat `/setup` ermittelt und als `draft_method:` in `context/config.yaml` festgehalten (`mcp` · `com` · `mailto` · `applescript` · `manual`). Steht dort nichts: Leiter selbst prüfen — Draft-Tool des verbundenen Connectors via ToolSearch suchen, sonst OS-Default (Windows: `com`, Mac: `mailto`). In allen Fällen gilt: nur anlegen/öffnen, NIE senden. Skripte landen in `_tmp/` mit **festem Dateinamen** — jeder Lauf überschreibt, es bleibt nie mehr als ein Skript liegen.
+There are several ways to create a draft; which one fits depends on what is connected and installed on this machine. Which one works here was determined by `/setup` and recorded as `draft_method:` in `context/config.yaml` (`mcp` · `com` · `mailto` · `applescript` · `manual`). If nothing is there: check the ladder yourself — look for the draft tool of the connected connector via ToolSearch, otherwise the OS default (Windows: `com`, Mac: `mailto`). In all cases: only create/open, NEVER send. Scripts go into `_tmp/` with a **fixed file name** — every run overwrites, so never more than one script is left lying around.
 
-**Fällt die gewählte Methode aus** (Policy hat sich geändert, Mailprogramm-Modus gewechselt, Connector abgemeldet): eine Stufe tiefer fallen — `mcp` → `com` (Windows) bzw. `applescript` (Mac) → `mailto` → `manual` — und dem User in einem Satz sagen, was stattdessen passiert ist. Bleibt der Wechsel dauerhaft, `draft_method` in der Config nachziehen.
+**If the chosen method fails** (policy has changed, mail program mode switched, connector logged out): drop one rung — `mcp` → `com` (Windows) resp. `applescript` (Mac) → `mailto` → `manual` — and tell the user in one sentence what happened instead. If the switch is permanent, update `draft_method` in the config.
 
-#### `mcp`: Draft-Tool des Connectors
+#### `mcp`: the connector's draft tool
 
-Nur falls `/setup` eines gefunden hat. Tool per `ToolSearch` laden, Entwurf damit anlegen. Beim allerersten Mal fragt Claude Code einmal um Erlaubnis für das Tool — dem User vorweg sagen: „einmal ,immer erlauben' klicken, dann fragt es nie wieder." **Nur das Draft-Tool, niemals ein Send-Tool** — auch wenn der Connector eins anbietet. Gesendet wird hier nicht, das Senden bleibt bewusst beim User (Klick im Mailprogramm).
+Only if `/setup` found one. Load the tool via `ToolSearch`, create the draft with it. The very first time, Claude Code asks once for permission for the tool — tell the user upfront: "click 'always allow' once, then it never asks again." **Only the draft tool, never a send tool** — even if the connector offers one. Nothing is sent here, sending deliberately stays with the user (a click in the mail program).
 
-#### `com`: PowerShell COM (Windows-Default, klassisches Outlook lokal installiert)
+#### `com`: PowerShell COM (Windows default, classic Outlook installed locally)
 
-Draft wird via **Outlook COM in `_tmp/draft.ps1`** erstellt (UTF-8 für Umlaute) und ausgeführt mit:
+The draft is created via **Outlook COM in `_tmp/draft.ps1`** (UTF-8 for umlauts) and executed with:
 ```
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File _tmp/draft.ps1
 ```
-`-ExecutionPolicy Bypass` ist Pflicht: auf verwalteten Laptops sind unsignierte `.ps1` sonst blockiert. Kommt trotzdem ein Policy- oder Blocked-Fehler zurück, ist das kein COM-Problem — eine Stufe tiefer fallen (`mailto`).
+`-ExecutionPolicy Bypass` is mandatory: on managed laptops unsigned `.ps1` files are blocked otherwise. If a policy or blocked error still comes back, that is not a COM problem — drop one rung (`mailto`).
 
-Script-Inhalt:
+Script content:
 ```powershell
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = 'Stop'
 $outlook = New-Object -ComObject Outlook.Application
 $mail = $outlook.CreateItem(0)
-$mail.To      = '<Recipient-Adresse>'
-$mail.Subject = '<Betreff>'
-$mail.HTMLBody = '<Body als HTML — Absätze via <br><br>, Signatur mit <br>>'
-$mail.Display()   # NIE .Send()
-Write-Host 'Draft erstellt und in Outlook geoeffnet.'
+$mail.To      = '<recipient address>'
+$mail.Subject = '<subject>'
+$mail.HTMLBody = '<body as HTML — paragraphs via <br><br>, signature with <br>>'
+$mail.Display()   # NEVER .Send()
+Write-Host 'Draft created and opened in Outlook.'
 ```
 
-#### `mailto`: Link öffnen (Mac-Default, universeller Fallback)
+#### `mailto`: open a link (Mac default, universal fallback)
 
-Kein Skript, keine Rechte nötig, unabhängig vom Anbieter — öffnet das Verfassen-Fenster des Standard-Mailprogramms (was immer der User dort eingestellt hat), technisch dasselbe wie ein Klick auf einen Mail-Link:
-- **Mac:** `open "mailto:<adresse>?subject=<Betreff>&body=<Body>"`
-- **Windows:** `cmd //c start "" "mailto:<adresse>?subject=<Betreff>&body=<Body>"`
+No script, no permissions needed, independent of the provider — opens the compose window of the default mail program (whatever the user has set there), technically the same as clicking a mail link:
+- **Mac:** `open "mailto:<address>?subject=<subject>&body=<body>"`
+- **Windows:** `cmd //c start "" "mailto:<address>?subject=<subject>&body=<body>"`
 
-Betreff und Body URL-encodieren (Leerzeichen `%20`, Zeilenumbrüche `%0A`, Umlaute als UTF-8-Prozent-Encoding). Nur Plaintext, keine Anhänge; Faustregel Body < ~1.500 Zeichen — längere Mails eine Stufe höher versuchen (`com`/`applescript`) oder `manual`.
+URL-encode subject and body (spaces `%20`, line breaks `%0A`, umlauts as UTF-8 percent encoding). Plaintext only, no attachments; rule of thumb body < ~1,500 characters — try longer mails one rung higher (`com`/`applescript`) or `manual`.
 
-**Grenze bei Antworten:** `mailto` erzeugt immer eine NEUE Mail — es kann nicht in einen bestehenden Verlauf antworten. Ist der Draft eine Antwort, den User in einem Halbsatz darauf hinweisen (_„Der Entwurf öffnet sich als neue Mail — häng ihn am besten per Antworten an den Verlauf, Text ist ja kopierbar."_) oder gleich `manual` anbieten (Text im Chat, User klickt selbst auf Antworten). Nicht so tun, als wäre es eine Thread-Antwort.
+**Limitation for replies:** `mailto` always creates a NEW mail — it cannot reply inside an existing thread. If the draft is a reply, point that out to the user in half a sentence (_"The draft opens as a new mail — best to attach it to the thread via Reply, the text is copyable."_) or offer `manual` right away (text in chat, the user clicks Reply themselves). Do not pretend it is a thread reply.
 
 #### `applescript`: osascript (Mac, opt-in)
 
-Nur wenn `mailto` nicht reicht (z.B. HTML gewünscht) **und** das klassische Outlook läuft. Draft als `_tmp/draft.applescript` schreiben, ausführen mit `osascript _tmp/draft.applescript`:
+Only if `mailto` isn't enough (e.g. HTML wanted) **and** classic Outlook is running. Write the draft as `_tmp/draft.applescript`, execute with `osascript _tmp/draft.applescript`:
 
 ```applescript
 tell application "Microsoft Outlook"
-	set newMail to make new outgoing message with properties {subject:"<Betreff>", content:"<Body als Plaintext — Zeilenumbrüche als return>"}
-	make new recipient at newMail with properties {email address:{address:"<Recipient-Adresse>"}}
+	set newMail to make new outgoing message with properties {subject:"<subject>", content:"<body as plaintext — line breaks as return>"}
+	make new recipient at newMail with properties {email address:{address:"<recipient address>"}}
 	open newMail
 end tell
 ```
 
-Der "New Outlook"-Modus unterstützt AppleScript nicht zuverlässig, und eine zentrale Geräteverwaltung kann die Steuerung per MDM-Profil sperren — scheitert der Aufruf ("not authorized"), eine Stufe fallen (`mailto`).
+"New Outlook" mode does not support AppleScript reliably, and central device management can lock down this control via an MDM profile — if the call fails ("not authorized"), drop one rung (`mailto`).
 
-#### `manual`: Text im Chat
+#### `manual`: text in chat
 
-Der Draft-Text steht ohnehin schon im Chat (Step 3) — dann ein Satz: "Automatisch geht es auf diesem Rechner nicht — Text oben kopieren und in deinem Mailprogramm einfügen."
+The draft text is already in the chat anyway (Step 3) — then one sentence: "Automating this doesn't work on this machine — copy the text above and paste it into your mail program."
 
-#### Nach dem Erstellen (alle Wege außer `manual`)
+#### After creation (all paths except `manual`)
 
 ```
-✓ Entwurf erstellt und geöffnet.
-Empfänger: <name> · Betreff: <subject>
-Im Mailprogramm prüfen → Senden.
+✓ Draft created and opened.
+Recipient: <name> · Subject: <subject>
+Check in your mail program → Send.
 ```
 
-## Regeln
+## Rules
 
-- **NIE automatisch senden.** Skill erstellt nur Drafts. Auch bei "send it" vom User → Draft erstellen, dann Hinweis "prüf bitte im Mailprogramm + Senden".
-- **NIE mehrere Drafts parallel** ohne User-OK zwischen jedem.
-- **NIE Sensitive Content** (Gehalt/HR/Performance/Konflikt über Dritte) ungefragt drafte — erst warnen und bestätigen lassen.
-- **Empfänger-Vorname** immer aus Kontext ableiten. Wenn unklar → nachfragen, nicht raten.
-- **Bei Antwort-Mails** — wenn User die Original-Mail nicht liefert, nachfragen ob relevanter Kontext fehlt. Nie erfundene Rückbezüge einbauen.
+- **NEVER send automatically.** The skill only creates drafts. Even on "send it" from the user → create the draft, then note "please check in your mail program + send".
+- **NEVER multiple drafts in parallel** without a user OK between each one.
+- **NEVER draft sensitive content** (salary/HR/performance/conflict about third parties) unasked — warn first and have it confirmed.
+- **Recipient's first name** always derived from context. If unclear → ask, don't guess.
+- **For replies** — if the user doesn't supply the original mail, ask whether relevant context is missing. Never invent back-references.
 
-## Beispiel-Runs
+## Example Runs
 
-**Run 1: Kurzer Trigger mit vollem Kontext**
+**Run 1: Short trigger with full context**
 ```
-Input: /email danke an [Kollege] für die Daten
+Input: /email thanks to [colleague] for the data
 → Draft:
-   An: [name.kollege@firma.com]
-   Betreff: RE: [Thema]
+   To: [name.colleague@company.com]
+   Subject: RE: [Topic]
    Body:
-     Hi [Vorname], super vielen Dank!
-     LG [Dein Name]
-     [+ Signatur]
+     Hi [First name], thanks a lot!
+     Best regards
+     [YOUR NAME]
+     [+ signature]
 → User: "ok"
 → draft_method: com → .ps1 via Outlook COM (.Display())
-→ ✓ Entwurf geöffnet
+→ ✓ Draft opened
 ```
 
-**Run 2: Follow-up mit unklarem Kontext**
+**Run 2: Follow-up with unclear context**
 ```
 Input: /email
-→ Prompt: 5 Fragen
-→ User: "an [Kollegin], deutsch, wollte status pushen, ist noch kein reply da"
+→ Prompt: 5 questions
+→ User: "to [colleague], German, wanted to push for status, no reply yet"
 → Draft:
-   An: [name.kollegin@firma.com]
-   Betreff: Projekt X — kurzes Update?
+   To: [name.colleague@company.com]
+   Subject: Projekt X, kurzes Update?
    Body:
      Hi [Vorname],
-     kurze Nachricht — wollte kurz nachfragen ob du schon weitergekommen bist? Falls ich noch was aufbereiten soll, sag Bescheid.
-     LG [Dein Name]
-     [+ Signatur]
-→ User: "mach ton lockerer"
-→ Draft-2 mit Anpassungen
+     kurze Nachricht: wollte kurz nachfragen ob du schon weitergekommen bist? Falls ich noch was aufbereiten soll, sag Bescheid.
+     LG [YOUR NAME]
+     [+ signature]
+→ User: "more casual tone"
+→ Draft 2 with adjustments
 → User: "ok"
-→ Entwurf erstellt
+→ Draft created
 ```
 
-**Run 3: Formelle EN-Anfrage**
+**Run 3: Formal EN request**
 ```
 Input: /email
-→ Kontext-Fragen
-→ User: "RAI Team, English, brauche freigabe für eine neue Analyse die auf employee-level analytics macht, formell"
+→ Context questions
+→ User: "RAI Team, English, need approval for a new analysis that does employee-level analytics, formal"
 → Draft:
-   An: ResponsibleAI@firma.com
-   Subject: RAI Approval Request — <Analyse-Name>
+   To: ResponsibleAI@company.com
+   Subject: RAI Approval Request: <analysis name>
    Body:
      Dear Responsible AI Team,
-     I am currently working on <Kontext>. The check would <konkret>. Could you please review and confirm this is compliant with RAI guidelines?
+     I am currently working on <context>. The check would <concrete>. Could you please review and confirm this is compliant with RAI guidelines?
      Best regards
-     {Vorname}
-     [+ Signatur]
+     {FirstName}
+     [+ signature]
 ```

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One window</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="slide-base.css" />
+  <style>
+    .slide h1 { font-size: clamp(30px, 3.3vw, 46px); }
+    .slide-head { margin-bottom: 18px; }
+    .stage { gap: 14px; }
+    .takeaway { margin-top: 14px; }
+    .hubcard { padding: 18px 30px; }
+    .hubwrap { position: relative; width: 1140px; height: 290px; margin: 0 auto; }
+    .hubwrap svg.spokes { position: absolute; inset: 0; width: 1140px; height: 290px; }
+
+    /* central node */
+    .hub-core { position: absolute; left: 460px; top: 96px; width: 220px; height: 88px; padding: 0;
+                display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+    .hub-core .hc-row { display: flex; align-items: center; gap: 9px; }
+    .hub-core .hc-row img { width: 22px; height: 22px; filter: invert(1); }
+    .hub-core .hc-t { font-weight: 700; font-size: 16px; margin: 0; }
+    .hub-core .hc-s { font-family: var(--mono); font-size: 10.5px; letter-spacing: .6px; color: var(--muted-soft); margin: 0; }
+
+    /* groups */
+    .grp { position: absolute; }
+    .grp-l { left: 0; top: 8px; width: 330px; }
+    .grp-r { left: 810px; top: 8px; width: 330px; }
+    .grp-b { left: 370px; top: 216px; width: 400px; }
+    .gl { font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.3px; text-transform: uppercase; margin-bottom: 7px; }
+    .grp-b .gl { margin: 7px 0 0; text-align: center; }
+    .grp-l .gl, .grp-r .gl { color: var(--blue-ink); }
+    .grp-r .gl { color: var(--green-ink); }
+    .grp-b .gl { color: #b07b2e; }
+
+    .col { display: flex; flex-direction: column; gap: 10px; }
+    .row3 { display: grid; grid-template-columns: repeat(3, 128px); gap: 8px; }
+
+    .gitem { display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 14px;
+             background: #fff; border: 1px solid var(--hairline); border-radius: 12px; box-shadow: var(--shadow-sm);
+             font-size: 13.5px; font-weight: 600; color: var(--ink); }
+    .row3 .gitem { height: 52px; padding: 0 10px; gap: 7px; font-size: 12px; line-height: 1.2; }
+    .gitem svg { flex-shrink: 0; }
+    .grp-l .gitem { border-color: #cfdcf6; background: linear-gradient(#fff, #fbfcff); }
+    .grp-r .gitem { border-color: var(--green-br); background: linear-gradient(#fff, #fbfefb); }
+    .grp-b .gitem { border-color: #f0dcbe; background: linear-gradient(#fff, #fffdfa); }
+    .grp-l .gitem svg { color: var(--blue-ink); }
+    .grp-r .gitem svg { color: var(--green-ink); }
+    .grp-b .gitem svg { color: #c08b3a; }
+
+    /* repo block */
+    .repo { display: grid; grid-template-columns: 1fr 360px; gap: 30px; align-items: center; padding: 18px 30px; }
+    .repo .r-t { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 7px; }
+    .repo .r-b { font-size: 13.5px; line-height: 1.5; color: var(--body); }
+    .repo .path { font-family: var(--mono); font-size: 12.5px; color: var(--ink); background: #f2efe7; border: 1px solid var(--hairline); border-radius: 7px; padding: 2px 7px; }
+    .repo .r-use { background: var(--hl-soft); border: 1px solid var(--hl); border-radius: 14px; padding: 14px 18px; font-size: 13px; line-height: 1.5; color: var(--ink); }
+    .repo .r-use b { font-weight: 700; }
+
+    /* motion: spokes draw out from the centre, group by group; each chip lands with its spoke */
+    .anim .spokes path.ln { stroke-dasharray: 300; stroke-dashoffset: 300; }
+    .anim.ready .spokes path.ln { stroke-dashoffset: 0; transition: stroke-dashoffset .55s cubic-bezier(.2,.6,.2,1); transition-delay: calc(var(--d) * 70ms + 300ms); }
+    .anim .gitem { opacity: 0; transform: translateY(4px); }
+    .anim.ready .gitem { opacity: 1; transform: none; transition: opacity .4s ease, transform .4s ease; transition-delay: calc(var(--d) * 70ms + 480ms); }
+    .anim .gl { opacity: 0; }
+    .anim.ready .gl { opacity: 1; transition: opacity .4s ease; transition-delay: calc(var(--d) * 70ms + 420ms); }
+    .noanim .spokes path.ln { stroke-dashoffset: 0 !important; }
+    .noanim .gitem, .noanim .gl { opacity: 1 !important; transform: none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      .anim .spokes path.ln { stroke-dashoffset: 0 !important; transition: none !important; }
+      .anim .gitem, .anim .gl { opacity: 1 !important; transform: none !important; transition: none !important; }
+    }
+    @media (max-width: 1250px) {
+      .hubwrap { width: 100%; height: auto; }
+      .hubwrap svg.spokes { display: none; }
+      .hub-core, .grp { position: static; width: auto; margin-bottom: 14px; }
+      .repo { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-prev="slide-6.html" data-next="slide-8.html">
+  <a href="index.html" class="brand">Start Here · Your workspace</a>
+  <div class="pageno">07 / 11</div>
+
+  <div class="slide">
+    <div class="slide-head rise" style="--i:0">
+      <div class="eyebrow">The control layer</div>
+      <h1>One window, and the systems you already pay for <span class="hl">do the work.</span></h1>
+    </div>
+
+    <div class="stage">
+      <div class="card hubcard rise" style="--i:1">
+        <div class="hubwrap">
+
+          <svg class="spokes" viewBox="0 0 1140 290" fill="none" aria-hidden="true">
+            <!-- communication (left) -->
+            <path class="ln" style="--d:0" d="M460 140 C 410 140, 385 53, 330 53"   stroke="#8fabe0" stroke-width="1.6" stroke-linecap="round"/>
+            <path class="ln" style="--d:1" d="M460 140 C 410 140, 385 111, 330 111" stroke="#8fabe0" stroke-width="1.6" stroke-linecap="round"/>
+            <path class="ln" style="--d:2" d="M460 140 C 410 140, 385 169, 330 169" stroke="#8fabe0" stroke-width="1.6" stroke-linecap="round"/>
+            <path class="ln" style="--d:3" d="M460 140 C 410 140, 385 227, 330 227" stroke="#8fabe0" stroke-width="1.6" stroke-linecap="round"/>
+            <!-- business (bottom) -->
+            <path class="ln" style="--d:4" d="M570 184 C 570 205, 470 198, 434 216" stroke="#dcb579" stroke-width="1.6" stroke-linecap="round"/>
+            <path class="ln" style="--d:5" d="M570 184 L 570 216"                   stroke="#dcb579" stroke-width="1.6" stroke-linecap="round"/>
+            <path class="ln" style="--d:6" d="M570 184 C 570 205, 670 198, 706 216" stroke="#dcb579" stroke-width="1.6" stroke-linecap="round"/>
+            <!-- building (right) -->
+            <path class="ln" style="--d:7"  d="M680 140 C 730 140, 755 53, 810 53"   stroke="#9ccfa4" stroke-width="1.6" stroke-linecap="round"/>
+            <path class="ln" style="--d:8"  d="M680 140 C 730 140, 755 111, 810 111" stroke="#9ccfa4" stroke-width="1.6" stroke-linecap="round"/>
+            <path class="ln" style="--d:9"  d="M680 140 C 730 140, 755 169, 810 169" stroke="#9ccfa4" stroke-width="1.6" stroke-linecap="round"/>
+            <path class="ln" style="--d:10" d="M680 140 C 730 140, 755 227, 810 227" stroke="#9ccfa4" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+
+          <div class="hub-core">
+            <div class="hc-row">
+              <img src="logos/claude.svg" alt="Claude" />
+              <div class="hc-t">Claude Code</div>
+            </div>
+            <div class="hc-s">this folder</div>
+          </div>
+
+          <div class="grp grp-l">
+            <div class="gl" style="--d:0">Communication</div>
+            <div class="col">
+              <div class="gitem" style="--d:0"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4.5" width="16" height="11" rx="2"/><path d="M2.8 5.5 10 11l7.2-5.5"/></svg>Mailbox</div>
+              <div class="gitem" style="--d:1"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="4" width="15" height="13" rx="2"/><path d="M2.5 8h15M6.5 2.5v3M13.5 2.5v3"/></svg>Calendar</div>
+              <div class="gitem" style="--d:2"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 6.5a2 2 0 0 1 2-2h3l1.6 2h6.4a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2z"/></svg>File storage</div>
+              <div class="gitem" style="--d:3"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 11.5a2 2 0 0 1-2 2H7l-3.5 3v-3a2 2 0 0 1 0-.1V5.5a2 2 0 0 1 2-2h9.5a2 2 0 0 1 2 2z"/></svg>Team chat</div>
+            </div>
+          </div>
+
+          <div class="grp grp-b">
+            <div class="row3">
+              <div class="gitem" style="--d:4"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="7" r="3"/><path d="M4 16.5c0-3 2.7-4.5 6-4.5s6 1.5 6 4.5"/></svg>CRM</div>
+              <div class="gitem" style="--d:5"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 2.5h10v15l-2.5-1.6L10 17.5l-2.5-1.6L5 17.5z"/><path d="M8 7h4M8 10.5h4"/></svg>Invoicing</div>
+              <div class="gitem" style="--d:6"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 16.5V9M8 16.5V4.5M13 16.5v-5M18 16.5V7"/></svg>Whatever you<br/>already run</div>
+            </div>
+            <div class="gl" style="--d:6">Business</div>
+          </div>
+
+          <div class="grp grp-r">
+            <div class="gl" style="--d:10">Building</div>
+            <div class="col">
+              <div class="gitem" style="--d:7"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="2.2"/><circle cx="5" cy="15" r="2.2"/><circle cx="14.5" cy="6.5" r="2.2"/><path d="M5 7.2v5.6M5 12.8c0-3.5 9.5-2.2 9.5-4.1"/></svg>Your code projects</div>
+              <div class="gitem" style="--d:8"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 2.5 17 15H3z"/></svg>Putting things live</div>
+              <div class="gitem" style="--d:9"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="10" cy="5" rx="6" ry="2.5"/><path d="M4 5v10c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5V5M4 10c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5"/></svg>Databases</div>
+              <div class="gitem" style="--d:10"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="7.3"/><path d="M2.7 10h14.6M10 2.7c4 4.2 4 10.4 0 14.6-4-4.2-4-10.4 0-14.6"/></svg>The live web</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card repo rise" style="--i:2">
+        <div>
+          <div class="r-t">Your code projects plug in, they do not move in.</div>
+          <div class="r-b">Each project keeps its own full history of changes under <span class="path">projects/&lt;name&gt;/code/</span>, so you work on real code from the same place you write the mail about it. Nothing is copied, nothing is merged into this folder.</div>
+        </div>
+        <div class="r-use">Ask about a client, read the thread, check the deal, look at the code, and ship the fix, <b>without opening a second tab.</b></div>
+      </div>
+    </div>
+
+    <div class="takeaway rise" style="--i:3">You are not moving your work into a new tool. <span class="hl">You are getting one place to steer the tools you already have.</span></div>
+  </div>
+
+  <script src="deck.js"></script>
+</body>
+</html>

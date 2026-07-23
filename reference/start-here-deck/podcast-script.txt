@@ -1,0 +1,159 @@
+# slide:0
+A: [deadpan] I explained my own business to a chatbot three times this week.
+
+M: [amused] Same chatbot?
+
+A: Same chatbot. Every time from the top.
+
+B: [firmly] And that is the part people get wrong. They blame the model.
+
+M: [excited] Which is exactly where we are starting. With me: Jonas and Robert.
+
+# slide:1
+B: Every chat you have ever started began from nothing. You explained your projects again. Pasted the same context again. And it still only saw the fragment you happened to hand it.
+
+A: So the part holding it together is me.
+
+B: Every morning. From memory. And then you wonder why the answer felt thin.
+
+A: [sighs] Right.
+
+# slide:2
+M: [curious] And there is a number on this, and it is not ours. Anthropic compared what AI could already handle in a job against what people actually use it for.
+
+B: Ceiling is around nine tenths of that kind of—
+
+A: [jumping in] Of what people already do?
+
+B: Of what they COULD do. That is the point.
+
+A: And what they actually do?
+
+B: A quarter. Maybe a third, on a good day, in a team that already cares about this, which most teams do not, because nobody has ever shown them what the other end of it looks like.
+
+A: Hm. [surprised] Okay. That is not a rounding error, that is... that is most of the job.
+
+M: [amused] It is most of the job. And the gap is not capability.
+
+B: [firmly] It is setup. And nobody hands you one.
+
+# slide:3
+M: Then tell me what this is. [clears throat] One sentence.
+
+B: One folder that does four jobs. It organises your documents. It is the data basis, so every answer comes from one place instead of whatever you pasted. It keeps your open points and who you are waiting on. And it reaches the systems you already run.
+
+A: Any one of those alone is... [exhales] I mean, nothing. A folder is a folder.
+
+B: Exactly. [chuckles] But put all four in one place and you can finally answer the question everyone asks on a Monday. Where does everything stand. Not roughly. Actually.
+
+# slide:4
+M: And inside?
+
+B: Four folders. Each answers a different question. How does everything stand, what am I working on, how does this work, what have I not looked at yet. You never decide where a thing goes. The question it answers decides.
+
+A: My files would love that. [amused] They have never once agreed on anything.
+
+# slide:5
+M: [laughs] Underneath it is six layers. Give me the two I would actually feel.
+
+B: Connection and judgement. Connection is your mailbox, your calendar, storage, the CRM, your code. You stop copying between systems by hand.
+
+A: And judgement means what, exactly.
+
+B: It tells you what is off, and it tells you before the thing has quietly been wrong for a month and shows up in a meeting where you are the last person in the room to hear about it.
+
+A: [deadpan] Three weeks later. Usually in a meeting.
+
+# slide:6
+M: Okay, make it real for me. One thing, off my desk, today.
+
+A: Client asks where their project stands. Well, they ask for a number, but what they want is the whole picture, in writing, today.
+
+M: Walk me through it.
+
+A: Five stops. Mail thread, scroll back three weeks. Calendar, for what was actually agreed. Find the file you sent, hope it is the latest. Project tool, for what is still open. Then you write it. And you hedge the bits you are not sure about.
+
+B: [quietly] And half of it is memory.
+
+A: And you know that. While you are typing it. That is the part that—
+
+B: [jumping in] That nobody says out loud. Yeah.
+
+A: [exhales] Yeah.
+
+B: With the folder it is one run. You say: write the status update for this client. It reads the thread, the calendar, the files, the open points. Draft is there. Real dates, real numbers. You check it and send.
+
+M: So it is faster.
+
+B: [flatly] No. That is the part everyone gets wrong. The writing was never slow. The LOOKING THINGS UP disappeared.
+
+M: [laughs] Okay, that landed.
+
+A: Mm.
+
+M: [curious] Give me one more. Something people do not even try today.
+
+A: Uh, well. Who did I send an offer to in the last six weeks and never heard back from.
+
+B: Right. Nobody answers that.
+
+A: Nobody CAN answer that. Not without an hour in the mailbox. So you do not, and the money just sits there, quietly, for months.
+
+B: One question, one run. Names, dates, what was quoted, who went quiet, and how long each one has been sitting there without anybody in your company ever deciding whether it is dead or just slow. Then you write the three follow ups. Done before lunch.
+
+A: [surprised] Huh.
+
+M: And a small one, to finish.
+
+B: Ten minutes before a call. Where do we stand with these people. Thread, last delivery, open points, one answer. Not four tabs open while the phone is already ringing.
+
+# slide:7
+M: [curious] Say more about the code, that one I did not expect.
+
+B: [excited] Your actual projects plug in. Each keeps its own full history. Nothing is copied, nothing merged into the folder. So you ask about a client, read the thread, check the deal, look at the code, ship the fix. No second tab.
+
+A: [exhales] Yeah. That... that is the whole day, actually.
+
+# slide:8
+M: Now the bit I would worry about. [clears throat] This field moves weekly, and a folder from today... how is that any good in six months.
+
+B: Because that is the work behind it. New plugins, new connections, new tools, almost daily. Telling this week's real thing from the noise? That is a full job. Not something you do on the side.
+
+A: So somebody has to sit there and—
+
+B: [jumping in] Somebody sits there and makes the call, yes. Only what earns its place gets folded in. You pull the new version with one sentence in the chat.
+
+A: [skeptical] And I rebuild what.
+
+B: Nothing. You do not rebuild anything, you do not migrate anything, you do not sit down on a Sunday and move your work into a new system because somebody released a better tool. That whole ritual just... does not happen.
+
+A: [surprised] Huh. Okay.
+
+B: And it does not tie you to one provider either. Same setup, whichever model is right that week.
+
+# slide:9
+M: What does the setup cost me.
+
+B: Six questions. Once. Twenty minutes.
+
+A: Which is, uh... well. Less than I spend picking which tool to try.
+
+B: [chuckles] Considerably less.
+
+M: [warm] And that twenty minutes is the whole distance. Between using AI like a chat box, and having a system that already knows your work.
+
+A: [deadpan] And almost nobody walks it. That is the bit that gets me.
+
+# slide:10
+M: Before we close. What does it not do.
+
+A: I checked that first. [amused] Obviously.
+
+M: [laughs] Of course you did.
+
+A: Somebody has to. It never sends a mail, it writes the draft and you press send. Never writes into your calendar. Asks permission every session, and no is a full answer. Salary, performance, that stays out. Entirely.
+
+B: Nothing irreversible happens quietly. [firmly] That is a decision, not a limitation.
+
+# slide:11
+M: [warm] Then here is where it ends up. Not one clever answer now and then. Every task you do daily, every project you run, with this alongside it, reading the same folder you do. You stop assembling the context. It was never taken apart. And the first step is smaller than all of that. Open the folder, type hello. It will not start on its own. An empty input field is not a fault, it is waiting for you.

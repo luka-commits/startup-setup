@@ -1,46 +1,46 @@
 # STATUS
 
-_**Hier lebt die Arbeit** — die einzige Task-Wahrheit im System, nichts davon wird woanders gespiegelt. PROJECTS.md sagt, wie die Projekte stehen; diese Datei sagt, was zu tun ist. Bewusst ohne Top-3/Priorisierung: Claude kennt die echte Business-Priorität nicht — hier steht alles Offene, du entscheidest._
+_**This is where the work lives** — the single task truth in the system, none of it is mirrored anywhere else. PROJECTS.md says how the projects stand; this file says what needs doing. Deliberately without a top-3/ranking: Claude doesn't know the real business priority — everything open is listed here, you decide._
 
-_Letzte Aktualisierung: [YYYY-MM-DD] (Ersteinrichtung via /setup)_
+_Last updated: [YYYY-MM-DD] (initial setup via /setup)_
 
 ---
 
 ## Current Focus
 
-_[Wird beim ersten `/morning`-Lauf befüllt — eine beschreibende Zeile, keine Rangfolge.]_
+_[Filled on the first `/morning` run — one descriptive line, no ranking.]_
 
 
-## Tagesplan
+## Day Plan
 
-_Vom User im `/morning`-Gespräch festgelegt (Step 5c) — seine Auswahl, kein Claude-Ranking. Wird täglich ersetzt._
+_Set by the user in the `/morning` conversation (Step 5c) — their selection, not a Claude ranking. Replaced daily._
 
-_(kein Plan gesetzt)_
+_(no plan set)_
 
 ## Inbox
 
-_Alles Unverarbeitete an einem Ort: Funde aus dem Mail-Scan (`/morning`) und lose Notizen aus dem Chat — Gedanken, Ideen, „irgendwann mal", die noch keine Task sind. Per Chat übernehmen ("übernimm 1 ins Projekt X") oder verwerfen ("verwirf 2") — übernommene werden zu Tasks unter "Tasks (offen)", direkt hier in dieser Datei._
+_Everything unprocessed in one place: findings from the mail scan (`/morning`) and loose notes from the chat — thoughts, ideas, "someday maybe" that aren't tasks yet. Adopt via chat ("take 1 into project X") or drop it ("drop 2") — adopted ones become tasks under "Tasks (open)", right here in this file._
 
-_(leer)_
+_(empty)_
 
-## Tasks (offen)
+## Tasks (open)
 
-_Gruppiert nach Projekt. Format:_
+_Grouped by project. Anything project-less may be grouped under `general` — that is the legitimate leftover bucket, not a project and not a mistake. Format:_
 
 ```
-- [ ] Headline — kurz und konkret #kategorie (bis DD.MM.)
-  1–3 Sätze Kontext im Klartext: warum, woran es hängt, was der Stand ist. Kein Label davor.
-  Wird im Dashboard erst beim Klick auf die Task sichtbar.
+- [ ] Headline — short and concrete #category (due DD.MM.)
+  1–3 sentences of context in plain words: why, what it hangs on, where it stands. No label in front.
+  Only becomes visible in the dashboard when you click the task.
 ```
 
-_`(wartet auf X)` = Ball liegt bei jemand anderem · `⚠️` = seit >1 Woche offen · `(bis DD.MM.)` = Fälligkeit · `#kategorie` = Art (deep-work · quick-win · komm · prep · admin). **Die eingerückte Zeile ist Pflicht, keine Option** — die Headline sagt WAS, sie sagt WARUM und woran es hängt (mit Namen und Zahlen, wo es sie gibt). Der Test: Verstehst du die Task in zwei Wochen noch, ohne dass es dir jemand erklärt? Wenn nicht, ist sie unvollständig. Im Dashboard erscheinen Fälligkeit und Art in eigenen Spalten, nicht im Text — die Suffixe hier sind ihre Quelle._
+_`(waiting on X)` = the ball is with someone else · `⚠️` = open for >1 week · `(due DD.MM.)` = deadline · `#category` = type (deep-work · quick-win · comms · prep · admin). **The indented line is mandatory, not optional** — the headline says WHAT, it says WHY and what it hangs on (with names and numbers where they exist). The test: will you still understand the task in two weeks without anyone explaining it to you? If not, it's incomplete. In the dashboard, deadline and type appear in their own columns, not in the text — the suffixes here are their source._
 
-_(noch keine Tasks — werden von `/setup`, `/ingest`, deinen `/morning`-Läufen und dem Chat befüllt)_
+_(no tasks yet — filled by `/setup`, `/ingest`, your `/morning` runs and the chat)_
 
-## Frisch erledigt
+## Recently Done
 
-_Was `/eod` oder der Chat als erledigt gemeldet hat — max. 6 Einträge, ältere fliegen raus (das Journal ist das Langzeit-Gedächtnis)._
+_What `/eod` or the chat reported as done — max. 6 entries, older ones drop out (the journal is the long-term memory)._
 
-_(noch nichts)_
+_(nothing yet)_
 
 

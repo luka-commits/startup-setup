@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""mail-freebusy — liest deinen Kalender aus den iCal-Invites im eigenen Postfach, per IMAP.
+"""mail-freebusy — reads your calendar from the iCal invites in your own mailbox, via IMAP.
 
-Der Ersatzweg, wenn kein Kalender-Connector verbunden ist (reference/mcp.md § Weg B).
-Read-only. Zugangsdaten wie bei mail-day.py: MAIL_IMAP_HOST / MAIL_USER / MAIL_PASS
-in ~/.config/credentials.env. Zeitzone via MAIL_TZ (default Europe/Berlin).
+The fallback route when no calendar connector is connected (reference/mcp.md § Route B).
+Read-only. Credentials as in mail-day.py: MAIL_IMAP_HOST / MAIL_USER / MAIL_PASS
+in ~/.config/credentials.env. Time zone via MAIL_TZ (default Europe/Berlin).
 
-Kein OAuth, kein Google-MCP noetig: die meisten Termine kommen als iCal-Invite
-(text/calendar) per Mail rein. Dieses Tool scannt INBOX nach VEVENTs, baut die
-Busy-Bloecke und schlaegt freie Slots in den Geschaeftszeiten vor.
+No OAuth, no Google MCP needed: most appointments arrive as an iCal invite
+(text/calendar) by mail. This tool scans INBOX for VEVENTs, builds the
+busy blocks and suggests free slots within business hours.
 
-Damit kann ein Mail-Entwurf gleich konkrete freie Zeiten anbieten.
+That lets a mail draft offer concrete free times right away.
 
 Usage:
-  python3 mail-freebusy.py                      # JSON: busy + freie Slots, naechste 10 Werktage
+  python3 mail-freebusy.py                      # JSON: busy + free slots, next 10 working days
   python3 mail-freebusy.py --days 10 --slot 30 --start 9 --end 18 --count 6
 """
 import argparse, email, imaplib, json, os, re, sys
@@ -21,11 +21,11 @@ from datetime import datetime, timedelta, time, timezone
 try:
     from zoneinfo import ZoneInfo
     LOCAL = ZoneInfo(os.environ.get("MAIL_TZ", "Europe/Berlin"))
-except Exception:  # Fallback: feste MESZ-Naeherung
+except Exception:  # fallback: fixed CEST approximation
     LOCAL = timezone(timedelta(hours=2))
 
 CRED = os.path.expanduser("~/.config/credentials.env")
-WD_DE = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
 def load_creds():
@@ -42,7 +42,7 @@ def load_creds():
 
 
 def parse_ical_dt(val, params):
-    """iCal DTSTART/DTEND -> lokale datetime. Handhabt Z (UTC), TZID, naiv, all-day."""
+    """iCal DTSTART/DTEND -> local datetime. Handles Z (UTC), TZID, naive, all-day."""
     val = val.strip()
     if re.match(r"^\d{8}$", val):  # all-day VALUE=DATE
         d = datetime.strptime(val, "%Y%m%d")
@@ -66,7 +66,7 @@ def parse_ical_dt(val, params):
 
 
 def unfold(text):
-    # iCal-Zeilen-Fortsetzung: Folgezeile beginnt mit Space/Tab
+    # iCal line continuation: the following line starts with space/tab
     return re.sub(r"\r?\n[ \t]", "", text)
 
 
@@ -96,12 +96,12 @@ def extract_events(cal_text, win_start, win_end):
             end = start + (timedelta(days=1) if allday else timedelta(minutes=30))
         if end is None or end <= start:
             end = start + timedelta(minutes=30)
-        # nur Termine im Betrachtungsfenster
+        # only appointments inside the observation window
         if end <= win_start or start >= win_end:
             continue
         summary = fields.get("SUMMARY", ("", {}))[0][:60]
-        # Teilnehmer-Adressen (fuer praezisen Thread↔Termin-Abgleich im brief-scan):
-        # ATTENDEE/ORGANIZER-Zeilen tragen mailto:-Adressen.
+        # attendee addresses (for a precise thread<->appointment match in the brief scan):
+        # ATTENDEE/ORGANIZER lines carry mailto: addresses.
         attendees = sorted({m.lower() for m in re.findall(r"(?:ATTENDEE|ORGANIZER)[^\n]*?mailto:([^\s\n;>]+)", block, re.I)})
         busy.append((start, end, summary, allday, attendees))
     return busy
@@ -111,7 +111,7 @@ def fetch_calendar_busy(win_start, win_end, lookback_days=75):
     c = load_creds()
     host, user, pw = c.get("MAIL_IMAP_HOST"), c.get("MAIL_USER"), c.get("MAIL_PASS")
     if not (host and user and pw):
-        sys.exit("FEHLT: MAIL_IMAP_HOST / MAIL_USER / MAIL_PASS in ~/.config/credentials.env")
+        sys.exit("MISSING: MAIL_IMAP_HOST / MAIL_USER / MAIL_PASS in ~/.config/credentials.env")
     port = int(c.get("MAIL_IMAP_PORT", "993"))
     imap = imaplib.IMAP4_SSL(host, port)
     imap.login(user, pw)
@@ -121,7 +121,7 @@ def fetch_calendar_busy(win_start, win_end, lookback_days=75):
         since = (datetime.now(timezone.utc) - timedelta(days=lookback_days)).strftime("%d-%b-%Y")
         typ, data = imap.uid("search", None, f'(SINCE {since} HEADER Content-Type "text/calendar")')
         if typ != "OK" or not data or not data[0]:
-            # Fallback: manche Server indexieren den Sub-Part nicht, dann breiter suchen
+            # fallback: some servers do not index the sub-part, then search more broadly
             typ, data = imap.uid("search", None, f'(SINCE {since} TEXT "BEGIN:VEVENT")')
         uids = data[0].split() if (data and data[0]) else []
         for i in range(0, len(uids), 100):
@@ -147,7 +147,7 @@ def fetch_calendar_busy(win_start, win_end, lookback_days=75):
             imap.logout()
         except Exception:
             pass
-    # dedup + sortieren
+    # dedup + sort
     seen, uniq = set(), []
     for s, e, sm, ad, att in sorted(busy, key=lambda x: x[0]):
         key = (s.isoformat(), e.isoformat())
@@ -159,8 +159,8 @@ def fetch_calendar_busy(win_start, win_end, lookback_days=75):
 
 
 def free_slots(busy, now, days, slot_min, start_h, end_h, count):
-    """Ein Slot pro Tag, ueber mehrere Tage gestreut, zu buerofreundlichen Zeiten."""
-    # bevorzugte Startzeiten (Vormittag spaet + Nachmittag zuerst, kein 09:00-sharp)
+    """One slot per day, spread over several days, at office-friendly times."""
+    # preferred start times (late morning + afternoon first, no 09:00 sharp)
     pref = [h for h in [10, 11, 14, 15, 9, 16, 13, 17] if start_h <= h < end_h]
     slots = []
     day = now.date()
@@ -168,7 +168,7 @@ def free_slots(busy, now, days, slot_min, start_h, end_h, count):
     while len(slots) < count and checked < days + 8:
         checked += 1
         day += timedelta(days=1)
-        if day.weekday() >= 5:  # Wochenende
+        if day.weekday() >= 5:  # weekend
             continue
         for h in pref:
             cur = datetime.combine(day, time(h), tzinfo=LOCAL)
@@ -178,13 +178,13 @@ def free_slots(busy, now, days, slot_min, start_h, end_h, count):
             if any(s < slot_end and cur < e for s, e, _, ad, _a in busy):
                 continue
             slots.append(cur)
-            break  # nur ein Vorschlag pro Tag, fuer Streuung ueber die Woche
+            break  # only one suggestion per day, to spread across the week
     return slots[:count]
 
 
 def fmt_slot(dt, slot_min):
     end = dt + timedelta(minutes=slot_min)
-    return f"{WD_DE[dt.weekday()]} {dt.day:02d}.{dt.month:02d}., {dt.hour:02d}:{dt.minute:02d}-{end.hour:02d}:{end.minute:02d} Uhr"
+    return f"{WEEKDAYS[dt.weekday()]} {dt.day:02d}.{dt.month:02d}., {dt.hour:02d}:{dt.minute:02d}-{end.hour:02d}:{end.minute:02d}"
 
 
 def main():
@@ -194,7 +194,7 @@ def main():
     ap.add_argument("--start", type=int, default=9)
     ap.add_argument("--end", type=int, default=18)
     ap.add_argument("--count", type=int, default=6)
-    ap.add_argument("--past", type=int, default=0, help="zusätzlich N Tage Vergangenheit (für Meeting-Resolution im Brief)")
+    ap.add_argument("--past", type=int, default=0, help="additionally N days into the past (for meeting resolution in the briefing)")
     args = ap.parse_args()
 
     now = datetime.now(LOCAL)
@@ -205,7 +205,7 @@ def main():
 
     print(json.dumps({
         "generated": now.isoformat(),
-        "window": f"{win_start.date()} bis {win_end.date()}",
+        "window": f"{win_start.date()} to {win_end.date()}",
         "busy_count": len(busy),
         "busy": [{"start": s.isoformat(), "end": e.isoformat(), "summary": sm, "attendees": att} for s, e, sm, ad, att in busy],
         "free_slots": [fmt_slot(s, args.slot) for s in slots],

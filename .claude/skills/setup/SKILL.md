@@ -1,15 +1,30 @@
 ---
 name: setup
-description: "Einmalige Ersteinrichtung eines frisch kopierten Workspace. Läuft AUTOMATISCH beim ersten Start (CLAUDE.md-Regel erkennt die unausgefüllte context/config.yaml) — oder manuell via /setup, 'richte das für mich ein', 'ersteinrichtung', 'neuer nutzer'. Fragt in einem Rutsch: Name, E-Mail, Rolle, Standort/Office-Tage und ALLE laufenden Projekte. Schreibt die Antworten in context/config.yaml (die einzige Config-Quelle — Skill-Dateien werden nie editiert), füllt die leeren context/-Vorlagen, legt pro Projekt einen Ordner an, sortiert mitgebrachte Dokumente ein und leitet auf Wunsch den persönlichen Mail-Stil aus den eigenen Sent Items ab. Archiviert sich danach selbst. NICHT für den Alltag — läuft einmal."
+description: "One-time first-run personalization of a freshly copied workspace. Runs AUTOMATICALLY on first start (the CLAUDE.md rule detects the unfilled context/config.yaml) — or manually via /setup, 'set this up for me', 'first-run setup', 'new user', 'richte das für mich ein', 'ersteinrichtung', 'neuer nutzer'. Asks first which language to work in (English or German), then in one go: name, email, role, location/office days, ALL running projects, the tools they work with every day, and their Claude plan. Asks first whether this is a fresh start or an existing folder to take over. Writes the answers into context/config.yaml (the single config source — skill files are never edited), fills the empty context/ templates, creates one folder per project, files any documents the user brought along, and on request derives their personal mail style from their own Sent Items. Archives itself afterwards. NOT for daily use — runs once."
 ---
 
 # Setup Skill — One-Time Workspace Personalization
 
 ## Core Principle
 
-**Detect state, ask once, write ONE config file, fill templates, archive itself.**
+**Detect state, pick the language, ask once, write ONE config file, fill templates, archive itself.**
 
-**Und: der User darf nie ins Leere warten.** Nach seinen Antworten arbeitest du mehrere Minuten am Stück. Vor jedem längeren Block eine kurze Zeile in den Chat — `⚙️ Ich lege deine Projekt-Ordner an …`, `📄 Ich sortiere deine Dokumente ein …`, `✉️ Ich schaue mir deine gesendeten Mails an …`. Eine Zeile, kein Statusbericht.
+**And: the user must never wait into the void.** After their answers you work for several minutes straight. Before every longer block, one short line in the chat — `⚙️ Creating your project folders …`, `📄 Filing your documents …`, `✉️ Looking through your sent mail …`. One line, not a status report.
+
+## Say what is happening, and why it matters
+
+The person in front of you has never seen this system and cannot tell a necessary step from a decorative one. So **before every step that asks something of them — a question, a sign-in, a decision — one sentence saying what happens now and what it buys them.** Not what you are technically doing. What it changes for them.
+
+> Not: *"Now I'm going through the six connector slots."*
+> But: *"Next we hook up your mailbox and calendar. That is what turns the morning briefing from a to-do list into something that actually knows your day."*
+
+Three things make the difference between explaining and lecturing:
+
+- **The benefit, not the mechanism.** "So that drafts sound like you and not like a template" beats "deriving your writing style from your Sent folder".
+- **One sentence, then act.** A second sentence of justification turns into a lecture, and a lecture is what makes people click away.
+- **Only where something is being asked of them.** Steps that run by themselves need the one-line progress note above, nothing more. Explaining something the user does not have to decide costs their attention for the moment when they really do.
+
+**Why this is a rule and not a matter of style:** someone who does not understand why a step matters skips it — and the steps that get skipped are the equipment ones at the end, the ones that decide whether this stays a folder of notes or becomes a system that reaches into the tools they actually work in.
 
 Personal values live only in `context/config.yaml` — skills read them from there at runtime. This skill never edits skill files.
 
@@ -17,22 +32,63 @@ Personal values live only in `context/config.yaml` — skills read them from the
 
 Read `context/config.yaml`.
 
-- **Contains `[DEIN NAME]`** → fresh, unpersonalized package. Proceed straight to Step 1 — nothing to lose here.
-- **A real name is already filled in** → **ein früherer Lauf ist abgebrochen.** Kein "schon eingerichtet": Step 8 archiviert diesen Skill weg, wenn er fertig wird — dass du hier überhaupt läufst, heißt also, dass der letzte Lauf zwischen Step 3 (schreibt den Namen) und Step 8 abgerissen ist. Sag das ehrlich und mach dort weiter, wo es fehlt, statt alles zu überschreiben: prüfe, was noch Platzhalter trägt (`context/PROJECTS.md` → `[Erstes Projekt`, `context/STATUS.md` → `[YYYY-MM-DD]`, Projekt-Ordner in `projects/`, `context/EMAIL_STYLE.md` vorhanden?) und hol nur das nach. Muster: *"Dein Setup ist beim letzten Mal nicht ganz durchgelaufen — Name und Standort stehen, aber deine Projekte fehlen noch. Ich hol das nach, dauert 5 Minuten."* Nur wenn der User ausdrücklich neu anfangen will, alles überschreiben.
-- **File missing entirely** → die Kopie ist unvollständig, nicht rekonstruierbar: `config.yaml` ist die einzige Stelle, die das erwartete Schema kennt, und `/morning` liest daraus exakte Schlüssel. Nichts erfinden, sondern sagen: der Ordner muss frisch kopiert werden (Ansprechpartner in `VERSION.md`).
+- **Contains `[YOUR NAME]`** → fresh, unpersonalized package. Proceed straight to Step 0.5 — nothing to lose here.
+- **A real name is already filled in** → **an earlier run was interrupted.** No "already set up": Step 8 archives this skill away when it finishes, so the fact that you are running at all means the last run broke off somewhere between Step 3 (writes the name) and Step 8. Say that honestly and continue where things are missing instead of overwriting everything: check what still carries placeholders (`context/PROJECTS.md` → `[First project`, `context/STATUS.md` → `[YYYY-MM-DD]`, project folders in `projects/`, is `context/EMAIL_STYLE.md` there?) and only make up the gap. Pattern: *"Your setup didn't run all the way through last time — name and location are in, but your projects are still missing. I'll catch that up, takes 5 minutes."* Only overwrite everything if the user explicitly wants to start over.
+- **File missing entirely** → the copy is incomplete and cannot be reconstructed: `config.yaml` is the only place that knows the expected schema, and `/morning` reads exact keys from it. Don't invent anything, say it: the folder has to be copied fresh (contact person in `VERSION.md`).
+
+## Step 0.5: Ask the Working Language (FIRST — before anything else)
+
+Before the greeting and the intake questions, ask exactly one bilingual line — because everything the skill says from here on has to already be in the chosen language:
+
+> **Which language should I work in? / In welcher Sprache soll ich arbeiten?**
+> **English** or **Deutsch** — just hit enter for English. / **Englisch** oder **Deutsch** — mit Enter nimmst du Englisch.
+
+Nothing else in this message: no greeting, no explanation, no questions. The real greeting comes in Step 1, in their language.
+
+**From the answer onwards, the ENTIRE rest of the setup runs in that language.** That means every word the user sees: the fresh-start question (Step 0.6), the greeting and the six intake questions (Step 1), the model question (Step 3.5), the project and task proposals (Step 4), the document question (Step 6), the mail-style question and the derived profile (Step 7), every question in the equipment steps (7.1–7.4), and the whole closing summary including the mini-briefing (Step 8). No mixing, no "just this one line in English".
+
+**The step contents in this SKILL.md stay English regardless** — they are instructions for you, not user output. The example wordings quoted in the steps below are English because this file is English; if the user picked German, you translate them as you speak them. Never paste an English example verbatim into a German conversation.
+
+Store the answer as `"en"` or `"de"` and write it to `config.yaml → language` in Step 3. Anything other than a clear German choice (empty answer, enter, unclear) means `"en"`.
+
+## Step 0.6: Fresh Start, or Is There Already Something? (one question, right after the language)
+
+Before any intake question, ask this one — because the answer decides which of two different jobs this is:
+
+> *"One thing before we start: is this a fresh start, or do you already have a folder where your work lives — notes, project folders, maybe a CLAUDE.md from an earlier attempt? If so, I don't set up a second system next to it, I take that one over."*
+
+- **Fresh start** (the normal case) → carry on with Step 1, everything below applies unchanged.
+- **There is an existing folder** → this is an **adoption**, not a setup. Ask for the path, then:
+  1. **Measure it silently first:** `node reference/scripts/workspace-audit.js --root <path> --json`. Seconds, local files only, costs nothing. It gives you the lay of the land the takeover plan needs: what is there, what points at what, what is already dead.
+  2. **Do not put the findings in front of the user.** Someone who has just arrived does not want a verdict on how they have been working before anything works at all. The measurement feeds your plan, not a report. The full assessment with recommendations is offered later, once the system runs, via `/audit`.
+  3. **Hand over to the `adopt` skill** — it owns the takeover (plan, questions, moving with a way back, acceptance). Come back here for the intake questions and the equipment steps 7.1 to 7.4; those are the same in both cases.
+
+**Why this question comes first and not later:** without it, someone with a grown folder runs straight through this setup and ends up with two systems side by side, neither of them complete. That is the most expensive outcome the whole package can produce, and one sentence at the start prevents it.
 
 ## Step 1: Ask Onboarding Questions
 
-Greet briefly and **sag ehrlich, was jetzt kommt** — der User hat gerade "hallo" getippt und weiß nicht, worauf er sich einlässt. Drei Sätze, nicht mehr, nach diesem Muster:
+**First, open the page that shows what is coming.** Before the greeting, open `START-HERE.html` in the browser — OS-dependent (`os` from Step 2.5; unknown → detect with `uname`): **Mac** `open START-HERE.html`, **Windows** `cmd //c start "" START-HERE.html`, fallback `explorer.exe START-HERE.html`. Fails on both → name the file in the chat and carry on, it is never a blocker.
 
-> *"Das hier wird dein persönlicher Arbeits-Ordner: Morgen-Briefing, Projekt-Übersicht, Mail-Entwürfe in deinem Stil. Ich richte ihn jetzt für dich ein — ich stelle dir gleich vier Fragen auf einmal, danach lege ich die Ordner an. Rechne mit 10 bis 20 Minuten, je nachdem wie viele Projekte und Dokumente du mitbringst."*
+Then one sentence about it, not a lecture: _"I've opened a page for you that shows what happens in the next twenty minutes — you can read it while we go, or ignore it."_
 
-Nie "2 Minuten" versprechen. Wer mit falscher Erwartung startet, bricht in Minute vier ab. Dann ask these together in ONE message — like a short intake form, not one-by-one back-and-forth:
+**Why this comes before the questions and not after:** the person is about to answer six questions and hand over access to their mailbox, without any picture of what for. That page carries the eight-minute walkthrough and the whole run step by step. Someone who has seen it says yes to the equipment steps at the end; someone who has not, quits at question four. It is also the only version of this that works before the setup, because the dashboard it normally lives in does not exist yet.
 
-1. **Name + geschäftliche E-Mail-Adresse**
-2. **Position/Rolle + Bereich** (z.B. "Consultant, PIPE" oder "Project Leader, TMT")
-3. **Standort:** Home City, Office-Kürzel (z.B. "MUN", "FRA", "BER"), und an welchen Wochentagen sie typischerweise ins Büro gehen (Rest = Remote-Default)
-4. **Laufende Projekte/Workstreams — ALLE:** pro Projekt Name, 1-Satz-Zweck, wichtigste Stakeholder, aktueller Stand/nächster Meilenstein (soweit bekannt). Das ist die wichtigste Frage des Setups — das System ist nur so gut wie dieser Anfangszustand. Stichpunkte reichen, Details kommen in Schritt 6 aus den Dokumenten.
+Greet briefly and **say honestly what's coming** — the user just typed "hello" and has no idea what they're in for. Three sentences, no more, along these lines (in their language):
+
+> *"This is going to be your personal work folder: morning briefing, project overview, mail drafts in your style. I'm setting it up for you now — I'll ask you six questions at once, then I'll create the folders. Expect 10 to 20 minutes, depending on how many projects and documents you bring along."*
+
+Never promise "2 minutes". Whoever starts with the wrong expectation quits in minute four. Then ask these together in ONE message — like a short intake form, not one-by-one back-and-forth:
+
+1. **Name + work email address**
+2. **Position/role + area** (e.g. "Consultant, PIPE" or "Project Leader, TMT")
+3. **Location:** home city, office abbreviation (e.g. "MUN", "FRA", "BER"), and which weekdays they typically go into the office (rest = remote by default)
+4. **Running projects/workstreams — ALL of them:** per project the name, a one-sentence purpose, the key stakeholders, the current state/next milestone (as far as known). This is the most important question of the setup — the system is only as good as this initial state. Bullet points are enough, the details come out of the documents in Step 6.
+5. **Which tools do you work with every day, and what for each one?** Mailbox, calendar, where files live, where customer contact happens, what you bill with. Bullet points are enough: _"Outlook for mail, HubSpot for customers, WhatsApp for enquiries"_. **The "what for" is the point of the question**, not the list of names.
+6. **Which Claude plan do you have?** — Pro (€20), Max 5x (€100), Max 20x (€200), or Team/Enterprise through the company. One sentence on why that matters: _"It determines how generously I can work without your quota being empty by lunchtime."_
+
+**Why the tools are asked about this early:** Step 7.2 connects the systems, and it does that fifteen minutes later. Without this answer it has to ask abstractly, slot by slot, _"do you have a CRM?"_ — a question with no context, which people answer with "no" out of uncertainty far more often than it is actually true. With the answer in hand it stops asking and starts working: it knows the systems by name, checks what can be reached and how, and only comes back with the bits that need the user's hands. The list also goes into `config.yaml`, so `/checkup` and `/audit` never ask it again.
+
+**Why the plan is asked about and not the model:** the user knows their plan, it's on their invoice. Which language model fits their work is something they cannot know — and they only notice the wrong answer once the quota is empty or the results stay thin. A question the user cannot answer is not a choice, it's a trap. The model decision is derived from it in Step 3.
 
 Don't over-explain each question.
 
@@ -40,65 +96,91 @@ Don't over-explain each question.
 
 Derive the absolute path from the actual current working directory Claude Code is running in — **do not ask the user to type this**. (This package may have been moved/renamed after being received — compute fresh, never assume from any file's existing content.)
 
-## Step 2.5: Systemcheck (still, während der User die Fragen beantwortet)
+## Step 2.5: System Check (silently, while the user answers the questions)
 
-Vier Prüfungen. **Ergebnis NICHT einzeln melden** — es fließt in EINE Zeile im Abschluss (Step 8). Der User soll nicht Zuschauer eines Selbsttests sein.
+Four checks. **Do NOT report the results individually** — they flow into ONE line in the closing summary (Step 8). The user should not be the audience of a self-test.
 
-| Prüfen | Wie | Wenn's fehlt |
+| Check | How | If it's missing |
 |---|---|---|
-| **Skills da?** | existiert `.claude/skills/morning/SKILL.md`? | **Kritisch.** Der `.claude`-Ordner ist versteckt und geht beim Kopieren/Zippen gern verloren. Sag es klar: _„Beim Kopieren ist ein versteckter Teil des Ordners verlorengegangen — ohne den funktionieren die Befehle nicht. Hol dir bitte eine frische Kopie (siehe VERSION.md) und kopiere sie als Ganzes, nicht die einzelnen Dateien darin."_ Setup danach abbrechen — ohne Skills ist alles Weitere sinnlos. |
-| **Welches OS?** | `uname -s` → `Darwin` = mac, `MINGW*/MSYS*` = windows | Nicht raten. Steuerung für Draft-Mechanik (PowerShell vs. AppleScript) und Dashboard-Öffnen — in Step 3 als `os:` festhalten. |
-| **Mail-/Kalender-Connector?** | Zuerst ermitteln, was überhaupt verbunden ist: breite `ToolSearch query:mail` und `ToolSearch query:calendar`. Bei Microsoft 365 kommen `mcp__claude_ai_Microsoft_365__outlook_email_search` und `mcp__claude_ai_Microsoft_365__outlook_calendar_search` zurück; bei einem anderen Anbieter die tatsächlich zurückgegebenen Tool-Namen übernehmen, nie einen Namen raten. | Kein Abbruch. **Findet die Suche nichts, EINMAL fragen: „Arbeitet ihr mit Microsoft 365 (Outlook) oder mit Google Workspace?“** (dritte Option: etwas anderes). Die Antwort für Step 8 merken, damit das Hilfsangebot dort den richtigen Connector beim Namen nennt statt allgemein zu bleiben. Nicht weiter nachbohren, wenn der User es nicht weiß: dann bleibt es beim allgemeinen Weg. Merken für Step 8: der Mail-Teil fehlt, der Rest läuft. |
-| **Script-Laufzeit?** | `node --version` (Default — kommt mit Claude Code mit), dann `uv run python -c "print(1)"`, `python3`, `python` | Kein Abbruch. Die funktionierende Variante in Step 3 als `script_command:` festhalten. Geht keine: Dashboard-Rendering fällt aus, Briefing im Chat läuft. |
-| **Entwurfs-Weg?** | `ToolSearch query:draft` — gibt der verbundene Connector ein Draft-Tool zurück? (keins gefunden → `ToolSearch query:create` noch probieren) | **Ja → `mcp`** (plattform- und anbieterunabhängig, bester Weg). **Nein → OS-Default:** Windows `com` (setzt klassisches Outlook lokal voraus), Mac `mailto` (braucht keine Rechte, kein MDM-Risiko, funktioniert mit jedem Mailprogramm). In Step 3 als `draft_method:` festhalten. Keine Test-Entwürfe anlegen — nichts darf beim Setup im Mailprogramm aufpoppen. **Nur das DRAFT-Tool zählt:** bietet der Connector zusätzlich ein Send-Tool, wird das NICHT genutzt und NICHT erwähnt — gesendet wird hier nie. Hinweis für Step 8: der erste Entwurf per MCP fragt einmal um Erlaubnis — einmal „immer erlauben" klicken, dann ist Ruhe. |
-| **Weitere MCPs verbunden?** | Breite `ToolSearch`-Suchen (z.B. `query:people`, `query:transcript`, `query:search`) — was antwortet außer dem Mail-Connector noch? | Kein Abbruch, keine Pflicht. Für Step 8 merken: EINE Zeile _„Zusätzlich verbunden: [Namen] — die kann ich auch nutzen, sag einfach, was du brauchst."_ Nichts gefunden → nicht erwähnen. |
-| **Sync-Duplikate?** | Dateien mit ` 2.` im Namen (`STATUS 2.md`) — OneDrive-Konfliktkopien | Merken für Step 8: _„OneDrive hat beim Synchronisieren Doppel angelegt ([Namen]) — ich lasse sie liegen, aber lösch sie im Explorer, sonst lese ich irgendwann die falsche."_ Nie selbst löschen (Safeguard 2). |
+| **Skills there?** | does `.claude/skills/morning/SKILL.md` exist? | **Critical.** The `.claude` folder is hidden and tends to get lost when copying/zipping. Say it plainly: _"A hidden part of the folder got lost during copying — without it the commands don't work. Please get a fresh copy (see VERSION.md) and copy it as a whole, not the individual files inside it."_ Then abort the setup — without skills everything else is pointless. |
+| **Which OS?** | `uname -s` → `Darwin` = mac, `MINGW*/MSYS*` = windows | Don't guess. Controls the draft mechanics (PowerShell vs. AppleScript) and how the dashboard is opened — record it in Step 3 as `os:`. |
+| **Mail/calendar connector?** | First find out what is connected at all: broad `ToolSearch query:mail` and `ToolSearch query:calendar`. With Microsoft 365 you get back `mcp__claude_ai_Microsoft_365__outlook_email_search` and `mcp__claude_ai_Microsoft_365__outlook_calendar_search`; with another provider take the tool names actually returned, never guess a name. | Not a blocker. **If the search finds nothing, ask ONCE: "Do you work with Microsoft 365 (Outlook) or with Google Workspace?"** (third option: something else). Remember the answer for Step 8, so the offer of help there names the right connector instead of staying generic. Don't keep digging if the user doesn't know: then it stays with the generic path. Remember for Step 8: the mail part is missing, the rest runs. |
+| **Script runtime?** | `node --version` (default — ships with Claude Code), then `uv run python -c "print(1)"`, `python3`, `python` | Not a blocker. Record the working variant in Step 3 as `script_command:`. If none works: dashboard rendering falls away, the briefing in the chat still runs. |
+| **Draft path?** | `ToolSearch query:draft` — does the connected connector return a draft tool? (nothing found → try `ToolSearch query:create` as well) | **Yes → `mcp`** (platform- and provider-independent, best path). **No → OS default:** Windows `com` (assumes classic Outlook installed locally), Mac `mailto` (needs no permissions, no MDM risk, works with any mail program). Record it in Step 3 as `draft_method:`. Don't create test drafts — nothing may pop up in the mail program during setup. **Only the DRAFT tool counts:** if the connector also offers a send tool, it is NOT used and NOT mentioned — nothing is ever sent here. Note for Step 8: the first draft via MCP asks for permission once — click "always allow" once and it's quiet after that. |
+| **Other MCPs connected?** | Broad `ToolSearch` queries (e.g. `query:people`, `query:transcript`, `query:search`) — what answers besides the mail connector? | Not a blocker, not mandatory. Remember for Step 8: ONE line _"Also connected: [names] — I can use those too, just say what you need."_ Nothing found → don't mention it. |
+| **Sync duplicates?** | Files with ` 2.` in the name (`STATUS 2.md`) — OneDrive conflict copies | Remember for Step 8: _"OneDrive created duplicates while syncing ([names]) — I'll leave them alone, but delete them in Explorer, otherwise I'll read the wrong one at some point."_ Never delete them yourself (Safeguard 2). |
 
 ## Step 3: Write `context/config.yaml`
 
-Fill every section of `context/config.yaml` from Step 1 + Step 2:
+Fill every section of `context/config.yaml` from Step 0.5 + Step 1 + Step 2:
 
-**Jede Section der Vorlage bleibt erhalten** — nur Werte einsetzen, nie Blöcke löschen (die Skills lesen alle):
+**Every section of the template stays in place** — only fill in values, never delete blocks (the skills read all of them):
 
-- `user:` name, first_name (aus dem Namen), email, role
-- `location:` home_city, office_abbreviation, office_room_patterns (das Kürzel plus "Office"), other_office_patterns (nur wenn genannt), office_days, timezone (Default Europe/Berlin)
-- `calendar:` `noise_subjects` bleibt leer (füllt sich, wenn dem User Kalender-Rauschen auffällt — im Step-8-Summary erwähnen)
-- `mail:` unverändert lassen (`tag_processed: true`, `processed_categories: ["KI-Triagiert"]`) — nur anfassen, wenn der User das Kategorie-Tag im Postfach ablehnt. Auf Mac `tag_processed` gern auf `true` lassen — `/morning` überspringt den Tag dort von selbst.
-- `company_domains:` **aus der E-Mail-Adresse von Step 1 ableiten** — Domain hinter dem `@` eintragen, z.B. `anna@musterfirma.de` → `["musterfirma.de"]`. NIE den Platzhalter stehen lassen: die intern/extern-Priorisierung im Briefing hängt daran. Nur bei privaten Anbietern (gmail.com, web.de, outlook.com, gmx…) stattdessen EINE kurze Frage: _„Habt ihr eine Firmen-Mail-Domain? Dann sortiere ich Mails von Kollegen und Externen unterschiedlich ein."_ — keine Antwort/keine Domain → `[]` (leer ist ehrlich, Platzhalter ist ein stiller Fehler).
-- `workspace_root:` Step 2's berechneter Pfad
-- `os:` Ergebnis aus Step 2.5 (`windows` oder `mac`)
-- `script_command:` Ergebnis aus Step 2.5 (`node`, `uv run python`, `python3` oder `python`) — `/morning` nutzt genau das für den Dashboard-Fill. Leer lassen, wenn keine Laufzeit gefunden wurde.
-- `draft_method:` Ergebnis aus Step 2.5 (`mcp`, `com` oder `mailto`) — `/email` und `/morning` nutzen genau das für Mail-Entwürfe.
-- `inventory:` **hier nur den Stand aus Step 2.5 festhalten, nicht raten.** Den Block füllen später die Steps 7.1 bis 7.4, wenn die Ausstattung wirklich eingerichtet wird. Jetzt schon eintragen, was Step 2.5 tatsächlich gesehen hat:
-  - `inventory.connectors:` je gefundenem Connector ein Eintrag mit `name`, `purpose` in Klartext, `slot:` und `status: true`. Ein System, das der User nur genannt hat, das aber nicht antwortet, bekommt `status: false`. Step 7.2 ergänzt und korrigiert das.
-  - `inventory.clis:` `firecrawl` und `playwright` mit dem Ergebnis ihres Versionsbefehls. Step 7.1 installiert nach und aktualisiert.
-  - `inventory.accounts:` leer lassen, das macht Step 7.3.
-  - `inventory.repos:` das eigene Workspace-Repo trägt Step 8 ein, Projekt-Repos Step 7.4.
-  - `inventory.plugins:` und `inventory.routines:` bleiben leer. Beides ist nichts, was das Setup einrichtet. Im Abschluss (Step 8) EINE kurze Frage: _„Hast du Claude-Code-Plugins installiert oder soll etwas zeitgesteuert laufen?"_ Was der User nicht nennt, bleibt leer. Der Leerfall im Dashboard erklärt selbst, wie man nachträgt.
-- **Dauerhaft, nicht nur beim Setup:** kommt später etwas dazu (ein Connector, ein Plugin, ein Repo, eine Routine), gehört es sofort ins `inventory` in `context/config.yaml`, ohne dass der User darum bitten muss. Das ist derselbe Persistier-Auftrag wie bei „ab jetzt / immer" (Safeguard 10): einmal gesagt, dauerhaft verankert, in einer Zeile bestätigt.
+- `language:` result from Step 0.5 (`en` or `de`) — controls everything the user sees from now on: briefings, dashboard text, mail drafts, entries written into `context/` files, chat.
+- `user:` name, first_name (from the name), email, role
+- `location:` home_city, office_abbreviation, office_room_patterns (the abbreviation plus "Office"), other_office_patterns (only if mentioned), office_days, timezone (default Europe/Berlin)
+- `calendar:` `noise_subjects` stays empty (it fills up once the user notices calendar noise — mention it in the Step 8 summary)
+- `mail:` leave unchanged (`tag_processed: true`, `processed_categories: ["AI-Triaged"]`) — only touch it if the user rejects the category tag in their mailbox. On Mac feel free to leave `tag_processed` on `true` — `/morning` skips the tag there by itself.
+- `company_domains:` **derive it from the email address in Step 1** — enter the domain behind the `@`, e.g. `anna@examplecompany.com` → `["examplecompany.com"]`. NEVER leave the placeholder standing: the internal/external prioritization in the briefing depends on it. Only with private providers (gmail.com, web.de, outlook.com, gmx…) ask ONE short question instead: _"Do you have a company mail domain? Then I'll sort mail from colleagues and from outsiders differently."_ — no answer/no domain → `[]` (empty is honest, a placeholder is a silent error).
+- `workspace_root:` Step 2's computed path
+- `tools_in_use:` the answer from Step 1, question 5 — one entry per tool with `name` and `purpose` in the user's own words. **Write it down even for systems that never get connected**, because the reason matters later: a tool nobody could reach is a known gap, not a blank. `/checkup` and `/audit` read this instead of asking again.
+- `plan:` the answer from Step 1, question 6 (`pro`, `max5`, `max20`, `team` or empty). Needed later when it comes to parallel sub-agents or large runs — whoever is on Pro should know BEFORE a five-agent run that it will eat their quota, not afterwards.
+- `os:` result from Step 2.5 (`windows` or `mac`)
+- `script_command:` result from Step 2.5 (`node`, `uv run python`, `python3` or `python`) — `/morning` uses exactly that for the dashboard fill. Leave empty if no runtime was found.
+- `draft_method:` result from Step 2.5 (`mcp`, `com` or `mailto`) — `/email` and `/morning` use exactly that for mail drafts.
+- `inventory:` **record only what Step 2.5 found here, don't guess.** The block is filled later by Steps 7.1 to 7.4, when the equipment is actually set up. Enter now what Step 2.5 really saw:
+  - `inventory.connectors:` one entry per connector found, with `name`, `purpose` in plain language, `slot:` and `status: true`. A system the user only mentioned but that doesn't answer gets `status: false`. Step 7.2 adds to and corrects this.
+  - `inventory.clis:` `firecrawl` and `playwright` with the result of their version command. Step 7.1 installs what's missing and updates this.
+  - `inventory.accounts:` leave empty, Step 7.3 does that.
+  - `inventory.repos:` Step 8 enters the workspace's own repo, Step 7.4 the project repos.
+  - `inventory.plugins:` and `inventory.routines:` stay empty. Neither is something the setup sets up. In the closing summary (Step 8) ONE short question: _"Do you have any Claude Code plugins installed, or should something run on a schedule?"_ Whatever the user doesn't name stays empty. The empty state in the dashboard explains by itself how to add things later.
+- **Permanently, not just during setup:** if something is added later (a connector, a plugin, a repo, a routine), it belongs in the `inventory` in `context/config.yaml` immediately, without the user having to ask. That's the same order-to-persist as with "from now on / always" (Safeguard 10): said once, anchored permanently, confirmed in one line.
 
-Keine anderen Datei-Rewrites. Fehlt eine Antwort, Feld leer lassen — nie einen plausiblen Wert erfinden.
+No other file rewrites. If an answer is missing, leave the field empty — never invent a plausible value.
 
-**Keine Script-Laufzeit gefunden (Step 2.5):** im Step-8-Summary EINEN Satz sagen: *"Für das Dashboard brauche ich eine kleine Laufzeit (Node.js) — ohne läuft alles andere, nur die Dashboard-Datei entsteht nicht. Sag Bescheid, dann richten wir das zusammen ein, dauert ein paar Minuten."* Keine ungefragte Installationsanleitung — aber nimmt der User das Angebot an, Schritt für Schritt durch die Installation führen und danach den Check wiederholen. Nie das Dashboard-HTML selbst schreiben (siehe CLAUDE.md).
+**No script runtime found (Step 2.5):** say ONE sentence in the Step 8 summary: *"For the dashboard I need a small runtime (Node.js) — everything else works without it, only the dashboard file won't be created. Say the word and we'll set it up together, takes a few minutes."* No unsolicited installation guide — but if the user takes the offer, walk them through the installation step by step and repeat the check afterwards. Never write the dashboard HTML yourself (see CLAUDE.md).
+
+## Step 3.5: Set the Main Model
+
+The plan answer (Step 1, question 6) determines which model is written as the session default into `.claude/settings.json`. The shipped file deliberately contains **no** `model` — only this step sets it. Without an answer: `sonnet`.
+
+**Pro (€20) → `sonnet`, no choice.** Opus burns through this plan's quota in one to two hours, after which the user is stuck until the reset. That's not a matter of taste, it's a limit, and limits are stated, not put to a vote. One line in plain language, then move on:
+
+> *"On your plan I work briskly and economically, otherwise your quota is empty by lunchtime. For individual heavy tasks you can switch up any time in the chat."*
+
+**Max or Team/Enterprise → offer the choice.** Two options, in their language, not in model names:
+
+> Two ways of working. Which fits better?
+>
+> **a) Brisk and cheap** (recommended) — for briefings, mail, filing, the normal day.
+> **b) Slower, but deeper** — if you analyze a lot, build concepts or think through large documents. Uses considerably more of your quota.
+>
+> You can switch this any time in the chat, even mid-work.
+
+a → `sonnet`, b → `opus`, no answer → `sonnet`.
+
+**Writing it:** add `"model": "<value>"` as the first field in `.claude/settings.json`. The file is JSON — insert only this field, leave the rest unchanged, then check it for validity once. If it's broken after the edit, permissions and hooks stop working.
+
+**It stays a starting line, not a commitment.** The model check rule (CLAUDE.md, token economy) reports by itself in everyday use when task and model don't match. That's exactly why the question is defensible here at all: a wrong initial choice corrects itself in operation instead of costing money or quality for a year.
 
 ## Step 4: Fill In the Blank Context Templates
 
-These ship blank with placeholder tokens (`[DEIN NAME]`, `[YYYY-MM-DD]`):
+These ship blank with placeholder tokens (`[YOUR NAME]`, `[YYYY-MM-DD]`):
 
-- **`context/PERSONAL.md`** — Name, E-Mail, Position, **Fachbereich**, Standort from Step 1; leave the Stakeholder table empty (fills in as real projects/people show up).
-- **`context/PROJECTS.md`** — ONE block per project from Step 1 #4 (Zweck/Status/Phase/Stakeholder/Timeline/Blocker — Lücken ehrlich als `[noch offen]`, nie erfinden). **Keine To-dos hier** — die gehören nach STATUS.md. "Letzte Aktualisierung" stempeln. **Schreibregeln (das Template zeigt das Beispiel):** kurze, konkrete Sätze in der Sprache des Users — Zweck = ein Satz, warum es das Projekt gibt, so wie man's einem Kollegen sagt („Der Klient vermutet Geld in der Preissetzung — wir prüfen, wo und wie viel"), nie Abstrakta ohne das konkrete Ding dahinter („Potenzialidentifikation"). Status = was zuletzt passiert ist + was als Nächstes ansteht. Diese Blöcke speisen später die Projekt-Karten im Dashboard — Formulardeutsch hier wird auch dort Formulardeutsch.
-- **`context/STATUS.md`** — hier landen die ersten Tasks, aber **nicht ungefragt und nicht alle.** Zwei Schritte, kein Direktschreiben:
-  1. **Selbst filtern, bevor du etwas zeigst.** Aus den Antworten kommt nur mit, was den Regel-4-Aufnahmefilter besteht (CLAUDE.md): nichts unter 15 Minuten, keine reinen Kenntnis-Brocken, keine Meilensteine/Fristen — **die gehören als `Timeline:` in den Projekt-Block in PROJECTS.md, nicht als Task** (ein Termin ist keine Arbeit). Übrig bleiben sollte: pro Projekt 1–3 echte, konkret anpackbare nächste Aktionen.
-  2. **Vorschlag zeigen, erst nach OK schreiben** (dasselbe Prinzip wie /ingest — der User erlebt sonst am ersten Tag, dass das System Dinge an ihm vorbei ins System schreibt):
+- **`context/PERSONAL.md`** — name, email, position, **area of expertise**, location from Step 1; leave the stakeholder table empty (it fills in as real projects/people show up).
+- **`context/PROJECTS.md`** — ONE block per project from Step 1 #4 (Purpose/Status/Phase/Stakeholder/Timeline/Blocker — gaps honestly as `[open]`, never invented). **No to-dos here** — those belong in STATUS.md. Stamp "Last updated". **Writing rules (the template shows the example):** short, concrete sentences in the user's language — purpose = one sentence on why the project exists, the way you'd say it to a colleague ("The client suspects money is sitting in their pricing — we're checking where and how much"), never abstractions without the concrete thing behind them ("potential identification"). Status = what happened last + what's coming next. These blocks later feed the project cards in the dashboard — form-speak here becomes form-speak there.
+- **`context/STATUS.md`** — this is where the first tasks land, but **not unasked and not all of them.** Two steps, no direct writing:
+  1. **Filter yourself before you show anything.** From the answers, only what passes the Rule 4 intake filter comes along (CLAUDE.md): nothing under 15 minutes, no pure FYI chunks, no milestones/deadlines — **those belong as `Timeline:` in the project block in PROJECTS.md, not as a task** (a date is not work). What should be left: 1–3 real, concretely actionable next steps per project.
+  2. **Show the proposal, only write after the OK** (same principle as /ingest — otherwise on day one the user experiences the system writing things into the system behind their back):
 
-     > „Aus dem, was du mir erzählt hast, würde ich diese Aufgaben anlegen:
-     > - **[Projekt]:** [Headline] — [ein Satz, warum die ansteht]
+     > "From what you've told me, I'd create these tasks:
+     > - **[Project]:** [headline] — [one sentence on why it's due]
      > - …
-     > Passt das so — was streichen, was fehlt?"
+     > Does that fit — anything to drop, anything missing?"
 
-     Korrekturen einarbeiten, dann schreiben: Headline + eingerückte Kontext-Zeile + `#kategorie` (Format: STATUS.md-Kopf). **Die Kontext-Zeile ist Pflicht und muss ohne dich verständlich sein** — in zwei Wochen liest der User nur noch sie im Dashboard-Aufklapper; eine Task wie „Segmentierung finalisieren" ohne Warum ist dann wertlos.
-  **Weniger ist hier mehr:** die Liste füllt sich ab morgen von selbst (Mail-Funde, Chat). Ein Setup, das mit 15 Tasks startet, bringt dem User bei, die Liste ab Tag eins zu ignorieren — genau das darf nicht passieren. **Ohne diesen Schritt (mit Vorschlag) zeigt das erste `/morning` null Tasks** — nach einem Setup, in dem der User alle Projekte genannt hat. Tagesplan/Inbox/Frisch erledigt bleiben leer (korrekt). „Letzte Aktualisierung" mit heutigem Datum stempeln — das ersetzt zugleich den `[YYYY-MM-DD]`-Marker, den Step 0 als „noch nicht befüllt"-Signal prüft.
-- **`context/JOURNAL.md`** — heutiges Datum stempeln, ein Eintrag "Workspace eingerichtet" mit den angelegten Projekten.
+     Work in corrections, then write: headline + indented context line + `#category` (format: STATUS.md header). **The context line is mandatory and must be understandable without you** — in two weeks the user only reads it in the dashboard expander; a task like "finalize segmentation" without the why is worthless by then.
+  **Less is more here:** the list fills itself from tomorrow on (mail findings, chat). A setup that starts with 15 tasks teaches the user to ignore the list from day one — exactly what must not happen. **Without this step (with the proposal), the first `/morning` shows zero tasks** — after a setup in which the user named all their projects. Day Plan/Inbox/Recently Done stay empty (correct). Stamp "Last updated" with today's date — that also replaces the `[YYYY-MM-DD]` marker that Step 0 checks as the "not yet filled" signal.
+- **`context/JOURNAL.md`** — stamp today's date, one entry "Workspace set up" with the projects created.
 
 ## Step 5: Scaffold Their Projects
 
@@ -106,163 +188,212 @@ Create `projects/<slug>/README.md` from `projects/_template/README.md` for EVERY
 
 ## Step 6: Collect + File Existing Documents
 
-Ask: *"Hast du Dokumente zu diesen Projekten, die ich einordnen soll — Projektpläne, Meeting-Notes, Decks, Org-Übersichten? Leg sie in den `inbox/`-Ordner (oder paste sie hier), ich sortiere sie ein."*
+Ask: *"Do you have documents on these projects that I should file — project plans, meeting notes, decks, org charts? Drop them into the `inbox/` folder (or paste them here), I'll sort them in."*
 
-- For each provided document, run the **`/ingest`-flow** (that skill's preview + OK loop applies): extract decisions/actions/stakeholders/facts → update the matching project's PROJECTS.md block + `projects/<name>/README.md` → **die Ablage macht der `/ingest`-Flow nach seiner eigenen Regel-Tabelle** (Projekt-Material → `projects/<slug>/inputs/`, nur Heimatloses → `inbox/processed/`). **Hier kein eigenes Ziel vorschreiben** — was der User beim Setup mitbringt, ist fast immer Projekt-Material, und genau danach sucht `/ingest` später in `inputs/`.
-- Reference material that isn't project-state (guides, standards, org charts) → `reference/` statt ingest, kurz benennen wo es liegt.
-- Bulk-Extraktion großer Dokumente (Transkripte, lange PDFs) an einen **Haiku-Subagenten** delegieren (structured return), das Einordnungs-Urteil bleibt hier.
+- For each provided document, run the **`/ingest` flow** (that skill's preview + OK loop applies): extract decisions/actions/stakeholders/facts → update the matching project's PROJECTS.md block + `projects/<name>/README.md` → **the filing is done by the `/ingest` flow according to its own rule table** (project material → `projects/<slug>/inputs/`, only homeless things → `inbox/processed/`). **Don't prescribe your own destination here** — what the user brings along during setup is almost always project material, and that's exactly what `/ingest` looks for in `inputs/` later.
+- **A whole folder instead of loose documents** — "my old workspace is on the desktop", a case folder, a notes folder with its own logic: that is `/ingest`'s **folder mode**, use it as written there instead of improvising a survey. The rules that matter here: file by content, never mirror the foreign structure, and leave code/data folders where they are. Everything else in this step stays the same.
+- Reference material that isn't project state (guides, standards, org charts) → `reference/` instead of ingest, briefly say where it is.
+- Delegate bulk extraction of large documents (transcripts, long PDFs) to a **Haiku sub-agent** (structured return), the filing judgment stays here.
 - Nothing provided → skip, remind in the summary that `/ingest` files documents any time.
 
-After this step PROJECTS.md should reflect the person's real current workload — that's the bar for "Setup fertig".
+After this step PROJECTS.md should reflect the person's real current workload — that's the bar for "setup done".
 
-## Step 7: Derive the Personal Mail Style (optional, needs permission)
+## Step 7: Derive the Personal Mail Style (a regular step, needs permission)
 
-**Vorab-Check:** Hat Step 2.5 KEINEN Mail-Connector gefunden → diesen Step komplett überspringen (die Frage wäre leer, der Fetch scheitert ohnehin) und stattdessen im Step-8-Summary notieren: Stil-Ableitung jederzeit nachholbar, sobald die Anbindung steht.
+**This step is part of the setup, not an extra.** It is the difference between drafts that sound like the user and drafts that sound like the package author. It may be declined (permission for the mailbox is always the user's call), but it is **never quietly passed over**: whatever the outcome, it appears in the Step 8 summary in one line, so nobody discovers three weeks later that their drafts read like a stranger and never learns why.
 
-Ask ONE question: *"Soll ich einmal deine gesendeten Mails der letzten Monate durchgehen und deinen Schreibstil ableiten? Dann klingen alle Mail-Drafts (/email, /morning) von Anfang an nach dir. (Lesen only, nichts wird gesendet.)"*
+**Pre-check:** if Step 2.5 found NO mail connector → don't ask (the fetch would fail anyway), and say so plainly in the Step 8 summary: the style is not derived yet, it takes two minutes as soon as the connection is in place, and the sentence for it is "derive my mail style from my sent mail".
+
+Ask ONE question: *"Should I go through your sent mail from the last few months once and derive your writing style? Then all mail drafts (/email, /morning) sound like you from the start. (Read only, nothing gets sent.)"*
 
 - **Yes:**
-  1. Delegate the fetch to a **Haiku sub-agent** (self-contained prompt — er muss als ERSTES das in Step 2.5 ermittelte Mail-Such-Tool per `ToolSearch` laden, Subagenten erben keine Tools; bei Microsoft 365 ist das `ToolSearch select:mcp__claude_ai_Microsoft_365__outlook_email_search`): damit suchen mit `sender = user.email`, last ~6 months, limit ~50; fetch full bodies; return 15–25 representative excerpts (openers, closers, sign-offs, one-liners), grouped DE/EN, skipping sensitive threads (HR/Gehalt/Performance).
-  2. From the excerpts, derive (main model, judgment work): typical openers, Du/Sie, tone markers, typical length, closers + signature block, DE vs EN habits, filler phrases the user never uses.
-  3. Write the profile to **`context/EMAIL_STYLE.md`** (structure mirrors `/email`'s Style-Reference section). `/email` and `/morning` read this file first and fall back to their built-in example templates only if it doesn't exist.
-  4. Show the derived profile in 5–8 bullets and ask for a quick sanity-check ("passt das so?") — apply corrections directly to EMAIL_STYLE.md.
-- **No / too little history:** skip silently; note in the Step 8 summary that drafts use the package's example style until the user asks Claude to derive their own (same flow as above, works any time).
+  1. Delegate the fetch to a **Haiku sub-agent** (self-contained prompt — it must load the mail search tool determined in Step 2.5 via `ToolSearch` FIRST, sub-agents don't inherit tools; with Microsoft 365 that is `ToolSearch select:mcp__claude_ai_Microsoft_365__outlook_email_search`): search with it **by naming the sent FOLDER** — Microsoft 365 `folderName="Sent Items"` (German mailbox: "Gesendete Elemente"), Google Workspace `query="in:sent"` —, last ~6 months, limit ~50; fetch full bodies; return 15–25 representative excerpts (openers, closers, sign-offs, one-liners), grouped DE/EN, skipping sensitive threads (HR/salary/performance).
+     > **Not `sender = user.email`** (verified 2026-07-21 against a real Microsoft 365 mailbox): the mail search covers the inbox only, so a sender filter returns zero of the user's own mail and the derivation would silently produce nothing. Same trap as `/morning` Step 3a. **If the fetch comes back empty, say so** and fall back to the package's example style — never write an EMAIL_STYLE.md derived from nothing.
+  2. From the excerpts, derive (main model, judgment work): typical openers, formal vs. informal address, tone markers, typical length, closers + signature block, DE vs EN habits, filler phrases the user never uses.
+  3. Write the profile to **`context/EMAIL_STYLE.md`** (structure mirrors `/email`'s Style Reference section). `/email` and `/morning` read this file first and fall back to their built-in example templates only if it doesn't exist.
+  4. Show the derived profile in 5–8 bullets and ask for a quick sanity-check ("does that fit?") — apply corrections directly to EMAIL_STYLE.md.
+- **No / too little history:** accept it without pushing, but **do not pass over it silently** — one line in the Step 8 summary: drafts use the package's example style for now, and the sentence "derive my mail style from my sent mail" starts the same flow any time.
 
-## Steps 7.1–7.4: Die Ausstattung (der Teil, der sonst nie passiert)
+## Steps 7.1–7.4: The Equipment (the part that otherwise never happens)
 
-Diese vier Schritte laufen **vor** dem Archivieren, weil es danach keinen geführten Weg mehr gibt. Sie sind der Unterschied zwischen „eingerichtet" und „einsatzfähig".
+These four steps run **before** the archiving, because afterwards there is no guided path any more. They are the difference between "set up" and "ready to work".
 
-**Eine Regel gilt in allen vieren, ausnahmslos:** Befehle, die eine Eingabe oder eine Anmeldung verlangen (`gh auth login`, `firecrawl login`, jeder OAuth-Fluss), **bleiben in deiner Bash hängen** — es gibt dort kein Terminal, auf das sie antworten könnten. Solche Befehle NIE selbst ausführen. Stattdessen: dem User die Zeile zum Einfügen geben, sagen was danach passiert, und auf seine Rückmeldung warten. Alles Nicht-Interaktive (`npm install -g`, `command -v`, `git clone` bei öffentlichen Repos) machst du selbst.
+**One rule applies in all four of them, without exception:** commands that require an input or a login (`gh auth login`, `firecrawl login`, any OAuth flow) **hang in your Bash** — there is no terminal there that could answer them. NEVER run such commands yourself. Instead: give the user the line to paste, say what happens afterwards, and wait for their response. Everything non-interactive (`npm install -g`, `command -v`, `git clone` on public repos) you do yourself.
 
-**Ton in allen vieren:** je Schritt EINE Frage, Klartext, kein Fachwort ohne Erklärung. Ein „nein" ist immer eine vollständige Antwort und wird nie nachverhandelt. Was der User ablehnt, wird mit `status: false` ins `inventory` geschrieben — nicht weggelassen, sonst taucht es später nirgends als Möglichkeit auf.
+**Tone in all four:** ONE question per step, plain language, no technical term without an explanation. A "no" is always a complete answer and is never renegotiated. Whatever the user declines is written into the `inventory` with `status: false` — not left out, otherwise it never shows up anywhere later as a possibility.
 
-### Step 7.1: Werkzeuge installieren
+### Step 7.1: Install the Tools
 
-**Playwright zuerst**, bewusst: Sobald es da ist, kannst du in den folgenden Schritten Oberflächen selbst aufrufen, statt dem User aus dem Gedächtnis zu beschreiben, wo er klicken soll.
+**Playwright first**, deliberately: once it's there, you can open interfaces yourself in the following steps instead of describing from memory where the user should click.
 
 ```bash
 npm install -g playwright firecrawl-cli
 playwright install chromium
 ```
 
-Nicht-interaktiv, also machst du das selbst. Vorher `command -v npm` prüfen: fehlt npm, ist das kein Drama — sagen, dass die beiden Werkzeuge fehlen und was ohne sie trotzdem läuft (alles ausser Web-Recherche und Browser-Aufgaben), dann weiter. Scheitert die Installation an Rechten: **niemals `sudo` vorschlagen**, stattdessen den Ansprechpartner aus `VERSION.md` nennen.
+Non-interactive, so you do it yourself. Check `command -v npm` beforehand: if npm is missing, that's no disaster — say that the two tools are missing and what still runs without them (everything except web research and browser tasks), then move on. If the installation fails on permissions: **never suggest `sudo`**, name the contact person from `VERSION.md` instead.
 
-Ergebnis je Werkzeug per `<name> --version` prüfen und nach `inventory.clis` schreiben. Die mitgelieferten Skills (`playwright-cli`, die `firecrawl-*`-Familie) sind bereits im Paket, es ist nichts nachzuladen — im Summary EINEN Satz dazu, dass sie da sind.
+**Then the three plugins that belong to the setup**, the same way — non-interactive, no question:
 
-### Step 7.2: Die sechs Anschlüsse durchgehen
+```bash
+claude plugin marketplace add DietrichGebert/ponytail
+claude plugin marketplace add pbakaus/impeccable
+claude plugin marketplace add obra/superpowers-marketplace
 
-Verbindungen zu Mail, Kalender und Co. laufen über **Claude Cowork → Einstellungen → Connectors**. Das Paket bringt keine eigene Anbindung mit; Claude Code greift auf dieselbe Verbindung zu. Details und Kategorien: `reference/mcp.md`.
+claude plugin install skill-creator@claude-plugins-official
+claude plugin install claude-code-setup@claude-plugins-official
+claude plugin install code-review@claude-plugins-official
+claude plugin install claude-md-management@claude-plugins-official
+claude plugin install ponytail@ponytail
+claude plugin install impeccable@impeccable
+claude plugin install superpowers@superpowers-marketplace
+```
 
-Geh die sechs Slots **einzeln** durch, aber verbinde **nur, was der User bejaht**. Nicht auf Vorrat (das widerspräche `reference/mcp.md`), aber auch keinen Slot verschweigen — sonst bleiben CRM und Chat für immer leer, weil sie nie zur Sprache kamen.
+**Why the setup does this instead of recommending it:** new plugins appear almost daily, and telling this week's real thing from the noise is a job of its own. That selection is the actual product here. Handing the user a list to install themselves gives them back exactly the work they were meant to be spared. What each one is for: `reference/plugins.md`.
 
-| Slot | Wie du damit umgehst |
+**One of them gets a sentence before it is installed, and only one.** `claude-mem` remembers across sessions and makes it searchable — genuinely useful. It also brings a **daemon** (a program that keeps running in the background, with no window) and a database of its own, and it logs the project content it reads into that database. Say that in one sentence and install it only on a yes:
+
+> *"One more: claude-mem remembers things across sessions, so you don't have to repeat yourself in a new chat. Two things about it: it runs quietly in the background all the time, and it writes down what it reads — including client documents — into its own local file. Want it?"*
+
+```bash
+claude plugin marketplace add thedotmack/claude-mem
+claude plugin install claude-mem@thedotmack
+```
+
+A no here is a full answer and costs nothing else; everything in the system works without it. **Not asking would be the mistake** — anyone working with client data has to be able to make that call themselves.
+
+**Two more exist but install differently**, so they stay a one-liner in the summary rather than a step: `codeburn` needs no installation at all (`npx codeburn` shows what the usage costs), and `find-skills` comes through the skill registry (`npx skills add vercel-labs/skills --skill find-skills`).
+
+If an install fails (marketplace unreachable, no network): name which one is missing and what it would have done, then carry on. The system runs without every single one of them.
+
+Check the result per tool with `<name> --version` and write it into `inventory.clis`. Plugins are read live from the machine, so nothing has to be written into `inventory.plugins` by hand. The bundled skills (`playwright-cli`, the `firecrawl-*` family) are already in the package, there's nothing to download — ONE sentence in the summary that they're there.
+
+### Step 7.2: Connect the Systems They Named
+
+Connections to mail, calendar and the rest run via **Claude Cowork → Settings → Connectors**. The package brings no connection of its own; Claude Code accesses the same connection. Details and categories: `reference/mcp.md`.
+
+**Start from `tools_in_use` (Step 1, question 5), not from the six slots.** The user already told you what they work with and what for. Map those names onto the slots yourself and say what you found, in their words:
+
+> *"You said Outlook for mail, HubSpot for customers and WhatsApp for enquiries. Mail and calendar I can connect right now. For HubSpot there is a connector too, I'll show you. WhatsApp there is no way into, so that one stays by hand."*
+
+That sentence does two jobs: it proves you listened, and it turns six abstract questions into a short list of concrete steps. Only slots that **nothing** in `tools_in_use` maps to still get asked — in one sentence each, so CRM and chat do not stay empty forever just because they never came up.
+
+Then connect **only what the user says yes to**. Not on spec, that would contradict `reference/mcp.md`.
+
+**Never end at "there is no connector".** The route out is in `reference/mcp.md` under "If your system is not in the catalogue", and it is short: catalogue first, then the system's own MCP server added directly in Claude Code, and only then the honest no. **You run the command, the user only fetches the token** — and you open that settings page for them with Playwright from Step 7.1 instead of describing where to click. A system that stays disconnected because the easy path was missing is the single most expensive outcome of this step: it is exactly the daily tab-switch the whole folder exists to remove.
+
+The one thing that must not happen is guessing a route. Check that it exists before you offer it — the catalogue moves fast in both directions.
+
+| Slot | How you handle it |
 |---|---|
-| `mail` + `kalender` | **Nicht optional.** Ohne sie ist `/morning` eine leere Hülle. Frag nicht ob, sondern welches System: Microsoft 365 oder Google Workspace. Aus Step 2.5 weisst du oft schon, was da ist. |
-| `ablage` | Fragen. Bei Microsoft 365 kommt SharePoint/OneDrive meist mit, dann ist es ein Häkchen. |
-| `chat` | Fragen. Teams bei Microsoft 365, sonst Slack. Nutzen in einem Halbsatz: Nachrichten mitlesen, die sonst untergehen. |
-| `crm` | Fragen — **mit der ehrlichen Einschränkung aus `reference/mcp.md`**, dass `/morning` heute keine CRM-Daten ins Briefing zieht. Der Nutzen ist das gezielte Nachschlagen im Gespräch, nicht das Briefing. Das gehört gesagt, bevor jemand verbindet. |
-| `dev` | Nur ansprechen, wenn Step 7.3 „ja" ergeben hat. Sonst überspringen, kommentarlos. |
+| `mail` + `calendar` | **Not optional.** Without them `/morning` is an empty shell. Don't ask whether, ask which system: Microsoft 365 or Google Workspace. From Step 2.5 you often already know what's there. |
+| `storage` | Ask. With Microsoft 365, SharePoint/OneDrive usually comes along, then it's one checkbox. |
+| `chat` | Ask. Teams with Microsoft 365, otherwise Slack. The benefit in half a sentence: reading along with messages that would otherwise get lost. |
+| `crm` | Ask — **with the honest limitation from `reference/mcp.md`** that `/morning` does not pull CRM data into the briefing today. The benefit is targeted look-ups during a conversation, not the briefing. That belongs said before anyone connects. |
+| `dev` | Only bring it up if Step 7.3 produced a "yes". Otherwise skip it, without comment. |
 
-Pro bejahtem Slot: den User durch Cowork führen (Einstellungen → Connectors → das System auswählen → mit dem Arbeits-Account anmelden). Die Anmeldung macht **er**, im Browser. Danach **per ToolSearch verifizieren**, ob die Werkzeuge jetzt da sind — das ist die belastbare Probe, nicht seine Selbstauskunft und auch kein Browser-Blick. Erst dann in `inventory.connectors` schreiben, mit `slot:`.
+Per slot the user says yes to: guide them through Cowork (Settings → Connectors → select the system → sign in with the work account). The sign-in is done by **them**, in the browser. Afterwards **verify via ToolSearch** whether the tools are there now — that's the reliable proof, not their self-report and not a look in the browser either. Only then write it into `inventory.connectors`, with `slot:`.
 
-Klappt es nach zwei Versuchen nicht: nicht festbeissen. Notieren mit `status: false`, sagen was ohne diesen Anschluss trotzdem geht, und weiter. Der Rest des Setups darf daran nicht scheitern.
+If it doesn't work after two attempts: don't get stuck on it. Note it with `status: false`, say what still works without this connection, and move on. The rest of the setup must not fail over it.
 
-### Step 7.3: Zugänge und Schlüssel
+### Step 7.3: Accounts and Keys
 
-Schlüssel gehören **nie ins Repo** (es wird geklont und versioniert; ein einmal eingecheckter Schlüssel bleibt in der Historie stehen). Alle liegen in `~/.config/credentials.env`, Rechte `600`.
+Keys never belong **in the repo** (it gets cloned and versioned; a key checked in once stays in the history). They all live in `~/.config/credentials.env`, permissions `600`.
 
-**Zwei Zugänge bietest du immer an**, weil die Werkzeuge aus 7.1 ohne sie halb tot sind:
+**You always offer two accounts**, because the tools from 7.1 are half dead without them:
 
-- **Firecrawl** — ohne Schlüssel kann das Werkzeug keine Webseiten lesen. Eigener Account auf firecrawl.dev, kostenloser Einstiegstarif reicht zum Ausprobieren. Der Account gehört **ihm**, nicht dem Dienstleister: so laufen Abrechnung und Nutzung bei ihm, und niemand teilt sich ein Limit.
-- **OpenRouter** — braucht es für Bilder und für Modelle, die nicht von Anthropic kommen. Ohne ihn sagt das System bei „mach mir ein Bild" ehrlich, dass ihm der Zugang fehlt.
+- **Firecrawl** — without a key the tool can't read web pages. Their own account on firecrawl.dev, the free entry tier is enough to try it out. The account belongs to **them**, not to the service provider: that way billing and usage sit with them, and nobody shares a limit.
+- **OpenRouter** — needed for images and for models that don't come from Anthropic. Without it, the system says honestly on "make me an image" that it lacks the access.
 
-**Nicht von selbst anbieten, nur auf Nachfrage:** einen **Anthropic-API-Schlüssel**. Den braucht ausschliesslich der Skill `managed-agents` (eigene Agenten, die dauerhaft in der Cloud laufen). Wichtig und ehrlich zu sagen, wenn es zur Sprache kommt: **das ist eine zweite Rechnung neben dem Abo** und wird pro Nutzung abgerechnet. Der normale Alltag braucht ihn nie — alles, was dieses System tut, läuft über das Abo. Zeitgesteuerte Routinen (`/schedule`) brauchen ihn übrigens **nicht**, die laufen über den Abo-Zugang.
+**Don't offer this by yourself, only on request:** an **Anthropic API key**. That is needed exclusively by the `managed-agents` skill (your own agents that run permanently in the cloud). Important and honest to say when it comes up: **that is a second invoice next to the subscription** and is billed per use. Everyday work never needs it — everything this system does runs through the subscription. Scheduled routines (`/schedule`) incidentally do **not** need it, they run through the subscription access.
 
-**Eine weitere Frage, nur einmal:** _„Baust du auch Anwendungen, oder arbeitest du mit Datenbanken?"_
+**One more question, only once:** _"Do you also build applications, or do you work with databases?"_
 
-- **Nein** (der Regelfall) → kommentarlos überspringen. Kein Wort über Supabase oder Vercel, das ist Werkzeug für andere Rollen.
-- **Ja** → durch **Supabase** (Datenbank) und **Vercel** (Veröffentlichen) führen. Beide Skills liegen im Paket. Danach Slot `dev` in 7.2 nachholen.
+- **No** (the normal case) → skip without comment. Not a word about Supabase or Vercel, that's tooling for other roles.
+- **Yes** → walk them through **Supabase** (database) and **Vercel** (publishing). Both skills are in the package. Afterwards catch up slot `dev` in 7.2.
 
-Anlegen läuft immer gleich: Registrierungsseite aufrufen (mit Playwright aus 7.1 kannst du sie ihm direkt öffnen), er meldet sich an und erzeugt den Schlüssel, dann hängst **du** ihn an:
+Setting one up always works the same way: open the sign-up page (with Playwright from 7.1 you can open it for them directly), they register and generate the key, then **you** append it:
 
 ```bash
 mkdir -p ~/.config && touch ~/.config/credentials.env && chmod 600 ~/.config/credentials.env
-echo 'FIRECRAWL_API_KEY=<sein-key>' >> ~/.config/credentials.env
+echo 'FIRECRAWL_API_KEY=<their-key>' >> ~/.config/credentials.env
 ```
 
-Jeden eingerichteten Zugang nach `inventory.accounts` schreiben (`name`, `purpose`, `key_env`). **Den Schlüsselwert nie in den Chat schreiben, nie in eine Datei im Repo, nie wiederholen.** `status` nicht tippen, sondern aus der Existenz des Eintrags in `credentials.env` ableiten.
+Write every account you set up into `inventory.accounts` (`name`, `purpose`, `key_env`). **Never write the key value into the chat, never into a file in the repo, never repeat it.** Don't type `status`, derive it from the existence of the entry in `credentials.env`.
 
-### Step 7.4: Projekt-Repos anbinden
+### Step 7.4: Connect Project Repos
 
-Gehört zu einem der Projekte aus Step 5 ein Git-Repo (Produktcode, Website, Firmen-Repo), wird es **in das Projekt geklont**, nicht in den Workspace gemischt:
+If one of the projects from Step 5 has a Git repo (product code, website, company repo), it is cloned **into the project**, not mixed into the workspace:
 
 ```bash
 git clone <repo-url> projects/<slug>/code
 ```
 
-Damit sieht Claude in einer Sitzung beides: den Projektkontext und den echten Code. Die Historien bleiben getrennt, `.gitignore` schliesst `projects/*/code/` aus — der Tagesabschluss committet also nie fremden Code in das private Workspace-Repo. Vollständige Begründung: `projects/README.md`.
+That way Claude sees both in one session: the project context and the real code. The histories stay separate, `.gitignore` excludes `projects/*/code/` — so the end-of-day never commits someone else's code into the private workspace repo. Full reasoning: `projects/README.md`.
 
-Ist das Repo privat, braucht es eine Anmeldung, die du nicht leisten kannst → Zeile geben, ihn machen lassen. Danach in `inventory.repos` eintragen (`name`, `url`, `path`).
+If the repo is private, it needs a login you can't perform → give them the line, let them do it. Afterwards enter it in `inventory.repos` (`name`, `url`, `path`).
 
-Frag pro Projekt **höchstens einmal** und nur dort, wo es plausibel ist. Bei einem Projekt namens „Quartalsabschluss" nicht nach einem Repo fragen.
+Ask **at most once** per project, and only where it's plausible. For a project called "quarterly close", don't ask about a repo.
 
 ## Step 8: Archive This Skill + Confirm
 
 1. Move `.claude/skills/setup/` to `.claude/skills-deprecated/setup/` (its job is done — archival pattern, not deletion).
-2. **Eigenes Repo anlegen** — nur wenn der Workspace ein Git-Klon ist (`git rev-parse --is-inside-work-tree`) UND `gh auth status` eine Anmeldung meldet. Fehlt eins von beidem: still überspringen, kein Wort dazu (`/eod` überspringt seine Sicherung dann ebenfalls).
+2. **Create their own repo** — only if the workspace is a Git clone (`git rev-parse --is-inside-work-tree`) AND `gh auth status` reports a login. If either is missing: skip silently, not a word about it (`/eod` then skips its backup as well).
 
-   **Warum das nicht optional ist:** Der geklonte Ordner zeigt noch auf das Repo dessen, der das Paket verschickt hat. Ohne diesen Schritt pusht `/eod` die Arbeit des Users jeden Abend dorthin — oder scheitert jeden Abend. Beides fällt erst nach Tagen auf.
+   **Why this is not optional:** the cloned folder still points at the repo of whoever sent the package. Without this step, `/eod` pushes the user's work there every evening — or fails every evening. Both only surface after days.
 
-   EINE Frage, in Klartext: _„Ich lege dir dein eigenes privates Repo auf GitHub an. Das ist deine tägliche Sicherung, sie gehört dir, und öffentlich ist davon nichts. Soll ich?"_ Bei Ja:
+   ONE question, in plain language: _"I'll create your own private repo on GitHub. That's your daily backup, it belongs to you, and none of it is public. Shall I?"_ If yes:
 
    ```bash
    git remote rename origin upstream
-   gh repo create <ordnername> --private --source=. --remote=origin --push
+   gh repo create <foldername> --private --source=. --remote=origin --push
    ```
 
-   `gh` legt das Repo unter dem **angemeldeten Konto des Users** an — er ist von Anfang an Eigentümer, es gibt keine Übertragung. `upstream` bleibt als Bezugsquelle stehen, darüber kommen später Updates (`git pull upstream main`).
+   `gh` creates the repo under the **user's logged-in account** — they own it from the start, there is no transfer. `upstream` stays in place as the source, updates come through it later (`git pull upstream main`).
 
-   Danach die **zweite Frage, getrennt gestellt und nie vorausgewählt** (Ansprechpartner-Name und GitHub-Konto aus `VERSION.md`): _„Soll <Ansprechpartner> Zugriff auf dieses Repo bekommen? Dann kann er dir bei Problemen direkt helfen und Verbesserungen einspielen. Er kann damit aber auch alles lesen, was hier mit der Zeit landet — deine Projekte, Notizen und Mail-Zusammenfassungen. Du kannst den Zugriff jederzeit wieder entziehen."_
+   Then the **second question, asked separately and never pre-selected** (contact person's name and GitHub account from `VERSION.md`): _"Should <contact person> get access to this repo? Then they can help you directly with problems and push in improvements. But it also lets them read everything that ends up here over time — your projects, notes and mail summaries. You can withdraw the access any time."_
 
-   - Ja → `gh api -X PUT repos/<user>/<repo>/collaborators/<github-konto> -f permission=push`, danach EIN bestätigender Satz inklusive Hinweis, wo man es zurücknimmt (Repo → Settings → Collaborators).
-   - Nein → kommentarlos weiter. Das ist die genauso richtige Antwort, sie wird nie nachverhandelt.
+   - Yes → `gh api -X PUT repos/<user>/<repo>/collaborators/<github-account> -f permission=push`, then ONE confirming sentence including a note on where to take it back (repo → Settings → Collaborators).
+   - No → move on without comment. That is exactly as correct an answer, and it is never renegotiated.
 
-   Angelegtes Repo in `context/config.yaml → inventory.repos` eintragen. Scheitert ein Befehl: nicht dramatisieren, EIN Satz im Summary plus Hilfsangebot — der Workspace läuft ohne Repo vollständig, es fehlt nur die Sicherung.
+   Enter the created repo in `context/config.yaml → inventory.repos`. If a command fails: don't dramatize it, ONE sentence in the summary plus an offer of help — the workspace runs fully without a repo, only the backup is missing.
 3. Output a summary: what was written to config.yaml, what was filled in (context/ files), which projects were scaffolded, which documents were filed, whether EMAIL_STYLE.md was derived (Step 7), plus these follow-ups:
-   - **`/email`-Stil** (nur falls Step 7 übersprungen): Drafts nutzen den Beispiel-Stil des Pakets — jederzeit "leite meinen Mail-Stil aus meinen Sent Items ab" sagen.
-   - **Kalender-Rauschen:** wiederkehrende private Kalender-Blöcke (Gym, Lernslots, …) in `config.yaml → calendar.noise_subjects` eintragen, damit Briefings sie ignorieren.
-   - **Diktieren statt tippen (EIN Satz, freundlich):** das System lebt davon, dass man ihm Dinge erzählt — Status-Updates diktieren geht schneller als tippen. Windows: `Win + H` startet das native Diktat in jedem Textfeld, auch im Claude-Code-Fenster. Mac: Diktat unter Systemeinstellungen → Tastatur aktivieren, danach startet zweimal `Ctrl` tippen das Mikrofon.
-4. **Systemcheck-Zeile (Step 2.5), EINE Zeile, freundlich:**
-   - Alles grün → _„Alles startklar."_ Mehr nicht — kein Häkchen-Report über Dinge, die funktionieren.
-   - Etwas fehlt → was fehlt, was trotzdem geht, und ein KONKRETES Hilfsangebot — nie nur ein Verweis auf Dritte. Muster Mail, **mit dem in Step 2.5 genannten System konkret eingesetzt** (Microsoft 365 bzw. Google Workspace) statt allgemein: _„Eine Mail-Anbindung finde ich noch nicht — Aufgaben, Projekte und Dashboard laufen trotzdem, nur der Mail-Teil des Briefings fehlt. Einrichten geht in Claude Cowork: Einstellungen → Connectors → <das genannte System> mit deinem Arbeits-Account verbinden; ich greife dann auf dieselbe Verbindung zu. Sag ‚prüf die Mail-Anbindung nochmal', wenn du das gemacht hast — oder ‚hilf mir dabei', dann gehen wir es Schritt für Schritt durch."_ Nimmt der User das Hilfsangebot an: durch die Einrichtung führen, danach die Anbindung erneut per ToolSearch testen und das Ergebnis in einem Satz bestätigen. (Welche Connectors es gibt und was sie dürfen: `reference/mcp.md`.)
-5. **Dashboard-Erstrender (wenn `script_command` gefunden wurde):** Einmal das Dashboard aus den frischen Daten rendern — wie `/morning` Step 7b, aber mit `mail_checked: false` (Mail-Felder ehrlich leer, Kalender erst morgen) — und öffnen. Zwei Fliegen: der User sieht sofort einen sichtbaren Erfolg („das ist dein Dashboard, ab morgen ist es gefüllt"), und der Render-Weg ist auf DIESEM Rechner bewiesen, solange du daneben sitzt. Schlägt er fehl: nicht dramatisieren — im Summary einen Satz (Briefing im Chat läuft trotzdem) + Hilfsangebot. Kein `script_command` → überspringen.
-6. **Opt-in-Testentwurf (nur wenn ein `draft_method` verfügbar ist):** EINE Frage: _„Soll ich dir einen Test-Entwurf an dich selbst öffnen, damit du siehst, wie das später aussieht?"_ Bei Ja: kurzer Willkommens-Entwurf an `user.email` (Betreff etwa „Dein Workspace ist eingerichtet ✓", 2–3 Sätze), via `draft_method` aus der Config — das ist der End-to-End-Beweis des Entwurfswegs; scheitert er, fällt es HIER auf und wird sofort repariert, nicht allein am ersten Morgen. Bei Nein: kommentarlos überspringen. Grundsatz bleibt: Entwürfe poppen nie ungefragt auf — dieser ist ausdrücklich eingeladen, geht nur an den User selbst, und gesendet wird nie.
-7. **Das Mini-Briefing — so läuft der Alltag ab jetzt.** Direkt im Chat ausgeben (das ist der Moment, in dem der User garantiert liest — eine Doku-Datei öffnet er nie). Genau diese fünf Zeilen, nicht mehr:
+   - **`/email` style — this line is mandatory, in every outcome.** Derived → say so with the date. Declined, no history, or no mail connector → say that drafts use the package's example style for now, name the reason in half a sentence, and give the sentence that starts it later ("derive my mail style from my sent mail"). Never leave it out: an undiscovered gap here means weeks of drafts that don't sound like the user.
+   - **Calendar noise:** put recurring private calendar blocks (gym, study slots, …) into `config.yaml → calendar.noise_subjects` so briefings ignore them.
+   - **Dictate instead of typing (ONE sentence, friendly):** the system lives off being told things — dictating status updates is faster than typing. Windows: `Win + H` starts native dictation in any text field, including the Claude Code window. Mac: enable dictation under System Settings → Keyboard, after that pressing `Ctrl` twice starts the microphone.
+4. **System-check line (Step 2.5), ONE line, friendly:**
+   - All green → _"Everything's ready."_ Nothing more — no checkmark report about things that work.
+   - Something missing → what's missing, what works anyway, and a CONCRETE offer of help — never just a pointer to someone else. Mail pattern, **with the system named in Step 2.5 concretely filled in** (Microsoft 365 or Google Workspace) instead of staying generic: _"I can't find a mail connection yet — tasks, projects and dashboard still work, only the mail part of the briefing is missing. You can set it up in Claude Cowork: Settings → Connectors → connect <the named system> with your work account; I'll then use that same connection. Say 'check the mail connection again' once you've done it — or 'help me with it' and we'll go through it step by step."_ If the user takes the offer: walk them through the setup, then test the connection again via ToolSearch and confirm the result in one sentence. (Which connectors exist and what they're allowed to do: `reference/mcp.md`.)
+5. **First dashboard render (if a `script_command` was found):** render the dashboard once from the fresh data — following `reference/dashboard-render.md` (the render contract; do NOT load the `/morning` skill for this, it costs a multiple), with `mail_checked: false` (mail fields honestly empty, calendar starting tomorrow) — and open it. **Write `context/.mail_cache.json` with today's date and `mail_checked: false` while you are at it.** Without that stamp every mid-day update for the rest of the first day silently skips (the render contract refuses to render without a cache from today), and the dashboard the user was just shown freezes at the moment they start working. Two birds: the user immediately sees a visible success ("that's your dashboard, from tomorrow it'll be filled"), and the render path is proven on THIS machine while you're still sitting next to them. If it fails: don't dramatize — one sentence in the summary (the briefing in the chat still works) + offer of help. No `script_command` → skip.
+6. **Opt-in test draft (only if a `draft_method` is available):** ONE question: _"Should I open a test draft to yourself, so you can see what that looks like later?"_ If yes: a short welcome draft to `user.email` (subject something like "Your workspace is set up ✓", 2–3 sentences), via the `draft_method` from the config — that's the end-to-end proof of the draft path; if it fails, it fails HERE and gets fixed right away, not alone on the first morning. If no: skip without comment. The principle stands: drafts never pop up unasked — this one is explicitly invited, goes only to the user themselves, and nothing is ever sent.
+7. **The mini-briefing — how daily life works from now on.** Output it directly in the chat (this is the moment the user is guaranteed to read — they'll never open a documentation file). Exactly these five lines, no more:
 
-   > **So benutzt du das ab jetzt:**
-   > - **Morgens:** „Guten Morgen" sagen — ich hole Kalender und Mails, briefe dich und baue dein Dashboard.
-   > - **Tagsüber:** einfach erzählen, was ist — „Kapitel 3 ist fertig", „warte auf die IT". Ich sortiere es an die richtige Stelle.
-   > - **Dokumente:** in den `inbox/`-Ordner legen und „lies das ein" sagen.
-   > - **Abends:** „Feierabend" sagen — zwei Minuten Tagesabschluss.
+   > **How you use this from now on:**
+   > - **In the morning:** say "good morning" — I'll pull calendar and mail, brief you and build your dashboard.
+   > - **During the day:** just tell me what's up — "chapter 3 is done", "waiting on IT". I'll file it in the right place.
+   > - **Documents:** drop them into the `inbox/` folder and say "read this in".
+   > - **In the evening:** say "end of day" — two minutes to close out.
    >
-   > Befehle musst du dir nicht merken — schreib in eigenen Worten, was du willst.
+   > You don't have to memorize commands — write what you want in your own words.
 
-   Danach EIN Verweis-Satz: „Mehr steht in `ONBOARDING.md` und später im Hilfe-Tab deines Dashboards — aber das oben ist alles, was du brauchst." Schlage `/morning` als ersten echten Lauf vor (morgen früh oder gleich jetzt).
-8. **Einmal auf `WAS-DIESES-SYSTEM-TUT.md` hinweisen** — ein Satz: _„Was das System liest und was es nie tut (senden, Termine ändern, HR-Themen anfassen), steht in `WAS-DIESES-SYSTEM-TUT.md` — die Seite ist auch die Antwort, wenn dich jemand fragt, ob du das nutzen darfst."_ Nicht ausführen, nur zeigen, dass es sie gibt.
+   Then ONE pointer sentence: "There's more in `ONBOARDING.md` and in the Start Here tab of your dashboard — but the above is all you need." Suggest `/morning` as the first real run (tomorrow morning or right now).
+8. **Point at `WHAT-THIS-SYSTEM-DOES.md` once** — one sentence: _"What the system reads and what it never does (send, change appointments, touch HR topics) is in `WHAT-THIS-SYSTEM-DOES.md` — that page is also the answer if anyone asks whether you're allowed to use this."_ Don't walk through it, just show that it exists.
 
 ## Quality Guidelines
 
 - **No silent fabrication:** if an answer leaves a gap, say so in the summary — don't invent a plausible default.
 - **Re-runs ask first:** never overwrite an already-personalized config silently.
+- **One language, from the first answer on:** once Step 0.5 is answered, nothing the user sees switches back. If you catch yourself writing a proposal, a summary or a briefing line in the other language, rewrite it before sending.
 
 ## Test Drive
 
-1. First session in a fresh copy → CLAUDE.md's first-run rule triggers this skill automatically, straight to Step 1 questions.
-2. Answer the questions → config.yaml written, context files filled, every named project scaffolded. **Tasks erscheinen NICHT sofort in STATUS.md** — erst kommt der Vorschlag im Chat (pro Projekt 1–3 echte Aktionen, Meilensteine als `Timeline:` in PROJECTS.md), erst nach dem OK wird geschrieben, jede Task mit selbsterklärender Kontext-Zeile.
-3. Grep the workspace for `[DEIN NAME]` → zero hits outside `.claude/skills-deprecated/`.
+1. First session in a fresh copy → CLAUDE.md's first-run rule triggers this skill automatically, straight to the Step 0.5 language line — one bilingual line, nothing else.
+1b. Answer "Deutsch" → everything from the greeting on is German: the six questions, the model question, the task proposal, the closing mini-briefing. Answer with enter/"English" → everything is English. `context/config.yaml` carries `language: "de"` resp. `"en"` at the top.
+2. Answer the questions → config.yaml written, context files filled, every named project scaffolded. **Tasks do NOT appear in STATUS.md immediately** — first comes the proposal in the chat (1–3 real actions per project, milestones as `Timeline:` in PROJECTS.md), only after the OK is anything written, every task with a self-explanatory context line.
+3. Grep `context/` for `[YOUR NAME]` → zero hits. **Only `context/`**: the documentation and the skills quote the placeholder as text (`CLAUDE.md`, `reference/self-test.md`, `email/SKILL.md`), so a workspace-wide grep fails on a perfectly good run and makes the acceptance test lie.
 4. `context/PROJECTS.md` shows exactly the new user's real projects, dated today; ingested documents are reflected there and filed in the owning project's `projects/<slug>/inputs/` (only project-less material lands in `inbox/processed/`).
 5. `.claude/skills/setup/` no longer exists; `.claude/skills-deprecated/setup/` does.
-5b. `git remote -v` zeigt **`origin` auf das Repo des Users** und `upstream` auf die Bezugsquelle — nie umgekehrt. Der erste Push ist durch, `gh repo view` meldet `private`. Hat der User beim Zugriff Nein gesagt, steht unter Collaborators niemand außer ihm.
-5c. **Ausstattung (Steps 7.1–7.4):** `inventory.clis` spiegelt, was `command -v` wirklich findet. Alle sechs Slots kamen zur Sprache — jeder steht in `inventory.connectors`, entweder mit `status: true` oder `status: false`, keiner fehlt. Kein Schlüsselwert steht im Chat oder in einer Datei im Repo; `~/.config/credentials.env` hat Rechte `600`. Wurde ein Projekt-Repo geklont, liegt es unter `projects/<slug>/code/` und `git status` im Workspace zeigt es NICHT als zu committen.
+5b. `git remote -v` shows **`origin` pointing at the user's repo** and `upstream` at the source — never the other way round. The first push is through, `gh repo view` reports `private`. If the user said no to access, nobody but them is listed under Collaborators.
+5c. **Equipment (Steps 7.1–7.4):** `inventory.clis` mirrors what `command -v` really finds. Every system the user named in question 5 is in `inventory.connectors`, with `status: true` or `status: false` and a `slot:`. Slots nobody named and nobody asked about are legitimately absent — the check is "nothing the user mentioned got lost", not "all six appear". No key value is in the chat or in a file in the repo; `~/.config/credentials.env` has permissions `600`. If a project repo was cloned, it sits under `projects/<slug>/code/` and `git status` in the workspace does NOT show it as pending commit.
 6. Run `/setup` again → Step 0 detects the real name in config.yaml and asks before doing anything.
-7. Bei gefundener Script-Laufzeit steht am Ende ein gerendertes `context/today.html` (ohne Mail-Teil); bei vorhandenem `draft_method` und Ja des Users liegt ein Test-Entwurf an die eigene Adresse bereit — niemals gesendet, niemals an Dritte.
+7. If a script runtime was found, a rendered `context/today.html` exists at the end (without the mail part); if a `draft_method` is available and the user said yes, a test draft to their own address is waiting — never sent, never to anyone else.

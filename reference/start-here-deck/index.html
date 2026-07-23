@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start Here · Your workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="slide-base.css" />
+  <style>
+    /* Titel-Slide mit Inhaltsverzeichnis. Gleicher Rahmen wie jede andere Slide,
+       damit der Einstieg nicht wie eine Webseite wirkt, sondern wie Bild null. */
+    .toc-wrap { display: grid; grid-template-columns: 1fr 1fr; column-gap: 34px; row-gap: 0; width: 100%; }
+    .tocrow { display: grid; grid-template-columns: auto 1fr; column-gap: 13px; align-items: baseline;
+      padding: 11px 4px; border-bottom: 1px solid var(--hairline); text-decoration: none; color: inherit;
+      transition: background .13s; }
+    .tocrow:hover { background: #fff; border-radius: 7px; border-bottom-color: transparent; }
+    .tn { font-family: var(--mono); font-size: 11.5px; color: var(--muted-soft); }
+    .tt { font-weight: 700; font-size: 15px; letter-spacing: -0.012em; }
+    .td { display: none; }
+    .lede { font-size: 15.5px; color: var(--body); line-height: 1.6; max-width: 66ch; margin: 0 0 4px; }
+    .lede b { font-weight: 700; color: var(--ink); }
+  </style>
+</head>
+<body data-next="slide-1.html">
+  <div class="brand">Start Here · Your workspace</div>
+  <div class="pageno rise" style="--i:0">00 / 11</div>
+  <div class="slide">
+    <div class="slide-head rise" style="--i:0">
+      <div class="eyebrow">Start here</div>
+      <h1>You have the AI. <span class="hl">Nobody ever set it up.</span></h1>
+    </div>
+    <div class="stage">
+      <div class="card rise" style="--i:1">
+        <p class="lede">Eleven pictures, then you type hello. Why your AI keeps starting from zero, <b>what closes that gap</b>, and where the line is. Arrow keys to move, or jump straight in.</p>
+        <div class="toc-wrap" style="margin-top:14px">
+          <a class="tocrow" href="slide-1.html"><span class="tn">01</span><span class="tt">It has never seen your work</span></a>
+          <a class="tocrow" href="slide-2.html"><span class="tn">02</span><span class="tt">The ceiling is not the model</span></a>
+          <a class="tocrow" href="slide-3.html"><span class="tn">03</span><span class="tt">What this actually is</span></a>
+          <a class="tocrow" href="slide-4.html"><span class="tn">04</span><span class="tt">Four folders, four questions</span></a>
+          <a class="tocrow" href="slide-5.html"><span class="tn">05</span><span class="tt">Six layers</span></a>
+          <a class="tocrow" href="slide-6.html"><span class="tn">06</span><span class="tt">One everyday job, before and after</span></a>
+          <a class="tocrow" href="slide-7.html"><span class="tn">07</span><span class="tt">One window</span></a>
+          <a class="tocrow" href="slide-8.html"><span class="tn">08</span><span class="tt">New capability lands daily</span></a>
+          <a class="tocrow" href="slide-9.html"><span class="tn">09</span><span class="tt">Twenty minutes is the whole distance</span></a>
+          <a class="tocrow" href="slide-10.html"><span class="tn">10</span><span class="tt">What it never does</span></a>
+          <a class="tocrow" href="slide-11.html"><span class="tn">11</span><span class="tt">Type hello</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="takeaway rise" style="--i:2">The gap is not a capability problem. <span class="hl">It is a setup problem.</span></div>
+  </div>
+  <script src="deck.js"></script>
+</body>
+</html>

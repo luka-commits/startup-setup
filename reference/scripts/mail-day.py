@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""mail-day — listet alle Mails eines Kalendertages (IN + OUT) aus dem Postfach, per IMAP.
+"""mail-day — lists all mail of one calendar day (IN + OUT) from the mailbox, via IMAP.
 
-Der Ersatzweg, wenn kein Mail-Connector verbunden ist (reference/mcp.md § Weg B).
-Read-only (BODY.PEEK): nichts wird verschoben, gelöscht oder als gelesen markiert.
+The fallback route when no mail connector is connected (reference/mcp.md § Route B).
+Read-only (BODY.PEEK): nothing is moved, deleted or marked as read.
 
-Zugangsdaten aus ~/.config/credentials.env (chmod 600, nie in Git):
+Credentials from ~/.config/credentials.env (chmod 600, never in Git):
   MAIL_IMAP_HOST=imap.example.com
   MAIL_IMAP_PORT=993            # optional, default 993
-  MAIL_USER=du@deine-firma.de
-  MAIL_PASS=app-passwort
+  MAIL_USER=you@your-company.com
+  MAIL_PASS=app-password
 
-Usage: python3 mail-day.py 2026-07-21 [--body N]   (N = Zeichen Body-Vorschau, default 0)
+Usage: python3 mail-day.py 2026-07-21 [--body N]   (N = characters of body preview, default 0)
 """
 import argparse, datetime, email, email.header, imaplib, os, re
 
@@ -65,7 +65,7 @@ def main():
     nxt = day + datetime.timedelta(days=1)
     v = creds()
     if not (v.get("MAIL_IMAP_HOST") and v.get("MAIL_USER") and v.get("MAIL_PASS")):
-        raise SystemExit("FEHLT: MAIL_IMAP_HOST / MAIL_USER / MAIL_PASS in ~/.config/credentials.env")
+        raise SystemExit("MISSING: MAIL_IMAP_HOST / MAIL_USER / MAIL_PASS in ~/.config/credentials.env")
     M = imaplib.IMAP4_SSL(v["MAIL_IMAP_HOST"], int(v.get("MAIL_IMAP_PORT", "993")))
     M.login(v["MAIL_USER"], v["MAIL_PASS"])
     me = v["MAIL_USER"].lower()
@@ -104,7 +104,7 @@ def main():
         print(f"        SUBJ: {subj}")
         if bp:
             print(f"        BODY: {bp}")
-    print(f"-- {len(rows)} Mails am {a.date}")
+    print(f"-- {len(rows)} mails on {a.date}")
 
 
 if __name__ == "__main__":

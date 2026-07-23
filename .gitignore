@@ -17,6 +17,11 @@ context/.backup/
 context/.mail_cache.json
 context/.triage_ledger.json
 context/today.html
+# /audit writes this — it is a result about ONE machine and must never
+# travel with the package: it carries absolute paths and someone else's findings.
+context/audit.json
+context/profile.md
+context/tool-dossiers.md
 
 # Interne Dateien, gehören nie ins ausgelieferte Repo
 AUSLIEFERUNG.md

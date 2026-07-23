@@ -1,54 +1,54 @@
-# Links — alles an einem Ort
+# Links — everything in one place
 
-Jeder Link mit dem Moment, in dem man ihn braucht. Anleitungen aus dem Paket zuerst, dann die Werkzeuge dahinter.
+Every link with the moment you need it. Guides from the package first, then the tools behind it.
 
-## Anleitungen im Paket
+## Guides in the package
 
-| Datei | Wann |
+| File | When |
 |---|---|
-| [`SETUP.md`](../SETUP.md) | Die Einrichtung, Schritt für Schritt — einmalig pro Person |
-| [`SETUP-ROADMAP.html`](../SETUP-ROADMAP.html) | Dieselben Schritte als visuelle Karte zum Abhaken (Doppelklick, öffnet im Browser) |
-| [`ONBOARDING.md`](../ONBOARDING.md) | Wie der Alltag mit dem System aussieht — nach der Einrichtung lesen |
-| [`uebungen.md`](uebungen.md) | Übungen für die erste Woche: an echten Szenarien lernen |
-| [`ORDNERKARTE.html`](../ORDNERKARTE.html) | Was welcher Ordner ist und was davon dir gehört |
-| [`WAS-DIESES-SYSTEM-TUT.md`](../WAS-DIESES-SYSTEM-TUT.md) | Was gelesen wird und was nie passiert — auch für Compliance-Fragen |
-| [`VISION.md`](../VISION.md) | Warum es das Paket gibt und die Arbeitsprinzipien dahinter |
-| [`system-erweitern.md`](system-erweitern.md) | Eigene Befehle und Werkzeuge dazubauen, ohne zu programmieren |
-| [`routinen.md`](routinen.md) | Vorgebaute Routinen (z.B. automatisches Morgen-Briefing) zum Einschalten |
-| [`VERSION.md`](../VERSION.md) | Versionsnummer + Ansprechpartner, wenn etwas kaputt ist |
+| [`SETUP.md`](../SETUP.md) | The setup, step by step — once per person |
+| [`SETUP-ROADMAP.html`](../SETUP-ROADMAP.html) | The same steps as a visual map to tick off (double-click, opens in the browser) |
+| [`ONBOARDING.md`](../ONBOARDING.md) | What day-to-day life with the system looks like — read after the setup |
+| [`exercises.md`](exercises.md) | Exercises for the first week: learning on real scenarios |
+| [`FOLDER-MAP.html`](../FOLDER-MAP.html) | What each folder is and which parts belong to you |
+| [`WHAT-THIS-SYSTEM-DOES.md`](../WHAT-THIS-SYSTEM-DOES.md) | What gets read and what never happens — also for compliance questions |
+| [`VISION.md`](../VISION.md) | Why the package exists and the working principles behind it |
+| [`extending-the-system.md`](extending-the-system.md) | Adding your own commands and tools, without programming |
+| [`routines.md`](routines.md) | Prebuilt routines (e.g. an automatic morning briefing) to switch on |
+| [`VERSION.md`](../VERSION.md) | Version number + contact person, when something is broken |
 
-## Installieren (Schritt 0 der Einrichtung)
+## Installing (step 0 of the setup)
 
-| Link | Was |
+| Link | What |
 |---|---|
-| [claude.com/download](https://claude.com/download) | Claude Code — Installer für Mac und Windows |
-| [docs.claude.com/claude-code](https://docs.claude.com/en/docs/claude-code/overview) | Offizielle Claude-Code-Doku, wenn du tiefer einsteigen willst |
-| [nodejs.org](https://nodejs.org) | Node.js LTS (fürs Dashboard) |
-| [git-scm.com/downloads](https://git-scm.com/downloads) | git (Mac meist über Homebrew, Windows: Git for Windows) |
-| [github.com/signup](https://github.com/signup) | GitHub-Konto anlegen (kostenlos, Firmen-Mail nehmen) |
-| [cli.github.com](https://cli.github.com) | GitHub CLI (`gh`) — einmal anmelden, nie wieder Passwörter |
+| [claude.com/download](https://claude.com/download) | Claude Code — installer for Mac and Windows |
+| [docs.claude.com/claude-code](https://docs.claude.com/en/docs/claude-code/overview) | Official Claude Code docs, if you want to go deeper |
+| [nodejs.org](https://nodejs.org) | Node.js LTS (for the dashboard) |
+| [git-scm.com/downloads](https://git-scm.com/downloads) | git (Mac usually via Homebrew, Windows: Git for Windows) |
+| [github.com/signup](https://github.com/signup) | Create a GitHub account (free, use the company mail address) |
+| [cli.github.com](https://cli.github.com) | GitHub CLI (`gh`) — sign in once, never passwords again |
 
-## CLI-Verbindungen (Schritt 5/6 der Einrichtung)
+## CLI connections (step 5/6 of the setup)
 
-| Link | Was |
+| Link | What |
 |---|---|
-| [firecrawl.dev](https://firecrawl.dev) | Eigenen Account anlegen; der API-Key steht dort unter **API Keys**. Anleitung: [`tools.md`](tools.md) |
-| [docs.firecrawl.dev](https://docs.firecrawl.dev) | Firecrawl-Doku (braucht man selten — `firecrawl --status` sagt das meiste) |
-| [playwright.dev](https://playwright.dev) | Playwright-Doku; Installation steht in [`tools.md`](tools.md) |
+| [firecrawl.dev](https://firecrawl.dev) | Create your own account; the API key is there under **API Keys**. Instructions: [`tools.md`](tools.md) |
+| [docs.firecrawl.dev](https://docs.firecrawl.dev) | Firecrawl docs (rarely needed — `firecrawl --status` says most of it) |
+| [playwright.dev](https://playwright.dev) | Playwright docs; installation is in [`tools.md`](tools.md) |
 
-## Plugins (optional, kuratiert)
+## Plugins (optional, curated)
 
-| Link | Was |
+| Link | What |
 |---|---|
-| [github.com/anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | Der offizielle Anthropic-Katalog — wird beim Setup freigeschaltet; was davon zählt, steht in [`plugins.md`](plugins.md) |
-| [github.com/anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins) | Offizielle Plugins für Sales/Marketing-Arbeit — für Startups oft der zweitwichtigste Katalog |
-| [github.com/DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Anti-Over-Engineering, empfohlen vor eigenen Umbauten |
-| [github.com/obra/superpowers](https://github.com/obra/superpowers) | Entwicklungs-Methodik — nur für die Techniker im Team |
-| [github.com/vercel-labs/skills](https://github.com/vercel-labs/skills) | `find-skills`: die offene Skill-Registry durchsuchen, bevor man selbst baut |
-| [impeccable.style](https://impeccable.style) | Design-Guidance, erst bei ernsthafter Dashboard-Weiterentwicklung |
+| [github.com/anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | The official Anthropic catalog — unlocked during the setup; what counts from it is in [`plugins.md`](plugins.md) |
+| [github.com/anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins) | Official plugins for sales/marketing work — for startups often the second most important catalog |
+| [github.com/DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Anti-over-engineering, recommended before rebuilding things yourself |
+| [github.com/obra/superpowers](https://github.com/obra/superpowers) | Development methodology — only for the engineers on the team |
+| [github.com/vercel-labs/skills](https://github.com/vercel-labs/skills) | `find-skills`: search the open skill registry before building your own |
+| [impeccable.style](https://impeccable.style) | Design guidance, only once you seriously develop the dashboard further |
 
-Die Einordnung, was wann sinnvoll ist (und was bewusst nur mit Zaun): [`plugins.md`](plugins.md).
+The classification of what makes sense when (and what is deliberately only allowed with a fence): [`plugins.md`](plugins.md).
 
-## Konten-Übersicht
+## Account overview
 
-Damit klar ist, was man am Ende alles hat: **Claude** (Pro/Max/Team, für Claude Code) · **GitHub** (kostenlos, Workspace-Repo + tägliche Sicherung) · **Firecrawl** (eigener Firmen-Account, Web-Inhalte) · optional **OpenRouter** ([openrouter.ai](https://openrouter.ai), erst bei Bedarf: Bilderstellung + Spezial-Modelle, siehe [`tools.md`](tools.md)). Mehr nicht.
+So it is clear what you end up with: **Claude** (Pro/Max/Team, for Claude Code) · **GitHub** (free, workspace repo + daily backup) · **Firecrawl** (your own company account, web content) · optionally **OpenRouter** ([openrouter.ai](https://openrouter.ai), only when needed: image generation + specialist models, see [`tools.md`](tools.md)). Nothing more.

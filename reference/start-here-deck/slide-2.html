@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The gap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="slide-base.css" />
+  <style>
+    .slide h1 { font-size: clamp(30px, 3.4vw, 47px); }
+    .slide-head { margin-bottom: 10px; }
+    .slide-head .eyebrow { margin-bottom: 10px; }
+    .takeaway { margin-top: 12px; padding: 15px 30px; }
+
+    .gapcard { display: grid; grid-template-columns: 552px 1fr; gap: 30px; align-items: center; padding: 14px 30px 14px 20px; }
+
+    /* the image is the hero: cropped of its top rule, filling its column, legend intact */
+    .chart { position: relative; }
+    .chart img { display: block; width: 100%; height: auto; clip-path: inset(1.7% 0 0.6% 0); }
+    .chart figcaption { margin-top: 2px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted-soft); text-align: center; }
+
+    .reads { display: flex; flex-direction: column; gap: 12px; }
+    .read { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 1.4; color: var(--body); }
+    .read b { color: var(--ink); font-weight: 700; }
+    .swatch { flex-shrink: 0; width: 15px; height: 15px; border-radius: 4px; margin-top: 3px; }
+    .swatch.blue { background: #a9c4ee; border: 1.5px solid #3f6fd6; }
+    .swatch.red { background: #f0a9a3; border: 1.5px solid #d15b52; }
+    .swatch.gap { background: var(--hl); border: 1.5px solid #e0bf55; }
+
+    .nums { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; }
+    .nbox { border: 1px solid var(--hairline); border-radius: 14px; padding: 12px 14px; background: linear-gradient(#fff, #fbfaf6); }
+    .nbox.obs { border-color: #f0cfcb; background: linear-gradient(#fff, #fdf6f5); }
+    .nbox .nv { font-family: var(--mono); font-size: 34px; font-weight: 500; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+    .nbox.obs .nv { color: var(--red); }
+    .nbox .nl { font-size: 12.5px; line-height: 1.35; color: var(--muted); margin-top: 7px; }
+
+    .attrib { margin-top: 14px; font-size: 13px; line-height: 1.5; color: var(--body); }
+    .attrib strong { color: var(--ink); font-weight: 600; }
+    .src { margin-top: 9px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.1px; text-transform: uppercase; color: var(--muted-soft); }
+
+    /* motion: the chart settles in first, then the reading of it lands line by line */
+    .anim .chart { opacity: 0; transform: scale(.985); }
+    .anim.ready .chart { opacity: 1; transform: none; transition: opacity .6s ease-out, transform .6s cubic-bezier(.2,.6,.2,1); transition-delay: .15s; }
+    .anim .read, .anim .nbox, .anim .attrib, .anim .src { opacity: 0; transform: translateX(-10px); }
+    .anim.ready .read, .anim.ready .nbox, .anim.ready .attrib, .anim.ready .src {
+      opacity: 1; transform: none;
+      transition: opacity .4s ease-out, transform .4s cubic-bezier(.2,.6,.2,1);
+      transition-delay: calc(var(--d) * 110ms + 520ms);
+    }
+    .noanim .chart, .noanim .read, .noanim .nbox, .noanim .attrib, .noanim .src { opacity: 1 !important; transform: none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      .anim .chart, .anim .read, .anim .nbox, .anim .attrib, .anim .src { opacity: 1 !important; transform: none !important; transition: none !important; }
+    }
+    @media (max-width: 1100px) {
+      .gapcard { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-prev="slide-1.html" data-next="slide-3.html">
+  <a href="index.html" class="brand">Start Here · Your workspace</a>
+  <div class="pageno">02 / 11</div>
+
+  <div class="slide">
+    <div class="slide-head rise" style="--i:0">
+      <div class="eyebrow">The evidence</div>
+      <h1>The ceiling is not the model. <span class="hl">Almost nobody is near it.</span></h1>
+    </div>
+
+    <div class="stage">
+      <div class="card gapcard rise" style="--i:1">
+        <figure class="chart">
+          <img src="anthropic-radar-2026.png" alt="Radar chart comparing theoretical AI coverage with observed AI coverage across occupational categories" />
+        </figure>
+
+        <div>
+          <div class="reads">
+            <div class="read" style="--d:0"><span class="swatch blue"></span><span><b>Blue</b> is what AI could already do in that kind of work.</span></div>
+            <div class="read" style="--d:1"><span class="swatch red"></span><span><b>Red</b> is what people actually use it for today.</span></div>
+            <div class="read" style="--d:2"><span class="swatch gap"></span><span>The distance between them is <b>the whole opportunity.</b></span></div>
+          </div>
+
+          <div class="nums">
+            <div class="nbox" style="--d:3">
+              <div class="nv">~<span data-count="90">90</span>%</div>
+              <div class="nl">theoretical ceiling for this kind of work</div>
+            </div>
+            <div class="nbox obs" style="--d:4">
+              <div class="nv"><span data-count="25">25</span> to <span data-count="35">35</span>%</div>
+              <div class="nl">where most teams actually sit</div>
+            </div>
+          </div>
+
+          <div class="attrib" style="--d:5">Both figures are <strong>Anthropic's own research</strong>, not ours.</div>
+          <div class="src" style="--d:6">Anthropic Economic Index, 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="takeaway rise" style="--i:2">The gap is not a capability problem. <span class="hl">It is a setup problem.</span></div>
+  </div>
+
+  <script src="deck.js"></script>
+</body>
+</html>

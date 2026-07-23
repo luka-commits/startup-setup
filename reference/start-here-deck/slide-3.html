@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What this system is</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="slide-base.css" />
+  <style>
+    .stage { gap: 20px; }
+
+    /* the object: ONE block, a black spine on top, four facets cut into one body, one output edge */
+    .obj { border: 1px solid var(--hairline); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); }
+
+    .spine { background: var(--ink); color: var(--canvas); display: flex; align-items: center; justify-content: space-between; padding: 15px 26px; }
+    .spine .st { font-size: 14px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+    .spine .ss { font-family: var(--mono); font-size: 11.5px; color: var(--muted-soft); letter-spacing: .04em; }
+
+    .facets { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--hairline); gap: 1px; }
+    .facet { background: #fff; padding: 28px 24px 30px; display: flex; flex-direction: column; }
+    .facet .ic { margin-bottom: 14px; color: var(--ink); }
+    .facet .ft { font-size: 17px; font-weight: 800; color: var(--ink); letter-spacing: -.015em; line-height: 1.2; }
+    .facet .fs { margin-top: 9px; font-size: 13px; line-height: 1.5; color: var(--muted); }
+    .facet .fs b { color: var(--body); font-weight: 600; }
+
+    /* the output edge belongs to the same block: it is what the four facets produce together */
+    .edge { background: var(--hl-soft); border-top: 1px solid var(--hl); display: flex; align-items: center; gap: 14px; padding: 15px 26px; }
+    .edge .en { font-family: var(--mono); font-size: 10.5px; color: #b08b28; letter-spacing: .1em; flex-shrink: 0; }
+    .edge .et { font-size: 14px; line-height: 1.4; color: var(--ink); }
+    .edge .et b { font-weight: 700; }
+    .edge svg { flex-shrink: 0; }
+
+    .combo { text-align: center; text-wrap: balance; font-size: 13.5px; line-height: 1.5; color: var(--muted); max-width: 900px; margin: 0 auto; }
+    .combo b { color: var(--ink); font-weight: 700; }
+
+    /* motion: the four facets slide together into one block, then the edge it produces appears */
+    .anim .facet { animation: snap .5s cubic-bezier(.2,.7,.25,1) backwards; }
+    .anim .f1 { animation-delay: .30s; } .anim .f2 { animation-delay: .38s; }
+    .anim .f3 { animation-delay: .46s; } .anim .f4 { animation-delay: .54s; }
+    .anim .f1 { --dx: -70px; } .anim .f2 { --dx: -24px; }
+    .anim .f3 { --dx: 24px; }  .anim .f4 { --dx: 70px; }
+    .anim .spine { animation: drop .42s cubic-bezier(.2,.7,.25,1) backwards; animation-delay: .18s; }
+    .anim .edge { animation: edgein .45s cubic-bezier(.2,.7,.25,1) backwards; animation-delay: .95s; }
+    .anim .combo { animation: edgein .4s ease-out backwards; animation-delay: 1.2s; }
+    @keyframes snap { from { opacity: 0; transform: translateX(var(--dx)) scale(.96); } }
+    @keyframes drop { from { opacity: 0; transform: translateY(-14px); } }
+    @keyframes edgein { from { opacity: 0; transform: translateY(10px); } }
+    .noanim .facet, .noanim .spine, .noanim .edge, .noanim .combo { animation: none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      .anim .facet, .anim .spine, .anim .edge, .anim .combo { animation: none !important; }
+    }
+    @media (max-width: 900px) { .facets { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body data-prev="slide-2.html" data-next="slide-4.html">
+  <a href="index.html" class="brand">Start Here · Your workspace</a>
+  <div class="pageno">03 / 11</div>
+
+  <div class="slide">
+    <div class="slide-head rise" style="--i:0">
+      <div class="eyebrow">What this folder actually is</div>
+      <h1>Four jobs in one folder. <span class="hl">The combination is the system.</span></h1>
+    </div>
+
+    <div class="stage">
+      <div class="rise" style="--i:1">
+        <div class="obj">
+          <div class="spine">
+            <div class="st">One folder on your machine</div>
+            <div class="ss">projects · context · reference · inbox</div>
+          </div>
+
+          <div class="facets">
+            <div class="facet f1">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.6 6.5a2 2 0 0 1 2-2h3.6l1.8 2.2h7.4a2 2 0 0 1 2 2v8.3a2 2 0 0 1-2 2H4.6a2 2 0 0 1-2-2z"/><path d="M2.6 10.4h16.8"/></svg></div>
+              <div class="ft">It organises your documents</div>
+              <div class="fs">What came in, what you are making, what went out, <b>dated</b>. Every project the same shape.</div>
+            </div>
+
+            <div class="facet f2">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="11" cy="5.4" rx="6.6" ry="2.7"/><path d="M4.4 5.4v11.2c0 1.5 3 2.7 6.6 2.7s6.6-1.2 6.6-2.7V5.4M4.4 11c0 1.5 3 2.7 6.6 2.7s6.6-1.2 6.6-2.7"/></svg></div>
+              <div class="ft">It is the data basis</div>
+              <div class="fs">One place <b>all the answers come from</b>, instead of whatever you pasted into a chat.</div>
+            </div>
+
+            <div class="facet f3">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.4 5.6h4M3.4 11h4M3.4 16.4h4"/><path d="M10.6 5.6h8M10.6 11h8M10.6 16.4h5"/></svg></div>
+              <div class="ft">It keeps status and to-dos</div>
+              <div class="fs">What is open, <b>what is waiting on whom</b>, what was decided and why.</div>
+            </div>
+
+            <div class="facet f4">
+              <div class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5.6" r="2.3"/><circle cx="5" cy="16.4" r="2.3"/><circle cx="16.6" cy="11" r="2.3"/><path d="M7 6.6c4.4 1 5 3.2 7.4 3.9M7 15.4c4.4-1 5-3.2 7.4-3.9"/></svg></div>
+              <div class="ft">It is connected to what you run</div>
+              <div class="fs">Mailbox, calendar, storage, CRM, <b>your code</b>. It reads them where they are.</div>
+            </div>
+          </div>
+
+          <div class="edge">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#b08b28" stroke-width="1.6" stroke-linecap="round"><path d="M8 2.6v10.8M4.2 9.6 8 13.4l3.8-3.8"/></svg>
+            <div class="en">AND OUT OF ALL FOUR</div>
+            <div class="et">It <b>briefs you every morning</b>, from the same folder, without you assembling anything.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="combo rise" style="--i:2">Any one of these on its own is just a folder, or just an integration. <b>Together they are the thing that can answer "where does everything stand".</b></div>
+    </div>
+
+    <div class="takeaway rise" style="--i:3">Not a tool you visit. <span class="hl">The place your work is described, so anything can act on it.</span></div>
+  </div>
+
+  <script src="deck.js"></script>
+</body>
+</html>

@@ -1,23 +1,23 @@
-# PERSONAL — [DEIN NAME]
+# PERSONAL — [YOUR NAME]
 
 _Slow-changing context, not a status file. Update when something here actually changes (role, team, collaborators) — not part of the daily PROJECTS.md-derived regeneration._
 
-## Rolle
+## Role
 
-- **Name:** [DEIN NAME] ([dein.name@firma.de])
-- **Position:** [z.B. "Gründer" oder "Teamleitung Vertrieb"]
-- **Bereich:** [z.B. "Finanzen", "Produkt", "Operations"]
-- **Standort:** [Home City]
+- **Name:** [YOUR NAME] ([your.name@company.com])
+- **Position:** [e.g. "Founder" or "Head of Sales"]
+- **Area:** [e.g. "Finance", "Product", "Operations"]
+- **Location:** [City]
 
-## Kernaufgabe
+## Core Work
 
-[1-2 Sätze: was baust/betreust du in diesem Workspace?]
+[1-2 sentences: what are you building/running in this workspace?]
 
-## Wichtige Menschen
+## Key People
 
-| Name | Rolle im Projekt-Kontext |
+| Name | Role in the project context |
 |---|---|
-| _(noch keine — wird befüllt sobald echte Projekte/Stakeholder existieren)_ | |
+| _(none yet — filled in as soon as real projects/stakeholders exist)_ | |
 
-_Diese Tabelle wird nicht automatisch aktualisiert — bei neuen Stakeholdern manuell ergänzen._
+_This table is not updated automatically — add new stakeholders manually._
 

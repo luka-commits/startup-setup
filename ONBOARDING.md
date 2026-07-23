@@ -1,120 +1,122 @@
 # ONBOARDING
 
-Wie man mit diesem Workspace arbeitet. `CLAUDE.md` sind die Instruktionen für Claude Code selbst — dieses Dokument ist für den Menschen: was ist das hier, wie sieht der Alltag aus, wo fange ich an.
+How to work with this workspace. `CLAUDE.md` is the instruction set for Claude Code itself — this document is for the human: what is this, what does everyday use look like, where do I start.
 
-## Was ist das
+## What this is
 
-Ein persönliches "Operating System" für deine Arbeit, gebaut auf Claude Code: Slash-Command-Skills für wiederkehrende Abläufe (Morning-Briefing, End-of-Day), ein Live-Dashboard, und eine Struktur aus Markdown-Files, die als Gedächtnis zwischen Sessions dient. Schreib beim ersten Mal einfach „hallo": Claude erkennt, dass der Workspace noch niemandem gehört, und führt dich durchs Setup (Fragen zu dir + deinen laufenden Projekten, optional Dokumente einsortieren und deinen Mail-Stil ableiten). Dieses Dokument setzt voraus, dass alles installiert ist. Ist es das noch nicht, geh zuerst durch [`SETUP.md`](SETUP.md).
+A personal "operating system" for your work, built on Claude Code: slash-command skills for recurring routines (morning briefing, end of day), a live dashboard, and a structure of markdown files that serves as memory between sessions. The first time, just write "hello": Claude recognizes that the workspace doesn't belong to anyone yet and walks you through the setup (questions about you + your ongoing projects, optionally sorting in documents and deriving your mail style). This document assumes everything is installed. If it isn't yet, go through [`SETUP.md`](SETUP.md) first.
 
-## Wie der Workspace organisiert ist
+The setup also asks once which working language you want; it is stored in `context/config.yaml → language`. The package's own files stay English, but everything the system says to you — briefings, dashboard, entries in `context/`, mail drafts — follows that setting.
+
+## How the workspace is organized
 
 ```
-dein-workspace/
-├── context/                 Das Gedächtnis. Wird bei jedem Lauf gelesen.
-│   ├── config.yaml          Deine Werte: Name, Standort, Office-Tage, Mail-Einstellungen
-│   ├── PROJECTS.md          WIE die Projekte stehen: Zweck, Status, Blocker, Timeline
-│   ├── STATUS.md            WAS zu tun ist: Tasks, Tagesplan, Inbox, frisch erledigt
-│   ├── JOURNAL.md           WAS WAR: Verlauf, Entscheidungen, Erkenntnisse
-│   ├── PERSONAL.md          Wer du bist: Rolle, Fachbereich, wichtige Menschen
-│   └── EMAIL_STYLE.md       Dein Schreibstil, aus deinen eigenen Mails abgeleitet
+your-workspace/
+├── context/                 The memory. Read on every run.
+│   ├── config.yaml          Your values: name, location, office days, mail settings
+│   ├── PROJECTS.md          HOW the projects stand: purpose, status, blockers, timeline
+│   ├── STATUS.md            WHAT is to be done: tasks, day plan, inbox, recently done
+│   ├── JOURNAL.md           WHAT HAPPENED: history, decisions, insights
+│   ├── PERSONAL.md          Who you are: role, area, important people
+│   └── EMAIL_STYLE.md       Your writing style, derived from your own mails
 │
-├── projects/<case>/         Ein Ordner pro Case oder Workstream
-│   ├── README.md            Zweck, Stakeholder, Entscheidungs-Log
-│   ├── inputs/              Was du BEKOMMST: Decks, Excel, Transkripte (unverändert)
-│   ├── work/                Werkbank: woran du gerade ARBEITEST
-│   ├── outputs/             Was RAUSGEGANGEN ist (datiert)
-│   └── _archive/            Ersetzte Arbeitsstände (räumt Claude selbst weg)
+├── projects/<case>/         One folder per case or workstream
+│   ├── README.md            Purpose, stakeholders, decision log
+│   ├── inputs/              What you RECEIVE: decks, Excel, transcripts (unchanged)
+│   ├── work/                Workbench: what you are currently WORKING on
+│   ├── outputs/             What WENT OUT (dated)
+│   └── _archive/            Superseded work states (Claude clears these away itself)
 │
-├── inbox/                   Drop-Zone: hier legst du ab, was eingelesen werden soll
-├── _tmp/                    Flüchtig: kurze Skripte von Claude (Entwürfe, Dashboard) — überschreibt sich selbst
-└── reference/               Nachschlagewerke: Connectors, Werkzeuge, Triage-Regeln
+├── inbox/                   Drop zone: put here whatever should be read in
+├── _tmp/                    Volatile: short scripts from Claude (drafts, dashboard) — overwrites itself
+└── reference/               Reference works: connectors, tools, triage rules
 ```
 
-Dasselbe als visuelle Karte mit Farbcode (was dir gehört vs. was bei Updates frisch kommt): [`ORDNERKARTE.html`](ORDNERKARTE.html) — Doppelklick, öffnet im Browser. Was in `reference/` steckt: [`mcp.md`](reference/mcp.md) (Mail- und Kalender-Connectors, inkl. IMAP-Ersatzweg), [`tools.md`](reference/tools.md) (firecrawl und playwright), [`mail-triage-rules.md`](reference/mail-triage-rules.md) (wie `/morning` sortiert), [`plugins.md`](reference/plugins.md) (optionale Erweiterungen, hier ausdrücklich erlaubt), [`routinen.md`](reference/routinen.md) (vorgebaute Automatik-Läufe), [`uebungen.md`](reference/uebungen.md) (die erste Woche zum Üben) und [`links.md`](reference/links.md) (alle Links an einem Ort).
+The same thing as a visual map with color coding (what belongs to you vs. what arrives fresh with updates): [`FOLDER-MAP.html`](FOLDER-MAP.html) — double-click, opens in the browser. What sits in `reference/`: [`mcp.md`](reference/mcp.md) (mail and calendar connectors, including the IMAP fallback route), [`tools.md`](reference/tools.md) (firecrawl and playwright), [`mail-triage-rules.md`](reference/mail-triage-rules.md) (how `/morning` sorts), [`plugins.md`](reference/plugins.md) (optional extensions, explicitly allowed here), [`routines.md`](reference/routines.md) (pre-built automated runs), [`exercises.md`](reference/exercises.md) (the first week, for practice) and [`links.md`](reference/links.md) (all links in one place).
 
-### Warum drei Dateien für Projekte, und nicht eine
+### Why three files for projects, and not one
 
-`PROJECTS.md` sagt, **wie es steht**. `STATUS.md` sagt, **was zu tun ist**. `JOURNAL.md` sagt, **was war**. Das wirkt wie eine Trennung zu viel, bis man die Alternative kennt: Steht dieselbe Aufgabe an zwei Orten, muss jemand sie synchron halten. Am Anfang tut das jemand. Nach drei Wochen tut es niemand mehr, und ab da weiß man nicht mehr, welche Version stimmt.
+`PROJECTS.md` says **how it stands**. `STATUS.md` says **what is to be done**. `JOURNAL.md` says **what happened**. That looks like one separation too many, until you know the alternative: if the same task sits in two places, someone has to keep them in sync. In the beginning someone does. After three weeks nobody does, and from then on you no longer know which version is right.
 
-Deshalb gilt hart: **Tasks leben ausschließlich in `STATUS.md`.** Nirgends sonst. Was dort nicht steht, existiert für das System nicht.
+That is why this holds hard: **tasks live exclusively in `STATUS.md`.** Nowhere else. What isn't there doesn't exist for the system.
 
-**Was du davon hast:** Du kannst jeder Datei einzeln vertrauen. Die Task-Liste ist vollständig, weil sie die einzige ist.
+**What you get out of it:** you can trust every file on its own. The task list is complete because it is the only one.
 
-### Die Ordner eines Projekts — und warum du dich um sie nicht kümmerst
+### The folders of a project — and why you don't have to look after them
 
-Vier Ordner, vier klare Jobs: `inputs/` ist, was du **bekommen** hast, und bleibt unverändert liegen — damit du in vier Wochen noch weißt, was Klientenstand war und was deine Interpretation. `work/` ist die **Werkbank**: woran du (oder Claude für dich) gerade arbeitest. `outputs/` ist, was **rausgegangen** ist, datiert — die Antwort auf „welchen Stand hat der Klient gesehen?" in einem Blick. `_archive/` fängt ersetzte Arbeitsstände auf.
+Four folders, four clear jobs: `inputs/` is what you **received**, and it stays there unchanged — so that in four weeks you still know what was the client's state and what was your interpretation. `work/` is the **workbench**: what you (or Claude on your behalf) are currently working on. `outputs/` is what **went out**, dated — the answer to "which version did the client see?" at a glance. `_archive/` catches superseded work states.
 
-Du legst darin nichts selbst ab und räumst nicht auf: Claude schreibt neue Arbeit in die Werkbank (und aktualisiert lieber ein bestehendes Dokument, als ein zweites mit demselben Inhalt anzulegen), verschiebt datiert nach `outputs/`, wenn du sagst, dass etwas rausgegangen ist, und räumt ersetzte Stände selbst nach `_archive/`.
+You don't file anything in there yourself and you don't tidy up: Claude writes new work into the workbench (and would rather update an existing document than create a second one with the same content), moves things dated into `outputs/` when you say something went out, and moves superseded states into `_archive/` itself.
 
-**Was du davon hast:** Der Projekt-Ordner zeigt immer den aktuellen Stand und bleibt in sich vollständig — wer ihn aufmacht, hat den Case. Das macht auch das Archivieren am Ende erst sinnvoll, und die Übergabe an jemand anderen.
+**What you get out of it:** the project folder always shows the current state and stays complete in itself — whoever opens it has the case. That is also what makes archiving at the end meaningful in the first place, and handing over to someone else.
 
-Die Unterordner entstehen beim ersten Inhalt. Leere Ordner legt niemand auf Vorrat an.
+The subfolders come into being with the first content. Nobody creates empty folders in advance.
 
-**Und wo lebt das Tägliche?** Aufgaben, Projekt-Stände und Tagebuch bleiben zentral in `context/` — sie beantworten Tages-Fragen („was liegt an?") und werden bei jedem Lauf gelesen. Das Projekt-README führt mit Entscheidungs-Log und Verlauf sein eigenes Gedächtnis. So hat jede Information genau ein Zuhause.
+**And where does the everyday live?** Tasks, project states and journal stay central in `context/` — they answer day-to-day questions ("what's on?") and are read on every run. The project README keeps its own memory with a decision log and history. That way every piece of information has exactly one home.
 
-### Warum Claude nicht priorisiert
+### Why Claude doesn't prioritize
 
-Es kennt deine echte Business-Priorität nicht. Ein Rang, den es trotzdem behauptet, ist geraten, und geraten sieht aus wie gewusst. Deshalb bekommst du alles Offene, getaggt und filterbar. Sortieren tust du.
+It doesn't know your real business priority. A rank it claims anyway is guessed, and guessed looks like known. That is why you get everything open, tagged and filterable. The sorting you do.
 
-## Wie das zusammenspielt
+## How this plays together
 
-Du legst nichts selbst ab und pflegst keine Ordner. Du sagst, was ist, und die Sachen wandern dorthin, wo sie hingehören. Drei typische Wege:
+You don't file anything yourself and you don't maintain folders. You say what is, and things move where they belong. Three typical routes:
 
-**Ein Dokument kommt rein.** Du legst das Deck in `inbox/` und sagst „lies das ein".
+**A document comes in.** You put the deck in `inbox/` and say "read this in".
 
-| Was daraus wird | Wohin |
+| What becomes of it | Where |
 |---|---|
-| Die To-dos daraus | `context/STATUS.md`, unter dem Projekt |
-| Der neue Projektstand | `context/PROJECTS.md` |
-| Die Entscheidungen | `context/JOURNAL.md` + Entscheidungs-Log des Projekts |
-| Das Dokument selbst | `projects/<case>/inputs/`, unverändert |
+| The to-dos from it | `context/STATUS.md`, under the project |
+| The new project state | `context/PROJECTS.md` |
+| The decisions | `context/JOURNAL.md` + the project's decision log |
+| The document itself | `projects/<case>/inputs/`, unchanged |
 
-Der letzte Punkt ist der, der später zählt: Verweist ein Transkript nächste Woche auf „das Deck von neulich", findet Claude es dort wieder. Landet Projekt-Material im allgemeinen Ablagefach, sucht es dort vergeblich und versteht nur die Hälfte.
+The last point is the one that counts later: if a transcript refers next week to "that deck from the other day", Claude finds it there again. If project material lands in the general filing bin, it searches there in vain and only understands half of it.
 
-**Eine Mail braucht dich.** `/morning` liest dein Postfach und legt jeden Fund, der eine Entscheidung von dir braucht, als **Inbox-Zeile** in `STATUS.md`. Nicht als Task: Erst wenn du „übernimm 1 ins Projekt X" sagst, wird eine Task daraus. Der Grund ist Absicht. Bereits gelesene Mails werden nicht erneut gescannt, also würde ein Fund, den du heute liegen lässt, morgen spurlos verschwinden. In der Inbox bleibt er stehen, bis du entscheidest.
+**A mail needs you.** `/morning` reads your mailbox and puts every finding that needs a decision from you as an **inbox line** into `STATUS.md`. Not as a task: only once you say "take 1 into project X" does it become a task. The reason is deliberate. Mails that have already been read are not scanned again, so a finding you leave lying today would vanish without a trace tomorrow. In the inbox it stays until you decide.
 
-**Du sagst etwas im Chat.** „Kapitel 3 ist fertig", „warte auf die IT", „der Termin lief gut". Kein Befehl, keine Datei. Claude routet es selbst: Status zu `PROJECTS.md`, Aufgaben zu `STATUS.md`, Ereignisse zu `JOURNAL.md`, und das Dashboard zieht nach. Und was sich noch nicht einordnen lässt — der lose Gedanke, die Idee, das „irgendwann mal" — landet in der Inbox, bis du sagst, was draus werden soll. Das ist der eigentliche Betriebsmodus. Die Befehle sind nur Abkürzungen für die Fälle, in denen mehr passieren soll.
+**You say something in the chat.** "Chapter 3 is done", "waiting on IT", "the meeting went well". No command, no file. Claude routes it itself: status to `PROJECTS.md`, tasks to `STATUS.md`, events to `JOURNAL.md`, and the dashboard follows. And what can't be classified yet — the loose thought, the idea, the "someday" — lands in the inbox until you say what should become of it. That is the actual operating mode. The commands are only shortcuts for the cases where more should happen.
 
-## Täglicher/wöchentlicher Loop
+## Daily/weekly loop
 
-1. **Morgens:** `/morning` — Kalender + Mail + offene Tasks als Briefing im Chat + volles Dashboard (`context/today.html`, 6 Tabs: Heute / Kalender / Projekte & Notizen / Workspace / Start Here / Hilfe — der Workspace-Tab zeigt jederzeit, was verbunden ist, was noch offen ist und was zuletzt lief). Neue Mail-Funde landen in der Inbox-Zone (übernehmen oder verwerfen — nichts verschwindet still). Am Ende optional: Tag kurz durchplanen — dein Plan landet mit Fortschrittsbalken im Dashboard. Bereits triagierte Mails werden nicht doppelt gelesen (Markierung im Postfach + internes Ledger).
-2. **Tagsüber:** normal mit Claude arbeiten. Status-Änderungen, Blocker, Entscheidungen einfach im Chat erwähnen — der Workspace aktualisiert sich selbst.
-3. **Abends:** `/eod` — kurzer Check-in: Plan gegen Realität, was liegen bleibt, was entschieden wurde.
-4. **Der Kalender-Tab zeigt bewusst nur heute:** deine Termine als Zeitachse mit den freien Blöcken dazwischen, und bei Terminen mit Projekt-Bezug ein aufklappbares Briefing. Was in den nächsten Tagen ansteht, fragst du im Chat („was steht diese Woche an?").
+1. **In the morning:** `/morning` — calendar + mail + open tasks as a briefing in the chat + full dashboard (`context/today.html`, 5 tabs: Today / Calendar / Projects & Notes / Workspace / Start Here — the Workspace tab shows at any time what is connected, what is still open and what last ran). New mail findings land in the inbox zone (take over or discard — nothing disappears quietly). At the end, optionally: quickly plan the day — your plan lands in the dashboard with a progress bar. Mails that have already been triaged are not read twice (tag in the mailbox + internal ledger).
+2. **During the day:** work with Claude normally. Just mention status changes, blockers and decisions in the chat — the workspace updates itself.
+3. **In the evening:** `/eod` — short check-in: plan versus reality, what stays open, what was decided.
+4. **The calendar tab deliberately shows only today:** your appointments as a timeline with the free blocks in between, and for appointments with a project link an expandable briefing. What is coming up in the next few days you ask in the chat ("what's on this week?").
 
-## Kernregeln
+## Core rules
 
-- **Keine Top-3/Priorisierung durch Claude.** Du siehst die vollständige, getaggte Sicht auf alles Offene — du filterst und priorisierst.
-- **Immer Bestätigung vor Mail-Entwürfen** — nie automatisches Senden.
-- **Nie Mail/Kalender ohne explizite Erlaubnis** (pro Session neu bestätigt).
-- **Keine sensiblen Daten** (HR, Gehalt, Performance) im Dashboard oder Chat-Output.
-- **Tokengünstig by design:** Routine-Arbeit (Mail-Fetch, Klassifikation) läuft auf einem günstigen Modell; Urteil und Texte beim Hauptmodell.
+- **No top 3/prioritization by Claude.** You see the complete, tagged view of everything open — you filter and prioritize.
+- **Always confirmation before mail drafts** — never automatic sending.
+- **Never mail/calendar without explicit permission** (confirmed anew each session).
+- **No sensitive data** (HR, salary, performance) in the dashboard or chat output.
+- **Token-efficient by design:** routine work (mail fetch, classification) runs on a cheap model; judgment and text on the main model.
 
-## Realität: das hier verzeiht Lücken
+## Reality: this forgives gaps
 
-Du wirst `/morning` vergessen. Du wirst zwei Wochen beim Klienten sein und hier nicht reinschauen. **Das ist eingeplant, nicht schlimm:**
+You will forget `/morning`. You will be at the client for two weeks and not look in here. **That is planned for, not a problem:**
 
-- Das System **tut nie so, als wäre es aktuell.** Das Dashboard zeigt sein echtes Alter, und nach ein paar Tagen sagt Claude dir beim Einstieg einmal, dass dein Stand alt ist — einmal, ohne Mahnung.
-- **Der Wiedereinstieg kostet EINE Nachricht:** Sag „guten Morgen", du wirst gefragt, was in der Zwischenzeit passiert ist — zwei, drei Stichpunkte genügen, den Rest räumt Claude auf (auch die Aufgaben, die längst erledigt sind).
-- **Es gibt keinen Verfall.** Wer im Chat arbeitet, hält das System nebenbei aktuell, auch ganz ohne Befehle.
+- The system **never pretends to be up to date.** The dashboard shows its real age, and after a few days Claude tells you once when you come in that your state is old — once, without nagging.
+- **Getting back in costs ONE message:** say "good morning", you'll be asked what happened in the meantime — two or three bullet points are enough, Claude clears up the rest (including the tasks that were done long ago).
+- **There is no expiry.** Whoever works in the chat keeps the system current on the side, entirely without commands.
 
-## Wünsche äußern kostet einen Satz
+## Voicing a wish costs one sentence
 
-Fehlt dir etwas („kann das auch Angebote nachverfolgen?", „ich hätte gern einen Befehl für den Wochenbericht") — sag es einfach im Chat. Was sich sofort bauen lässt, wird gebaut. Was das Paket selbst weiterentwickeln müsste, verpackt Claude auf Wunsch als fertige Mail an die Person, von der du das System hast — du liest drüber und klickst Senden. So fließt dein Bedarf zurück, ohne dass du irgendwo ein Ticket schreiben musst.
+If something is missing for you ("can this track quotes too?", "I'd like a command for the weekly report") — just say it in the chat. Whatever can be built right away gets built. Whatever would have to be developed in the package itself, Claude packages on request as a finished mail to the person you got the system from — you read it over and click send. That way your needs flow back without you having to write a ticket anywhere.
 
-## Wenn etwas hakt
+## When something is off
 
-- **Einfach im Chat sagen, was komisch ist** ("das Dashboard zeigt alte Daten", "die Task ist doppelt") — das System repariert abgeleitete Dateien selbst und sichert vor jeder Änderung den letzten Projektstand.
-- **Wenn eine Aussage falsch ist** ("das hab ich längst beantwortet", "das gehört nicht zu dem Projekt") — sag es. Es wird korrigiert, ohne Rechtfertigung; wiederholt sich derselbe Fehler, wird die Ursache abgestellt, nicht nur der Einzelfall. Mail-Einschätzungen sind Einschätzungen: Claude sieht dein Postfach, nicht dein Telefonat.
-- **"Mach das rückgängig"** funktioniert für die letzte Änderung am Projektstand.
-- **Kein Briefing, obwohl du "guten Morgen" gesagt hast?** Wahrscheinlich läuft Claude Code im falschen Ordner — siehe [`SETUP.md`](SETUP.md), Schritt 2.
-- Nichts hier kann versehentlich Mails senden oder Termine ändern — Entwürfe musst du immer selbst in deinem Mailprogramm abschicken.
+- **Just say in the chat what looks odd** ("the dashboard is showing old data", "the task is duplicated") — the system repairs derived files itself and backs up the last project state before every change.
+- **If a statement is wrong** ("I answered that long ago", "that doesn't belong to that project") — say so. It gets corrected without justification; if the same mistake repeats, the cause gets fixed, not just the single case. Mail assessments are assessments: Claude sees your mailbox, not your phone call.
+- **"Undo that"** works for the last change to the project state.
+- **No briefing even though you said "good morning"?** Claude Code is probably running in the wrong folder — see [`SETUP.md`](SETUP.md), step 2.
+- Nothing here can accidentally send mails or change appointments — you always have to send drafts yourself in your mail program.
 
-## Quick-Start (nach dem Setup)
+## Quick start (after the setup)
 
-1. `/morning` laufen lassen (Erlaubnis für Mail/Kalender wird einmal pro Session abgefragt). Der erste Lauf dauert ein paar Minuten (Postfach-Erstaufnahme), danach geht's schneller.
-2. Wenn im Briefing Kalender-Rauschen auftaucht (private Blöcke, Gym, …): den Betreff in `config.yaml → calendar.noise_subjects` eintragen — oder einfach im Chat sagen, dass der Termin nicht ins Briefing gehört.
-3. **Diktieren schlägt Tippen.** Das System lebt davon, dass du ihm Dinge erzählst — und ein Status-Update ist schneller gesprochen als getippt. Windows: `Win + H` startet das eingebaute Diktat in jedem Textfeld, auch im Claude-Fenster. Mac: Diktat einmal unter Systemeinstellungen → Tastatur aktivieren, danach genügt zweimal `Ctrl`.
-4. Ab hier trägt sich das System größtenteils selbst — je konsequenter du Status-Änderungen im Chat erwähnst (oder diktierst), desto besser die Briefings.
+1. Run `/morning` (permission for mail/calendar is asked once per session). The first run takes a few minutes (initial mailbox intake), after that it goes faster.
+2. If calendar noise turns up in the briefing (private blocks, gym, …): enter the subject in `config.yaml → calendar.noise_subjects` — or just say in the chat that the appointment doesn't belong in the briefing.
+3. **Dictating beats typing.** The system lives on you telling it things — and a status update is faster spoken than typed. Windows: `Win + H` starts the built-in dictation in any text field, including the Claude window. Mac: activate dictation once under System Settings → Keyboard, after that pressing `Ctrl` twice is enough.
+4. From here the system largely maintains itself — the more consistently you mention status changes in the chat (or dictate them), the better the briefings.
 
-**Eine Sache noch:** [`WAS-DIESES-SYSTEM-TUT.md`](WAS-DIESES-SYSTEM-TUT.md) — eine Seite dazu, was gelesen wird und was nie passiert. Auch die Antwort, wenn dich jemand fragt, ob du das nutzen darfst.
+**One more thing:** [`WHAT-THIS-SYSTEM-DOES.md`](WHAT-THIS-SYSTEM-DOES.md) — one page on what is read and what never happens. Also the answer if someone asks you whether you are allowed to use this.

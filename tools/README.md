@@ -1,29 +1,29 @@
-# Eigene Tools
+# Your own tools
 
-Hier liegen die kleinen Werkzeuge, die ihr euch selbst baut: ein Rechner, eine Übersicht, ein Formular. Alles, wo Anklicken besser ist als Beschreiben.
+This is where the small tools you build yourselves live: a calculator, an overview, a form. Anything where clicking beats describing.
 
-## Die Regel
+## The rule
 
-**Ein Ordner pro Tool**, benannt nach dem, was es tut:
+**One folder per tool**, named after what it does:
 
 ```
 tools/
-├── auslastung/       # z.B. eine index.html plus was dazugehoert
-└── angebots-rechner/
+├── utilization/       # e.g. an index.html plus whatever belongs to it
+└── quote-calculator/
 ```
 
-Ein Tool ist im einfachsten Fall **eine einzige HTML-Datei**, die man doppelklickt. Das reicht überraschend weit und hat den Vorteil, dass nichts laufen muss und nichts kaputtgehen kann.
+In the simplest case a tool is **a single HTML file** that you double-click. That gets you surprisingly far and has the advantage that nothing has to be running and nothing can break.
 
-## Damit es im Dashboard erscheint
+## To make it show up in the dashboard
 
-Trag es in `context/config.yaml` unter `own_tools` ein: Name, Zweck, Adresse. Die Adresse kann ein Pfad in diesem Ordner sein, eine `localhost`-Adresse oder eine echte URL, falls das Tool irgendwo läuft.
+Register it in `context/config.yaml` under `own_tools`: name, purpose, address. The address can be a path in this folder, a `localhost` address, or a real URL if the tool runs somewhere.
 
-Danach steht es im Dashboard im Tab „Start Here" und ist von dort aus erreichbar. Das Dashboard **verlinkt** nur, es führt nichts aus.
+After that it stands in the dashboard in the "Start Here" tab and is reachable from there. The dashboard only **links**, it does not execute anything.
 
-## Damit es aussieht wie der Rest
+## To make it look like the rest
 
-Sag beim Bauen dazu: *„halt dich an `reference/design.md`"*. Dann nutzt das Tool dieselben Farben, Abstände und Muster wie das Dashboard, und euer System sieht aus wie ein System und nicht wie fünf verschiedene Programme.
+Say so when building: *"stick to `reference/design.md`"*. Then the tool uses the same colors, spacings and patterns as the dashboard, and your system looks like one system instead of five different programs.
 
-## Wann sich ein Tool lohnt und wann nicht
+## When a tool is worth it and when it is not
 
-Steht in [`reference/system-erweitern.md`](../reference/system-erweitern.md). Kurzfassung: Ein Befehl ist etwas, das du im Chat sagst. Ein Tool ist etwas, das du anklickst, weil es rechnet, etwas anzeigt oder von mehreren Leuten benutzt wird.
+That is in [`reference/extending-the-system.md`](../reference/extending-the-system.md). Short version: a command is something you say in the chat. A tool is something you click, because it calculates, displays something, or is used by several people.

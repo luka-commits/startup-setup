@@ -1,21 +1,21 @@
-# Projekt: [Name]
+# Project: [Name]
 
-**Gestartet:** YYYY-MM-DD
-**Status:** Planung / Aktiv / Pausiert / Fertig
-**Stakeholder:** <!-- Name + Rolle im Projekt, z.B. "Anna M. (Auftraggeberin)" -->
-**Ziel:** <!-- Ein Satz: was ist am Ende anders/fertig? Konkret, in deiner Sprache — „Der Klient weiß, welche 6 Player er anruft" statt „Erstellung einer Anbieterübersicht". -->
+**Started:** YYYY-MM-DD
+**Status:** Planning / Active / Paused / Done
+**Stakeholders:** <!-- Name + role in the project, e.g. "Anna M. (client contact)" -->
+**Goal:** <!-- One sentence: what is different/finished at the end? Concrete, in your own words — "The client knows which 6 players to call" instead of "Creation of a provider overview". -->
 
-## Kontext
-<!-- Warum gibt es das? Welches Problem löst es? Was ist der Rahmen (Case, internes Projekt, Ad-hoc)? 2–3 kurze Sätze, so dass ein Kollege es ohne dich versteht. -->
+## Context
+<!-- Why does this exist? Which problem does it solve? What is the frame (case, internal project, ad hoc)? 2–3 short sentences, so that a colleague understands it without you. -->
 
 ## Deliverables
-<!-- Was geht raus, an wen, bis wann? Rausgegangene Stände in outputs/ (datiert: YYYY-MM-DD_<name>) -->
+<!-- What goes out, to whom, by when? States that went out live in outputs/ (dated: YYYY-MM-DD_<name>) -->
 
-## Entscheidungen
-<!-- Datum — Entscheidung — wer. Append-only, nie löschen. Eine Zeile pro Entscheidung, so konkret, dass sie in 3 Monaten noch trägt: „250k-Schwelle gilt (Nicole)" statt „Parameter finalisiert". -->
+## Decisions
+<!-- Date — decision — who. Append-only, never delete. One line per decision, concrete enough to still carry in 3 months: "250k threshold applies (Nicole)" instead of "parameters finalized". -->
 
-## Verlauf
-<!-- Datum — was passiert ist (Meetings mit Outcome, Meilensteine). Eine Zeile pro Ereignis, ein Halbsatz. -->
+## History
+<!-- Date — what happened (meetings with an outcome, milestones). One line per event, half a sentence. -->
 
-## Dateien & Links
-<!-- inputs/: erhaltene Inputs · work/: Werkbank · outputs/: rausgegangen (datiert) · relevante SharePoint/Teams-Links -->
+## Files & Links
+<!-- inputs/: received inputs · work/: workbench · outputs/: went out (dated) · relevant SharePoint/Teams links -->
