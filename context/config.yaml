@@ -104,9 +104,9 @@ inventory:
   repos: []
     # - name: "workspace"
     #   url: "https://github.com/example/workspace"
-    # - name: "sqanit"
-    #   url: "https://github.com/example/sqanit"
-    #   path: "projects/sqanit"
+    # - name: "website"
+    #   url: "https://github.com/example/website"
+    #   path: "projects/website"
 
   # Scheduled runs, schedule in plain language. Instructions: SETUP.md
   routines: []
