@@ -1,6 +1,6 @@
 # Version
 
-**v1.8-open** · as of 2026-07-24
+**v1.8.1-open** · as of 2026-07-24
 
 Open variant. Built on the same skeleton as the restricted corporate edition, but without plugin and connector restrictions.
 
@@ -40,6 +40,8 @@ If something doesn't work: **get in touch with the version number above.** It ma
 Everything else (`.claude/`, `CLAUDE.md`, the documentation) is interchangeable and comes fresh from the new version. So this holds: your own changes belong in these four folders, not in the machinery.
 
 ## Changes
+
+**v1.8.1-open** — Two small things that were getting in the way. **Deleting is no longer blocked.** A safety rule quietly forbade every delete command, which meant that when you asked to remove a file, nothing happened and it looked like your machine was broken. The rule is gone. Deleting is allowed now, it is just handled with care: your own documents and notes are never removed on the system's own initiative, it asks once in plain language before anything of yours goes for good, and it commits first where it can so a delete stays reversible. **The system now notices its own updates.** The update procedure existed but only ran when you thought to ask or during the morning routine. From now on it checks once a day, at the start of a session, whether a newer version is out, and if so it offers it in one sentence. Say yes and it fetches it the safe way; your four folders always win, your work is committed first. If you are already current you never notice it.
 
 **v1.8-open** — Web design joined the kit. A new bundled skill, `design-taste-frontend`, kicks in whenever a web page, landing page or interface gets built or redesigned: it reads the brief and picks a design direction before writing any code, and checks its own output against the usual AI design giveaways — the difference between "looks generated" and "looks designed". Nothing to install, it is simply there. On top of it, optionally, the **21st.dev Magic** MCP server: describe a UI component and get production-ready code from a library of professionally designed ones. Like `notebooklm` it is deliberately not part of the standard install — it needs its own (free-to-try) API key, so it gets offered when web work actually comes up. Route and setup: `reference/tools.md`.
 

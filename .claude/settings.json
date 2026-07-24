@@ -4,7 +4,8 @@
       {
         "matcher": "startup",
         "hooks": [
-          { "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/check-setup.sh\"" }
+          { "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/check-setup.sh\"" },
+          { "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/check-updates.sh\"" }
         ]
       },
       {
@@ -100,7 +101,6 @@
       "ReadMcpResourceTool"
     ],
     "deny": [
-      "Bash(rm:*)",
       "Bash(git reset:*)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",

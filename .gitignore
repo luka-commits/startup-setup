@@ -11,6 +11,7 @@ __pycache__/
 projects/*/code/
 
 # Laufzeit-Artefakte dieses Workspace (kein Versionsgut)
+.claude/.last-update-check
 _tmp/*
 !_tmp/README.md
 context/.backup/
