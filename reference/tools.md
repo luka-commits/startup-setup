@@ -16,6 +16,7 @@ The package also runs without either. But then everything that comes from the in
 | Supabase (only if you use databases) | `supabase`, `supabase-postgres-best-practices` |
 | Your own agents in the cloud | `managed-agents` (needs a paid API access on top of the subscription) |
 | Turning your own documents into something you can listen to or study | `notebooklm` (optional, see below) |
+| Web pages and interfaces that have to look good | `design-taste-frontend` — bundled, nothing to install. 21st.dev Magic on top is optional (see below) |
 
 Which task runs through which tool is in `CLAUDE.md` as a table under "Tool Routing". That is the part that makes sure the kit actually gets used day to day.
 
@@ -98,6 +99,22 @@ setx OPENROUTER_API_KEY "sk-or-YOUR-KEY"                          # Windows (Pow
 ```
 
 **Honest classification:** this is not a day-1 thing. The chat itself always runs through Claude (your subscription, no double payment); OpenRouter only comes into play when there is a concrete need — then Claude will say by itself that the key is missing, and this section is the instruction.
+
+## Web design: taste comes bundled, components are optional
+
+Two pieces, and only one of them needs anything from you.
+
+**The taste is already in the package.** The skill `design-taste-frontend` kicks in whenever Claude builds or redesigns a web page, a landing page or an interface. It is the difference between "looks like every AI-generated page" and something that reads as designed: it infers the right design direction from your brief before writing any code, and it checks its own output against a strict list of the usual AI design giveaways. Nothing to install, nothing to sign up for — it is simply there.
+
+**21st.dev Magic (optional): ready-made, polished UI components.** An MCP server from [21st.dev](https://21st.dev): describe a component ("a pricing table with three tiers", "a hero section with a sign-up form") and it returns production-ready code drawn from a large library of professionally designed components. Worth adding the moment web pages become a recurring part of your work; pointless before that.
+
+**Setting it up (only when the occasion is there, not on spec):** the key comes from your own account at [21st.dev](https://21st.dev) — sign in, generate an API key in the console (free to try, heavier use needs a plan). Then one command, which Claude runs for you once you paste the key:
+
+```bash
+claude mcp add magic --env API_KEY="YOUR-21ST-KEY" -- npx -y @21st-dev/magic@latest
+```
+
+Restart Claude Code once afterwards, and record it in `config.yaml → inventory` like every other piece of equipment.
 
 ## Order when setting up
 
