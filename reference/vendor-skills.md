@@ -1,3 +1,5 @@
+> **Related:** three small scripts run automatically at the start of every session (`.claude/hooks/`). `check-setup.sh` says so if the setup has never run, `check-updates.sh` looks once a day for a newer version, and `setup-check.py` names the pieces that are still missing once the setup is done — no backup repo, no mailbox, no calendar, a key that is claimed but absent. Each stays silent when there is nothing to say; together they are the reason a half-finished workspace does not stay half-finished unnoticed.
+
 # Skills from outside — what they are and how they update
 
 Most skills in this package are ours. A few come from other people's open repositories and ship along, licence and all. **The difference matters for updates**, which is why they are listed here rather than mixed in silently.
