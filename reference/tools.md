@@ -139,4 +139,41 @@ On Windows plain `python`/`pip` is often the Store stub — use `uv run python -
 
 **Two things belong said before someone starts:** it needs a Google account and a browser sign-in, and it talks to NotebookLM through an interface Google does not officially publish. It works well and it can break when Google changes something. That is a fair trade for what it does, but it is not the kind of tool you build a weekly routine on without a fallback.
 
+## Optional: /last30days (what people are saying right now)
+
+**What it is for:** every question whose answer has a shelf life. Is this tool worth switching to, what changed in the last few weeks, what is the current advice on X. A model answers those from a training cutoff, and a search engine answers them with whoever bought the top result. This one reads Reddit and X from the last thirty days and comes back with the actual threads and posts, with links.
+
+The line against `firecrawl`: firecrawl fetches a page **you already know about**. This one finds out what is being said when you do not know where to look.
+
+**It is not our skill.** It lives in its own public repo and is installed from there, which means it improves and changes on its own schedule rather than with our releases. Install:
+
+```bash
+npx skills add mvanhorn/last30days-skill
+```
+
+**It costs money per search, and not through the Claude subscription.** Two API keys of your own do the work: OpenAI searches Reddit, xAI searches X. Both are billed per use, both are separate invoices. They go into the skill's **own** file, not into `credentials.env`:
+
+```bash
+mkdir -p ~/.config/last30days && touch ~/.config/last30days/.env && chmod 600 ~/.config/last30days/.env
+echo 'OPENAI_API_KEY=<your-key>' >> ~/.config/last30days/.env
+echo 'XAI_API_KEY=<your-key>'    >> ~/.config/last30days/.env
+```
+
+One key alone is enough to start: with only one of the two it searches only that source and says so. **A run that comes back empty is usually a billing problem, not a broken tool** — an exhausted credit balance surfaces as `401`/`403`/`429` and the report then arrives with zero findings. If a search returns nothing, check the balance first.
+
+Use it as `/last30days <topic>`, optionally `/last30days <topic> for <tool>` when you want prompts you can paste straight into something.
+
+## Optional: herdr (work that keeps running when you close the laptop)
+
+**What it is for:** a long job that must not die because the lid went down or the connection dropped. herdr holds the terminal open on the machine and lets you reconnect from another device, so a run started at the desk can be checked from a phone an hour later.
+
+**Be honest about who needs this.** For most work in this system the answer is no. A briefing takes a minute, a draft takes seconds, and anything that should run **without a person in front of it** belongs in `/schedule`, which is built into Claude Code and needs no installation at all. herdr earns its place when a job genuinely runs for hours and you want to look in on it.
+
+```bash
+brew install herdr        # macOS/Linux; Windows is in beta
+herdr --version
+```
+
+Apache 2.0, its own open project. Documentation: [herdr.dev/docs](https://herdr.dev/docs/).
+
 **The manual is in the package:** skill `notebooklm`, nothing to look up.

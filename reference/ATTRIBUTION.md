@@ -19,6 +19,13 @@ Some of them carry their own `LICENSE.txt` in their folder ("© 2025 Anthropic, 
 
 What was taken is criteria and procedure, no source code. Neither project ships with this package, and neither one runs.
 
+## Two tools the setup installs but does not ship
+
+Neither of these is in this repository. The setup offers them, the user installs them from the original source, and they update on their own schedule.
+
+- **`/last30days`** (github.com/mvanhorn/last30days-skill) — the research skill for Reddit and X. It carries **no licence file**, which is precisely why it is not copied in here: without a licence grant, redistributing someone else's code is not ours to do. Installing it from its own repo is the user's own act, and that is the honest arrangement. Route and keys: `reference/tools.md`.
+- **`herdr`** (Apache 2.0, github.com/herdrdev/herdr) — the agent runtime that keeps long jobs alive. Installed via Homebrew, optional, nothing in the package depends on it.
+
 ## A recommended plugin
 
 The `/audit` skill points at the `claude-automation-recommender` skill from the **claude-code-setup** plugin (Apache 2.0, official marketplace). The user installs that themselves; it is not part of this package.

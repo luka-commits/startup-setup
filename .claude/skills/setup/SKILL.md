@@ -358,7 +358,17 @@ claude plugin install claude-mem@thedotmack
 
 A no here is a full answer and costs nothing else; everything in the system works without it. **Not asking would be the mistake** — anyone working with client data has to be able to make that call themselves.
 
-**Two more exist but install differently**, so they stay a one-liner in the summary rather than a step: `codeburn` needs no installation at all (`npx codeburn` shows what the usage costs), and `find-skills` comes through the skill registry (`npx skills add vercel-labs/skills --skill find-skills`).
+**One skill comes from outside the package, and it gets its own question.** `/last30days` researches what people have actually been saying about a topic in the last thirty days, across Reddit, X and the web, and hands back the findings plus ready-to-use prompts. It is the answer to "what is the state of X right now", where the model's own knowledge stops at its cutoff and a normal web search returns marketing pages. Two things belong in the same breath, because both cost the user something later: it is **not ours** (it lives in its own public repo and is installed from there, so it changes on its own schedule, not with our releases), and it runs on **two API keys of their own**, billed per search. Ask, then install on a yes:
+
+> *"There is one more, and this one is not from us. It looks up what people have actually been saying about a topic in the last month, on Reddit and X, instead of what a search engine wants to show you. Good for 'is this tool any good' and 'what changed recently'. It needs two of your own API keys and costs a few cents per search. Want it?"*
+
+```bash
+npx skills add mvanhorn/last30days-skill
+```
+
+The keys come in Step 7.3. Without them the skill is installed and simply says so when it is called, so a yes here commits them to nothing. A no is a full answer and goes into the summary under "not set up, available any time".
+
+**Three more exist but install differently**, so they stay a one-liner in the summary rather than a step: `codeburn` needs no installation at all (`npx codeburn` shows what the usage costs), `find-skills` comes through the skill registry (`npx skills add vercel-labs/skills --skill find-skills`), and `herdr` (`brew install herdr`) keeps a long-running job alive when the laptop closes. **Do not install herdr on spec.** Most work here is over in seconds, and anything that should run without a person in front of it belongs in `/schedule`, which is already built in. It is worth a sentence in the summary so they know it exists on the day a job actually runs for hours.
 
 If an install fails (marketplace unreachable, no network): name which one is missing and what it would have done, then carry on. The system runs without every single one of them.
 
@@ -402,6 +412,15 @@ Keys never belong **in the repo** (it gets cloned and versioned; a key checked i
 - **OpenRouter** — needed for images and for models that don't come from Anthropic. Without it, the system says honestly on "make me an image" that it lacks the access.
 
 **Don't offer this by yourself, only on request:** an **Anthropic API key**. That is needed exclusively by the `managed-agents` skill (your own agents that run permanently in the cloud). Important and honest to say when it comes up: **that is a second invoice next to the subscription** and is billed per use. Everyday work never needs it — everything this system does runs through the subscription. Scheduled routines (`/schedule`) incidentally do **not** need it, they run through the subscription access.
+
+**Only if they said yes to `/last30days` in 7.1:** it needs two keys of their own, `OPENAI_API_KEY` (that one searches Reddit) and `XAI_API_KEY` (that one searches X). Both are billed per use and are **a separate invoice from the Claude subscription** — say that before they sign up, not after. **These two do not go into `credentials.env`**, the skill reads its own file:
+
+```bash
+mkdir -p ~/.config/last30days && touch ~/.config/last30days/.env && chmod 600 ~/.config/last30days/.env
+echo 'OPENAI_API_KEY=<their-key>' >> ~/.config/last30days/.env
+```
+
+One key alone already works: with only one of the two, the skill searches only that source and says so. Neither key → it is installed and reports honestly that it lacks access.
 
 **One more question — you ask it, you never answer it for them:** _"Do you also build applications, or do you work with databases?"_
 

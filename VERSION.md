@@ -1,6 +1,6 @@
 # Version
 
-**v1.8.1-open** · as of 2026-07-24
+**v1.9-open** · as of 2026-08-08
 
 Open variant. Built on the same skeleton as the restricted corporate edition, but without plugin and connector restrictions.
 
@@ -40,6 +40,8 @@ If something doesn't work: **get in touch with the version number above.** It ma
 Everything else (`.claude/`, `CLAUDE.md`, the documentation) is interchangeable and comes fresh from the new version. So this holds: your own changes belong in these four folders, not in the machinery.
 
 ## Changes
+
+**v1.9-open** — Two tools from outside joined the kit, and both are installed rather than shipped. **`/last30days` answers the questions that go stale.** "Is this tool any good", "what changed in the last few weeks", "what is the current advice" — a model answers those from its training cutoff and a search engine answers them with whoever paid for the top result. This one reads Reddit and X from the last thirty days and comes back with the actual threads, with links. It is not our skill: it lives in its own public repo, the setup installs it from there on your yes, and it runs on two API keys of your own that are billed per search, separately from the Claude subscription. That gets said before you sign up for anything, and a no costs you nothing. Worth knowing for the day it looks broken: a search that comes back empty is almost always an empty credit balance, not a defect. **`herdr` keeps long work alive.** It holds a terminal open on your machine so a job survives the lid closing, and lets you look in on it later from another device. Deliberately optional, and with the honest note attached that most work here does not need it: anything that should run without a person in front of it belongs in `/schedule`, which is built in and needs nothing installed. Both are in the routing table in `CLAUDE.md`, details in `reference/tools.md`, and both are recorded in `reference/ATTRIBUTION.md` as what they are, other people's work.
 
 **v1.8.1-open** — Two small things that were getting in the way. **Deleting is no longer blocked.** A safety rule quietly forbade every delete command, which meant that when you asked to remove a file, nothing happened and it looked like your machine was broken. The rule is gone. Deleting is allowed now, it is just handled with care: your own documents and notes are never removed on the system's own initiative, it asks once in plain language before anything of yours goes for good, and it commits first where it can so a delete stays reversible. **The system now notices its own updates.** The update procedure existed but only ran when you thought to ask or during the morning routine. From now on it checks once a day, at the start of a session, whether a newer version is out, and if so it offers it in one sentence. Say yes and it fetches it the safe way; your four folders always win, your work is committed first. If you are already current you never notice it.
 
