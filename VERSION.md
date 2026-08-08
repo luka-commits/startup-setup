@@ -1,6 +1,6 @@
 # Version
 
-**v1.10-open** · as of 2026-08-08
+**v1.11-open** · as of 2026-08-08
 
 Open variant. Built on the same skeleton as the restricted corporate edition, but without plugin and connector restrictions.
 
@@ -40,6 +40,8 @@ If something doesn't work: **get in touch with the version number above.** It ma
 Everything else (`.claude/`, `CLAUDE.md`, the documentation) is interchangeable and comes fresh from the new version. So this holds: your own changes belong in these four folders, not in the machinery.
 
 ## Changes
+
+**v1.11-open** — Google Workspace hat jetzt Anleitungen, nicht nur eine Erwähnung. Das Paket beschrieb das `gws`-Kommandozeilenwerkzeug an zwei Stellen und lieferte keine einzige Anleitung dazu — Claude musste die Befehle raten. Acht Skills kommen jetzt mit, einer pro Aufgabe: Postfach lesen und Mail verschicken, Termin ändern gegenüber Tagesübersicht, Dateien in Drive, Werte aus einer Tabelle holen und eine Zeile anhängen. Dazu `gws-shared` als erstes, wenn ein Aufruf klemmt: dort stehen Anmeldung, globale Schalter und die üblichen Fehlerbilder. Nichts zu installieren, sie sind Teil des Pakets und greifen, wenn eine Aufgabe sie braucht. Voraussetzung bleibt die einmalige Google-Cloud-Einrichtung aus `reference/gws-cli.md`.
 
 **v1.10-open** — Das Dashboard baut sich jetzt selbst. Bisher schrieb Claude bei jedem Render rund zwanzig HTML-Fragmente von Hand und dazu ein Wegwerf-Skript, das sie in die Vorlage schob. Das kostete bei jedem Lauf Zeit und Tokens, und es sah jeden Tag ein bisschen anders aus, weil es davon abhing, wie Claude es an dem Morgen gerade formulierte. Jetzt liest `reference/scripts/render_dashboard.py` deine Dateien direkt und leitet Aufgaben, Projektkarten, Notizen, Zahlen und Daten selbst ab — in einer Fünftelsekunde, ohne Modell. Claude schreibt nur noch den Briefing-Text und das, was einen Netzabruf braucht. Fällt etwas aus, bricht der Lauf ab und lässt das alte Dashboard stehen, statt eine halbe Seite zu schreiben. **Neu ist außerdem der eine Knopf oben:** solange Mail und Kalender heute nicht geholt sind, steht dort „Start the day", danach „Close the day", solange nichts im Journal steht, und sonst nichts. Ein Klick kopiert den Befehl; gehandelt wird weiter im Chat. Der Grund ist gemessen: die Morgen- und Abendrituale liefen selten, nicht weil sie zu schwer wären, sondern weil niemand daran denkt. Ein Knopf, der einen ansieht, wird gedrückt.
 

@@ -124,6 +124,8 @@ Both belong to the standard kit in this variant and are installed during the set
 
 Only relevant on Google Workspace, and only as the **advanced route** — the normal route to mail and calendar is the Cowork connector (`reference/mcp.md`). `gws` adds the full API surface (write to Sheets, upload to Drive, scripted routines without a Cowork session) at the price of a one-time Google Cloud Console setup. Guide: [`reference/gws-cli.md`](gws-cli.md).
 
+**Eight skills come with it, one per job**, so Claude does not have to guess the command line: `gws-shared` (sign-in, global flags, failure modes — read this first when something is stuck), `gws-gmail` and `gws-gmail-send` (mailbox and sending), `gws-calendar` and `gws-calendar-agenda` (change an appointment vs. just see the day), `gws-drive` (files and sharing), `gws-sheets-read` and `gws-sheets-append` (get values out, put a row in). Nothing to install — they are part of the package and kick in when a task needs them.
+
 ## Optional: notebooklm (documents you listen to instead of read)
 
 **What it is for:** it turns your own material — a stack of PDFs, transcripts, notes on one subject — into something you can take in differently: an audio version two people talk through, a briefing, a study guide, an FAQ. The point is not summarizing. The point is that a folder of documents you never get around to reading becomes thirty minutes in the car.
