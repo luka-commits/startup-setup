@@ -48,6 +48,7 @@ _tmp/            # Ephemeral runtime scripts (drafts, dashboard fill) — fixed 
 - `context/JOURNAL.md` — **the history**: what happened, what was decided. Append-only, newest first.
 - `context/EMAIL_STYLE.md` — personal mail style (derived by /setup from Sent Items; if it is missing, skills use their example templates)
 - `reference/mail-triage-rules.md` — mail classification logic for `/morning`
+- `reference/scripts/routing_check.py` — checks that this CLAUDE.md still names every skill and command you have. A skill nobody can find is a skill you do not have, and that is how a workspace quietly loses half its abilities. Run it after adding or removing one: `python3 reference/scripts/routing_check.py`.
 - `reference/self-test.md` — the checklist the system uses to check itself. Read by `/morning` (Step 6a, silently) and `/checkup` (on demand). Discovered a new silent failure mode? Add it there, not into a skill.
 - `reference/dashboard-render.md` — the render contract for the dashboard (mechanism, placeholder specs, cache rule). **The only thing to read for daily updates** (Rule 1); `/morning` reads it on every render.
 - `reference/mcp.md` — which connectors exist, how they are connected, what they are allowed to do. Questions about mail/calendar/file connections → go there, do not improvise.
