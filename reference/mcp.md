@@ -126,6 +126,20 @@ What tends to pay off most in startup day-to-day, in this order:
 
 **For routines there is an extra rule:** a locally connected connector is not enough for a cloud routine — it has to be attached to the routine when it is created (the assistant asks about this, see `SETUP.md` § Running the briefing automatically).
 
+## Wispr Flow — talking instead of typing
+
+Not a connector to your data, but to your voice: **Wispr Flow** turns dictation into text anywhere on the machine, and its MCP server lets Claude reach what you dictated. For anyone who thinks faster than they type — a briefing, a long instruction, notes after a call — this is the single biggest change to how the day feels.
+
+**Setting it up, once:**
+
+1. Install the Wispr Flow app and sign in (wisprflow.ai).
+2. Add the server: `claude mcp add --transport http wispr-flow https://api.wisprflow.ai/connect/mcp`
+3. Sign in once in the browser when Claude asks.
+
+**What it is not:** it does not read your files and it sends nothing on its own. It carries dictated text, nothing else. **What it costs:** its own subscription, separate from Claude.
+
+**Worth knowing before you start:** dictated text arrives the way it was spoken — half sentences, no punctuation in the right places, names spelled by ear. That is not a fault, it is how speech works, and Claude handles it. What it does mean: for anything that goes out, `/schreiben` (or `/email`) still shapes it. Dictation gets the thought out of your head; it does not write your mail.
+
 ## Route B: IMAP directly (when there is no connector)
 
 For mailboxes no connector can reach: no Claude Cowork access, connector blocked by IT, or the mail runs on your own mail server. Then mail and even calendar go through **IMAP directly** — two small, read-only scripts sit in `reference/scripts/` for that:
