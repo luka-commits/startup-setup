@@ -153,7 +153,7 @@ Trigger: a plan, a concept, an analysis — anything that gets built before it c
 **Model check (at session start and when the task changes):** check which model you are yourself, and whether it fits the task. Mismatch → ONE short note with the concrete command, then keep working normally (never block, never nag repeatedly): routine running on Opus → "`/model sonnet` is enough here and is considerably cheaper"; deep analysis coming up and you are Sonnet/Haiku → "`/model opus` is worth it for that". Haiku is not intended as the main model (judgment quality) — point that out.
 
 - **Mechanics → Haiku subagent, judgment → main model.** Bulk data work as a Haiku subagent with a self-contained prompt + structured return format; semantic judgment (context matching, confidence tiering, drafting, redundancy checks) stays with the main model. Pattern: `/morning` Step 3a.
-- **Never regenerate HTML/CSS shells** — dashboard via template fill (`context/today_template.html` + string replace via `script_command` from config.yaml).
+- **Never regenerate HTML/CSS shells, and never compose the dashboard fragments yourself** — `reference/scripts/render_dashboard.py` derives them from the context files. You write the briefing text and the cached mail/calendar fragments; it does the rest (`reference/dashboard-render.md`).
 - **Read large files/decks selectively and section by section** (page ranges, search hits), not repeatedly in full — every full read costs context in every further step of the session.
 - **Keep outputs short:** briefing < 450 words, empty sections collapse, no repetition of previews in confirmations.
 - Enforced process discipline does not replace a strong model, but it makes weak ones sufficient: rule-based classification needs complete data fetching (full text + reply check), not an expensive model.
@@ -265,7 +265,7 @@ Persistent files (scripts, templates) → `reference/`, never in `inbox/`. **`/i
 - **`npm`/`node` not on PATH:** `export PATH="$PATH:/c/Program Files/nodejs:/c/Users/<WINDOWS-USER>/AppData/Roaming/npm"` before npm calls.
 - **SSL intercept (corporate proxy with its own certificates):** Node/npm fail with `UNABLE_TO_GET_ISSUER_CERT_LOCALLY` → export root certs to `~/.claude/ca-bundle.pem`, set `NODE_EXTRA_CA_CERTS` in the user env.
 - **Sandbox blocks `rm` in the OneDrive area:** use `mv` into a staging folder instead (`_deprecated/`), the user deletes in Explorer.
-- **The dashboard fill runs via `script_command` from `config.yaml`** — default `node` (ships with Claude Code). Start Python fallbacks via `uv run python` (plain `python` is the Store stub); with special characters in the output, prefix `PYTHONUTF8=1` (the console is cp1252).
+- **The dashboard renderer needs Python** (`python3 reference/scripts/render_dashboard.py`), and so do the mail helpers and the edit-guard hook — Python is a prerequisite of this package, not an option. On Windows plain `python` is often the Store stub, so use `uv run python` there; with special characters in the output prefix `PYTHONUTF8=1` (the console is cp1252). `script_command` in `config.yaml` records the variant that worked during setup.
 
 **Mac:**
 

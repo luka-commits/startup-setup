@@ -1,6 +1,6 @@
 # Version
 
-**v1.9-open** · as of 2026-08-08
+**v1.10-open** · as of 2026-08-08
 
 Open variant. Built on the same skeleton as the restricted corporate edition, but without plugin and connector restrictions.
 
@@ -40,6 +40,8 @@ If something doesn't work: **get in touch with the version number above.** It ma
 Everything else (`.claude/`, `CLAUDE.md`, the documentation) is interchangeable and comes fresh from the new version. So this holds: your own changes belong in these four folders, not in the machinery.
 
 ## Changes
+
+**v1.10-open** — Das Dashboard baut sich jetzt selbst. Bisher schrieb Claude bei jedem Render rund zwanzig HTML-Fragmente von Hand und dazu ein Wegwerf-Skript, das sie in die Vorlage schob. Das kostete bei jedem Lauf Zeit und Tokens, und es sah jeden Tag ein bisschen anders aus, weil es davon abhing, wie Claude es an dem Morgen gerade formulierte. Jetzt liest `reference/scripts/render_dashboard.py` deine Dateien direkt und leitet Aufgaben, Projektkarten, Notizen, Zahlen und Daten selbst ab — in einer Fünftelsekunde, ohne Modell. Claude schreibt nur noch den Briefing-Text und das, was einen Netzabruf braucht. Fällt etwas aus, bricht der Lauf ab und lässt das alte Dashboard stehen, statt eine halbe Seite zu schreiben. **Neu ist außerdem der eine Knopf oben:** solange Mail und Kalender heute nicht geholt sind, steht dort „Start the day", danach „Close the day", solange nichts im Journal steht, und sonst nichts. Ein Klick kopiert den Befehl; gehandelt wird weiter im Chat. Der Grund ist gemessen: die Morgen- und Abendrituale liefen selten, nicht weil sie zu schwer wären, sondern weil niemand daran denkt. Ein Knopf, der einen ansieht, wird gedrückt.
 
 **v1.9-open** — Two tools from outside joined the kit, and both are installed rather than shipped. **`/last30days` answers the questions that go stale.** "Is this tool any good", "what changed in the last few weeks", "what is the current advice" — a model answers those from its training cutoff and a search engine answers them with whoever paid for the top result. This one reads Reddit and X from the last thirty days and comes back with the actual threads, with links. It is not our skill: it lives in its own public repo, the setup installs it from there on your yes, and it runs on two API keys of your own that are billed per search, separately from the Claude subscription. That gets said before you sign up for anything, and a no costs you nothing. Worth knowing for the day it looks broken: a search that comes back empty is almost always an empty credit balance, not a defect. **`herdr` keeps long work alive.** It holds a terminal open on your machine so a job survives the lid closing, and lets you look in on it later from another device. Deliberately optional, and with the honest note attached that most work here does not need it: anything that should run without a person in front of it belongs in `/schedule`, which is built in and needs nothing installed. Both are in the routing table in `CLAUDE.md`, details in `reference/tools.md`, and both are recorded in `reference/ATTRIBUTION.md` as what they are, other people's work.
 

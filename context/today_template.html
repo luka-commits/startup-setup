@@ -88,6 +88,16 @@
   .cardbox { padding: var(--pad) 22px; }
 
   /* ── Morning Briefing — the highlight: central, open by default ── */
+  /* ── Day status — the one button that is due right now ──
+     Visible instead of remembered: the morning and evening rituals only run when
+     someone thinks of them, and that is exactly what stops happening. */
+  .tagstatus:empty { display: none; }
+  .tagstatus-in { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow-1); padding: 11px 14px; margin: 0 0 var(--gap); }
+  .tagstatus-in b { font-size: 13px; }
+  .tagstatus-in span { color: var(--text-2); font-size: 12.5px; flex: 1 1 220px; }
+
   details.briefing { background: linear-gradient(180deg, var(--brand-soft) 0%, var(--card) 150px);
     border: 1px solid var(--border); border-radius: 10px;
     box-shadow: var(--shadow-2); margin: 0 0 var(--gap); position: relative; overflow: hidden; }
@@ -998,6 +1008,12 @@
 <div class="wrap">
 
   <div class="tabpane" id="pane-heute">
+    <!-- {{TAGESSTATUS}} — the one step that is due, or nothing. The renderer sets
+         "Start the day" while mail and calendar have not been fetched today, then
+         "Close the day" while the journal has no entry for today, otherwise an
+         empty string and the card disappears. Clicking only copies the command:
+         the dashboard stays a view, the work happens in the chat. -->
+    <div class="tagstatus">{{TAGESSTATUS}}</div>
     <details class="briefing" id="briefing">
       <summary>
         <span class="label">Briefing</span>

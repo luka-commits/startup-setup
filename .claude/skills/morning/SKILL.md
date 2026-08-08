@@ -586,7 +586,7 @@ generated: 2026-04-26T07:42:00+02:00
 [briefing content]
 ```
 
-## Step 7b: Render Dashboard HTML (template fill, not full regen)
+## Step 7b: Render the dashboard (three input files, then the renderer)
 
 **Do NOT hand-write the CSS/HTML shell every run.** The static shell (a light cockpit in green: timeline/tasks/cards styles, auto-reload JS, filters/tabs — no write interaction, Rule 8) lives once in `{workspace_root}/context/today_template.html` — only touch that file if the design itself changes. Every `/morning` run just fills in the dynamic parts and writes the result to `{workspace_root}/context/today.html` — **overwrite, always**. The dashboard is a view of the now, not a document: **never create copies or archive it**. The history lives elsewhere (briefing archive `inbox/briefing-*.md`, journal). The state lives in the files, not in the HTML — which is why overwriting costs nothing.
 
@@ -598,8 +598,13 @@ generated: 2026-04-26T07:42:00+02:00
 
 **Mechanism:**
 1. Compose each placeholder's value as a short HTML fragment (or an empty string to collapse an unused element — see below).
-2. Fill the template's placeholders with a small script via Bash: write it to `_tmp/fill.js` (or `_tmp/fill.py`), then run it with `config.yaml → script_command` (determined by `/setup`: `node`, `uv run python`, `python3` or `python` — the script's language follows the command). If the field is empty or it fails, try the four in order — never hardcode one variant. The script reads the template, does plain string replacement per placeholder, writes `today.html`. If none of the four variants works, only the dashboard fails, not the briefing — say so once in the chat and carry on. This keeps the CSS/shell out of your own output every run — you only generate the short, actually-dynamic fragments.
-3. **The binding render contract lives in `reference/dashboard-render.md`** — read it on every render (mechanism, all placeholder specs, cache rule, failure modes). It defines USER_NAME, GENERATED_AT, DATE_*, META_LINE, BRIEFING_LEAD, BRIEFING, BRIEFING_SECTIONS, AGENDA, TASK_ITEMS, INBOX_ITEMS, PLAN_STATE, EMAIL_STATUS, AUDIT_FOOTER, OWN_TOOLS, TOOLS_EXTRA, AUSSTATTUNG, PROJECT_DETAIL, NOTES with literal markup. Deliberately factored out: mid-day re-renders (CLAUDE.md dashboard Rule 1) need only that plus the cache, not this whole instruction.
+2. Write the three input files, then run the renderer — you never build the HTML yourself:
+   `context/BRIEFING.md` (the briefing text), `context/.mail_cache.json` (the fragments that needed a network call) and, when the Start Here blocks changed, `context/.fragments.json`. Then:
+   ```
+   python3 reference/scripts/render_dashboard.py --full
+   ```
+   It derives tasks, project cards, notes, counts, dates and the day-status button from the files themselves. A placeholder without a value aborts the run and leaves `today.html` untouched — a half-filled dashboard looks like a loading error. If Python is genuinely missing, only the dashboard drops out, never the briefing: say it once in the chat and carry on.
+3. **The binding render contract lives in `reference/dashboard-render.md`** — read it on every render. It defines what belongs in those three files, with the literal markup for the agenda and inbox rows, the date rule for the cache, and the failure modes. Deliberately factored out: a mid-day re-render (CLAUDE.md dashboard Rule 1) needs only that file plus the changed context files, not this whole instruction.
 4. **Empty sections collapse:** an unused placeholder becomes an empty string, not an empty card/panel shell.
 5. **Failure mode:** if the template is missing, malformed, or the fill step errors, do NOT abort the briefing — log the error in chat and continue. The Markdown briefing + archive are the source of truth; HTML is an additive view. **The template is source code, not a derived file** — if it's gone, nobody can reconstruct it from this spec. Then say so honestly: "context/today_template.html is missing — get it back from the original copy; until then everything else runs normally."
 
