@@ -42,9 +42,9 @@ TXT = {
     'de': dict(offen='Offen in {w}: {n}', leer='{w}: nichts offen.',
                ueber='überfällig', bis='bis {d}', mehr='… und {n} weitere (--alle zeigt alles)',
                sats='Satelliten (dort öffnen, nur dort laufen ihre Skills): ',
-               anweisung='[Aufgaben-Hook] Bei der ersten Antwort: diesen Block UNVERAENDERT '
-                         'als Liste ausgeben, nicht zusammenfassen, nicht umformulieren. '
-                         'Danach EINE Aufgabe vorschlagen: die oberste, die weder mit ▶ als '
+               anweisung='[Aufgaben-Hook] Diese Liste steht dem Nutzer bereits im Terminal '
+                         '— nicht wiederholen, nicht zusammenfassen. '
+                         'Bei der ersten Antwort direkt EINE Aufgabe vorschlagen: die oberste, die weder mit ▶ als '
                          'laufend markiert ist noch auf jemand anderen wartet ("wartet auf") '
                          '— dort liegt der Ball nicht beim Nutzer. Dazu in ein bis zwei '
                          'Saetzen der konkrete erste Schritt und was du davon selbst '
@@ -59,8 +59,9 @@ TXT = {
     'en': dict(offen='Open in {w}: {n}', leer='{w}: nothing open.',
                ueber='overdue', bis='due {d}', mehr='… and {n} more (--alle shows all)',
                sats='Satellites (open them there, their skills only run there): ',
-               anweisung='[task hook] On your first reply: print this block VERBATIM as a '
-                         'list, do not summarise or reword it. Then propose ONE task: the '
+               anweisung='[task hook] The user already has this list in their terminal — do '
+                         'not repeat or summarise it. '
+                         'On your first reply, go straight to proposing ONE task: the '
                          'topmost one that is neither marked running with ▶ nor waiting on '
                          'someone else ("waiting on") — the ball is not with the user there. '
                          'Add one or two sentences with the concrete first step and what you '
@@ -302,8 +303,9 @@ def main():
         }, ensure_ascii=False))
         return 0
 
-    if not a.alle:
-        print(t9n['anweisung'])
+    # Ohne --hook liest ein MENSCH mit (die Shell gibt das beim Start aus). Die
+    # Anweisung ans Modell gehoert dort nicht hin — sie reist ueber den Hook,
+    # der weiterhin feuert und additionalContext liefert.
     print(liste)
     return 0
 
