@@ -1,6 +1,6 @@
 # Version
 
-**v1.12-open** · as of 2026-08-08
+**v1.13-open** · as of 2026-08-08
 
 Open variant. Built on the same skeleton as the restricted corporate edition, but without plugin and connector restrictions.
 
@@ -40,6 +40,8 @@ If something doesn't work: **get in touch with the version number above.** It ma
 Everything else (`.claude/`, `CLAUDE.md`, the documentation) is interchangeable and comes fresh from the new version. So this holds: your own changes belong in these four folders, not in the machinery.
 
 ## Changes
+
+**v1.13-open** — Die Skill-Beschreibungen sagen jetzt, wann ein Skill gemeint ist, statt wie er arbeitet. Eine Beschreibung liegt in jedem Kontext, auch wenn der Skill nie gebraucht wird, und das Listing hat ein Budget von rund einem Prozent des Fensters. Was darüber liegt, wird abgeschnitten — und eine abgeschnittene Beschreibung ist der Grund, warum Claude einen vorhandenen Befehl nicht findet. Bei einem neuen Workspace fällt das niemandem auf, weil er nie erfährt, dass es den Befehl gegeben hätte. Raus sind Skriptnamen, Dateipfade und Schrittnummern, die ohnehin in der Anleitung stehen; drin bleibt, was es ist, wann es greift und wie es sich vom verwechselbaren Nachbarn unterscheidet. Zusammen halbiert das den ständigen Aufwand: von rund 3.300 auf 2.250. Nebenbei sprechen `audit` und `adopt` wieder Englisch wie der Rest des Pakets.
 
 **v1.12-open** — Zwei Dinge, die vorher nur auf einem Rechner lagen. **`/last30days` kommt jetzt mit**, statt installiert zu werden: der Skill recherchiert, was in den letzten dreißig Tagen auf Reddit, X und im Netz zu einem Thema gesagt wurde. Er lag bisher außen vor, weil sein Ursprungsprojekt keine Lizenz führte — inzwischen ist sie MIT, also liegt er im Paket, und jeder der das Repo klont hat ihn. Zwei Dinge braucht er selbst: **Python 3.12 oder neuer** und zwei eigene API-Schlüssel, die pro Suche abgerechnet werden. **Und Wispr Flow ist beschrieben** — Diktat statt Tippen, mit der einmaligen Einrichtung in `reference/mcp.md`. Für alle, die schneller denken als schreiben, ist das die größte Änderung am Tagesgefühl; was nach außen geht, formt danach trotzdem `/email`. **Neu dazu `reference/vendor-skills.md`:** es trennt, was uns gehört von dem, was aus fremden Repos mitkommt. Der Unterschied zählt beim Update — Fremdes lässt sich überall auf einmal aktualisieren, weil niemand es angepasst hat; Eigenes geht den vorsichtigen Weg, weil ein Workspace darum herum gewachsen sein kann.
 

@@ -1,6 +1,6 @@
 ---
 name: adopt
-description: "Baut einen BESTEHENDEN Ordner in die Workspace-Struktur um, ohne etwas zu verlieren. Nimmt einen gewachsenen Ordner (eigene Dateien, fremde Struktur, vielleicht schon eine CLAUDE.md), schlägt in Klartext vor was wohin soll, fragt bei allem Unklaren nach, führt die Bewegungen mit Rückweg aus und prüft am Ende gegen den Zustand, den ein frisches Setup erzeugt hätte. Nutze diesen Skill, wenn jemand sagt 'bau meinen Ordner um', 'übernimm diesen Workspace', 'bring das in die richtige Struktur', 'kann ich das auf einen bestehenden Ordner anwenden', 'setup auf vorhandenem Workspace', 'migrier das', oder wenn ein Kunde einen gewachsenen Ordner mitbringt statt bei null anzufangen. Nicht zu verwechseln mit /setup — das richtet einen FRISCH kopierten, leeren Workspace ein und setzt voraus, dass nichts Eigenes drin liegt."
+description: "Rebuilds an EXISTING folder into the workspace structure without losing anything: proposes in plain language what goes where, asks about everything unclear, moves with a way back, then checks the result against what a fresh setup would have produced. Use it on 'restructure my folder'. An empty workspace is /setup."
 ---
 
 # /adopt

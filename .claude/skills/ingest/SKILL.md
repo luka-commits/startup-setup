@@ -1,6 +1,6 @@
 ---
 name: ingest
-description: "Reads material in and files it into the workspace: meeting transcripts (Teams/.vtt), PDFs, screenshots, pasted notes, mail threads — Office files (Word/PowerPoint/Excel) depending on the installed tools, otherwise as a PDF export. Extracts decisions, to-dos with owner + deadline, blockers, stakeholders and facts, shows them as a plain-language proposal and writes after confirmation: to-dos to STATUS.md, project state to PROJECTS.md, history to JOURNAL.md, decisions additionally into the project README; the source moves into the project folder (projects/<slug>/inputs/), with no project match into inbox/processed/. Trigger: /ingest <file>, /ingest + pasted text, 'read this in', 'process the transcript', 'file this deck', 'what does the document say', 'lies das ein', 'verarbeite das Transkript', 'sortier das Deck ein', 'was steht in dem Dokument', '/ingest <folder>' for a whole folder (an old workspace, a case folder — folder mode), 'read in my old folder', 'lies meinen alten Ordner ein', 'übernimm das aus meinem alten System', or when the user mentions a file in inbox/."
+description: "Reads material in and files it into the workspace: transcripts, PDFs, screenshots, notes, mail threads. Extracts decisions, to-dos, blockers and facts as a plain-language proposal, then writes them into STATUS.md/PROJECTS.md/JOURNAL.md and moves the source into the project folder. Trigger: /ingest, 'read this in'."
 ---
 
 # Ingest — filing material

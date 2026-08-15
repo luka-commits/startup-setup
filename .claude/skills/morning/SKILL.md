@@ -1,6 +1,6 @@
 ---
 name: morning
-description: "Daily briefing and mail triage — the start of the day. Use whenever the user asks for 'morning briefing', 'guten morgen', 'tagesstart', 'briefe mich', 'start my day', 'what's today', 'wo muss ich antworten', 'postfach scannen', 'where do I need to reply', 'scan my inbox', or any request to orient them to the current day. Loads the calendar (meetings, reminders), triages mail (Action Needed / Follow-up / Waiting / Tickets / FYI) and the workspace state, produces a briefing in chat and renders the dashboard (context/today.html, 5 tabs). New mail findings land as Inbox entries that the user either adopts or discards — nothing disappears silently. At the end it optionally offers mail drafts for the unambiguous cases (never automatically, never for anything sensitive) and a short conversation to plan the day. No ranking, no top 3 — the user prioritizes."
+description: "Daily briefing and mail triage — the start of the day. Loads the calendar, triages mail (Action Needed / Follow-up / Waiting / Tickets / FYI) and workspace state, renders the dashboard, optionally offers mail drafts and a day-planning chat. No ranking. Trigger: 'morning briefing', 'guten morgen'."
 ---
 
 # Morning Briefing Skill

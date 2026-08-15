@@ -254,6 +254,22 @@ Claude asks about the repo, environment, model and connectors and creates the ro
 
 ---
 
+## Recommended: the working style, once per machine
+
+Everything above configures **this workspace**. One thing belongs a level higher, in your own
+`~/.claude/CLAUDE.md`: **how the agent works** — when it asks and when it just does it, how it
+checks its own output before saying done, when it argues back instead of agreeing, which thinking
+tool a decision earns.
+
+That block is in [`reference/working-style.md`](reference/working-style.md). Copy it into your
+global file once and it applies to every project on your machine, including repos that know nothing
+about this package. It deliberately does not live in a repo: rules in a repo mean one copy per
+repo, all drifting apart.
+
+**Check:** `bash tools/check-working-style.sh` says whether your copy is installed and current.
+
+---
+
 ## Optional: dictate instead of typing
 
 This system runs on text in the chat. That is exactly where the brake sits: whoever has to type out the context for a project eventually types less, and then the system knows less.

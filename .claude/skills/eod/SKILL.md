@@ -1,6 +1,6 @@
 ---
 name: eod
-description: "End of day in the evening: reconciles the day plan against reality, records what happened, what is left over and what was decided. Trigger: /eod, 'end of day', 'wrapping up', 'that's it for today', 'feierabend', 'Tagesabschluss', 'das war's für heute'. Loads calendar + day plan + tasks + session history, shows ONE finished proposal, collects corrections only, writes JOURNAL.md + PROJECTS.md and gives a short outlook on tomorrow. No hour tracking."
+description: "End of day: reconciles the day plan against reality, records what happened, what's left over and what was decided, then writes JOURNAL.md + PROJECTS.md with a short outlook on tomorrow. Shows one finished proposal, collects corrections only. No hour tracking. Trigger: /eod, 'end of day', 'feierabend'."
 ---
 
 # /eod — end of day

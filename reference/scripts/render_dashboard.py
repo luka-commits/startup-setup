@@ -57,6 +57,7 @@ TXT = {
         cats={'deep-work': 'Deep Work', 'quick-win': 'Quick Win', 'comms': 'Kommunikation',
               'prep': 'Vorbereitung', 'admin': 'Admin'},
         datum='{wd}, {d}. {mon} {y}', offen='offen', wartet='wartet auf {}',
+        brief_alt='Das letzte Briefing ist vom {d} — sag „/morning" für die heutige Lage.',
         todos='Offene To-dos',
         meta='{t} Aufgaben offen · {i} in der Inbox · {p} Projekte · {e} Termine heute',
         kein_kal='Kalender heute nicht abgerufen', keine_mail='Postfach heute nicht geprüft',
@@ -72,6 +73,7 @@ TXT = {
         cats={'deep-work': 'Deep Work', 'quick-win': 'Quick Win', 'comms': 'Communication',
               'prep': 'Preparation', 'admin': 'Admin'},
         datum='{wd}, {d} {mon} {y}', offen='open', wartet='waiting on {}',
+        brief_alt='The last briefing is from {d} — say "/morning" for today.',
         todos='Open to-dos',
         meta='{t} tasks open · {i} in the inbox · {p} projects · {e} meetings today',
         kein_kal='Calendar not fetched today', keine_mail='Mailbox not checked today',
@@ -148,8 +150,17 @@ def parse_status():
         m = re.search(r'\((?:bis|due) (\d{2})\.(\d{2})\.\)', raw)
         if m:
             d, mo = int(m.group(1)), int(m.group(2))
-            y = TODAY.year + (1 if (mo, d) < (TODAY.month, TODAY.day) else 0)
-            due = f'{y}-{mo:02d}-{d:02d}'
+            # Das Jahr, das den Termin am dichtesten an heute legt. Die alte Regel
+            # ("alles Vergangene ist naechstes Jahr") stufte jede UEBERFAELLIGE
+            # Aufgabe still von Q1 auf Q2 herunter, obwohl die Eisenhower-Regel
+            # "ueberfaellig" ausdruecklich als dringend fuehrt. Gefunden 15.08.2026.
+            moegl = []
+            for yy in (TODAY.year - 1, TODAY.year, TODAY.year + 1):
+                try:
+                    moegl.append(datetime.date(yy, mo, d))
+                except ValueError:
+                    pass
+            due = min(moegl, key=lambda x: abs((x - TODAY).days)).isoformat() if moegl else ''
         cm = re.search(r'#(deep-work|quick-win|komm|comms|prep|admin)', raw)
         if cm:
             cat = 'comms' if cm.group(1) == 'komm' else cm.group(1)
@@ -213,6 +224,13 @@ def parse_briefing():
     """
     if not BRIEF.is_file():
         return '', '', ''
+    # Frische zaehlt, genau wie beim Mail-/Kalender-Cache: ein Briefing beschreibt
+    # die Lage EINES Tages. Ungeprueft ausgegeben behauptet es die von heute --
+    # in Lukas Workspace stand so drei Wochen lang "ein Termin um 15 Uhr, Alex
+    # hat abgesagt" oben, waehrend der Kalender daneben korrekt leer blieb.
+    alter = datetime.date.fromtimestamp(BRIEF.stat().st_mtime)
+    if alter != TODAY:
+        return (f'{TXT["brief_alt"].format(d=alter.strftime("%d.%m."))}', '', '')
     raw = BRIEF.read_text(encoding='utf-8')
     secs, cur, buf = {}, None, []
     order = []

@@ -15,6 +15,11 @@
           {
             "type": "command",
             "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/setup-check.py\""
+          },
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/reference/scripts/tasks_hier.py\" --root \"${CLAUDE_PROJECT_DIR}\"",
+            "timeout": 10
           }
         ]
       },

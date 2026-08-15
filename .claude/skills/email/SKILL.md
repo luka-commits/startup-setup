@@ -1,6 +1,6 @@
 ---
 name: email
-description: "Helps write business emails in the user's personal style, in English or German. Trigger: /email <context>, 'write a mail', 'draft mail', 'draft a reply', 'send a mail to', 'mail schreiben', 'antwort formulieren', 'schick mal ne mail an', 'e-mail an <person>'. Takes context (recipient, subject, core message, language), produces a draft (short, direct, no filler, informal Du-form in German, signature from config.yaml), shows the draft in chat, and after an OK creates the draft via the path determined in config.yaml (draft_method: MCP tool / COM / mailto / AppleScript, with a fallback ladder) — the user only clicks Send. Never sends automatically."
+description: "Helps write business emails in the user's personal style, English or German: takes context (recipient, subject, message), produces a short direct draft with signature from config.yaml, then creates it via the configured draft method after an OK — never sent automatically. Trigger: /email, 'write a mail'."
 ---
 
 # Email Skill — Draft in the User's Personal Style

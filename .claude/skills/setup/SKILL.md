@@ -1,6 +1,6 @@
 ---
 name: setup
-description: "One-time first-run personalization of a freshly copied workspace. Runs AUTOMATICALLY on first start (the CLAUDE.md rule detects the unfilled context/config.yaml) — or manually via /setup, 'set this up for me', 'first-run setup', 'new user', 'richte das für mich ein', 'ersteinrichtung', 'neuer nutzer'. Asks first which language to work in (English or German), then in one go: name, email, role, office/office days, ALL running projects, the tools they work with every day, and their Claude plan. Asks first whether this is a fresh start or an existing folder to take over. Writes the answers into context/config.yaml (the single config source — skill files are never edited), fills the empty context/ templates, creates one folder per project, files any documents the user brought along, and on request derives their personal mail style from their own Sent Items. Archives itself afterwards. NOT for daily use — runs once."
+description: "One-time first-run personalization of a freshly copied workspace: asks language, name, email, role, projects, daily tools and Claude plan, fills context/, creates project folders, then archives itself. Runs automatically on first start or via /setup, 'ersteinrichtung'. NOT for daily use. An existing folder uses /adopt."
 ---
 
 # Setup Skill — One-Time Workspace Personalization

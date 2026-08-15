@@ -1,6 +1,6 @@
 ---
 name: checkup
-description: "Checks on request whether the workspace itself is in order. Use when the user asks 'is everything ok', 'is everything running', 'check the system', 'checkup', 'something is off', 'why doesn't this work', 'ist alles in Ordnung', 'läuft alles', 'check mal das System', 'irgendwas stimmt nicht', 'warum geht das nicht', or when a support contact asked them to run it. Checks local files only (settings, core files, setup state) and reports in everyday language what is running and what is open. Changes nothing without saying so, retrieves neither mail nor calendar."
+description: "Checks on request whether the workspace itself is in order: local files only (settings, core files, setup state), reporting in plain language what's running and open. Changes nothing without saying so, never retrieves mail or calendar. Trigger: 'is everything ok', 'checkup', 'ist alles in Ordnung'."
 ---
 
 # /checkup

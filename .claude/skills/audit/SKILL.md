@@ -1,6 +1,6 @@
 ---
 name: audit
-description: "Beurteilt einen Ordner als Arbeitssystem und sagt, was ihn besser machen würde. Misst 11 Dimensionen (Deckung und Routing, Automatisierungsgrad, Sicherheit, Erreichbarkeit der Dokumente, Frische, Kontext-Ballast, Kaltstart, Entscheidungs-Gedächtnis, Lebenszyklus, Sicherung, Code) und urteilt danach in Alltagssprache. Nutze diesen Skill, wenn jemand sagt 'audit', 'prüf mal mein Setup', 'ist mein Workspace gut aufgestellt', 'was fehlt mir noch', 'wie sauber ist der Ordner', 'bewerte das Claude-Setup', 'schau dir den Ordner von X an', 'welche Skills brauche ich', 'welche Tools sollte ich anbinden', 'lohnt sich mein CRM noch', oder wenn ein fremdes Setup vor einem Erstgespräch eingeschätzt werden soll. Läuft auf JEDEM Ordner, auch ohne git, ohne Config und ohne Vorgeschichte. Nicht zu verwechseln mit /checkup — das prüft nur, ob die Mechanik dieses einen Workspace gerade intakt ist."
+description: "Judges a folder as a working system and says what would make it better: coverage, automation, safety, freshness, context ballast and more. Use it on 'audit', 'check my setup', 'what am I missing', and on someone else's setup before a first call. Whether the machinery is intact right now is /checkup."
 ---
 
 # /audit
