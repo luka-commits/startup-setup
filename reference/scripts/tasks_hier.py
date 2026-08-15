@@ -14,6 +14,7 @@ Aufruf:  python3 reference/scripts/tasks_hier.py [--root PFAD] [--alle]
 """
 import argparse
 import datetime as dt
+import json
 import re
 import subprocess
 import sys
@@ -203,6 +204,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--root', default='.')
     ap.add_argument('--alle', action='store_true', help='alle Aufgaben statt der ersten acht')
+    ap.add_argument('--hook', action='store_true',
+                    help='Ausgabe als Hook-JSON: die Liste erscheint sofort beim '
+                         'Sitzungsstart, ohne dass der Nutzer erst etwas tippt.')
     ap.add_argument('--fallback', default=None,
                     help='Workspace, der gilt, wenn --root keiner ist. Ein neues '
                          'Terminal startet im Home-Ordner, und dort gibt es keine '
@@ -231,29 +235,43 @@ def main():
     offen.sort(key=lambda t: (not t['laeuft'], t['quad'], t['due'] or dt.date.max))
     zeige = offen if a.alle else offen[:LIMIT]
 
-    # Zwei Dinge muessen mitreisen, weil in einem Satelliten die CLAUDE.md von
-    # ~/dev NICHT gilt — eine Regel dort erreicht diesen Hook nie.
-    # (1) Ohne die Ausgabe-Anweisung fasst die neue Sitzung die Liste in Prosa
-    #     zusammen; gemessen am 15.08.2026 beim ersten echten Lauf.
-    # (2) Luka will nicht die Liste, sondern den naechsten Schritt: eine Aufgabe
-    #     vorgeschlagen, nicht siebzehn zur Auswahl gestellt.
-    if not a.alle:
-        print(t9n['anweisung'])
-    print(t9n['offen'].format(w=root.name, n=len(offen)))
+    zeilen = [t9n['offen'].format(w=root.name, n=len(offen))]
     for t in zeige:
         frist = ''
         if t['due']:
             frist = '  (' + (t9n['ueber'] if (t['due'] - TODAY).days < 0
                              else t9n['bis'].format(d=t['due'].strftime('%d.%m.'))) + ')'
         mark = '▶ ' if t['laeuft'] else ''
-        print(f'  {t["quad"]}  {mark}{t["text"][:95]}{frist}  · {t["proj"]}')
+        zeilen.append(f'  {t["quad"]}  {mark}{t["text"][:95]}{frist}  · {t["proj"]}')
     if len(offen) > len(zeige):
-        print('  ' + t9n['mehr'].format(n=len(offen) - len(zeige)))
-
+        zeilen.append('  ' + t9n['mehr'].format(n=len(offen) - len(zeige)))
     if ist_wurzel:
         sats = satellites(root)
         if sats:
-            print(t9n['sats'] + ' · '.join(f'{n} {c}' for n, c in sats))
+            zeilen.append(t9n['sats'] + ' · '.join(f'{n} {c}' for n, c in sats))
+    liste = '\n'.join(zeilen)
+
+    # Die Anweisung muss mitreisen, weil in einem Satelliten die CLAUDE.md von
+    # ~/dev NICHT gilt — eine Regel dort erreicht diesen Hook nie.
+    if a.hook:
+        # systemMessage wird dem Nutzer SOFORT angezeigt, ohne dass er etwas
+        # tippen muss; blosses stdout landet nur im Kontext und ist damit erst
+        # nach seiner ersten Nachricht sichtbar. Genau das war die Beschwerde
+        # am 15.08.: "muss ich weiterhin erst selbst eine Nachricht schreiben".
+        # additionalContext traegt zusaetzlich die Anweisung ans Modell.
+        print(json.dumps({
+            'systemMessage': liste,
+            'suppressOutput': True,
+            'hookSpecificOutput': {
+                'hookEventName': 'SessionStart',
+                'additionalContext': liste + '\n\n' + t9n['anweisung'],
+            },
+        }, ensure_ascii=False))
+        return 0
+
+    if not a.alle:
+        print(t9n['anweisung'])
+    print(liste)
     return 0
 
 

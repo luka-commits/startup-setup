@@ -18,7 +18,7 @@
           },
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PROJECT_DIR}/reference/scripts/tasks_hier.py\" --root \"${CLAUDE_PROJECT_DIR}\"",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/reference/scripts/tasks_hier.py\" --hook --root \"${CLAUDE_PROJECT_DIR}\"",
             "timeout": 10
           }
         ]
