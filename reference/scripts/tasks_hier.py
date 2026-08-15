@@ -107,18 +107,12 @@ def task_file(root: Path, wer=None):
     return None
 
 
-def owner_dateien(root: Path, wer: str):
-    """Projekte, die laut meta.yaml dieser Person gehoeren. Ohne diese Ebene
-    zeigte sqanit 3 Aufgaben statt 11: seo und website stehen auf Luka, ihre
-    Punkte liegen aber in work/status.md, nicht in der Personendatei."""
-    out = []
-    for meta in sorted(root.glob('projects/*/*/meta.yaml')):
-        m = re.search(r'^owner:\s*([^\s#]+)', meta.read_text(encoding='utf-8'), re.M)
-        if m and m.group(1).strip().lower() == wer.lower():
-            f = meta.parent / 'work/status.md'
-            if f.is_file():
-                out.append((meta.parent.name, f))
-    return out
+# Bewusst KEINE Owner-Ebene: es gab sie kurz und sie holte aus sqanit zusaetzlich
+# jedes Projekt mit `owner: luka` (seo, website — zusammen 8 Punkte). Luka hat sie
+# am 15.08. wieder gestrichen, und das ist die sauberere Trennung: ein geteilter
+# Workspace unterscheidet zwischen der Aufgabenliste EINER Person und dem Stand
+# EINES Projekts. Wer beides mischt, flutet die persoenliche Liste mit
+# Projekt-Checklisten, die niemand als Tagesaufgabe gemeint hat.
 
 
 def quadrant(cat, due):
@@ -198,15 +192,10 @@ def satellites(root: Path):
         if not (d / 'CLAUDE.md').is_file():
             continue
         # Genauso zaehlen wie beim Oeffnen dort, sonst widerspricht sich das
-        # System selbst: die Zeile sagte "sqanit 3", das Oeffnen von sqanit 11.
-        wer = person(d)
-        f = task_file(d, wer)
-        if not f:
-            continue
-        n = len(tasks(f, skip_rollup=True))
-        if wer:
-            n += sum(len(tasks(pf, skip_rollup=False)) for _, pf in owner_dateien(d, wer))
-        found.append((d.name, n))
+        # System selbst — die Zeile sagte einmal "sqanit 3" bei 11 beim Oeffnen.
+        f = task_file(d, person(d))
+        if f:
+            found.append((d.name, len(tasks(f, skip_rollup=True))))
     return [(n, c) for n, c in found if c]
 
 
@@ -235,11 +224,6 @@ def main():
     # projects/+reference/ — die hat jeder Satellit aus dem Paket auch.
     ist_wurzel = ROLLUP_START in f.read_text(encoding='utf-8')
     offen = tasks(f, skip_rollup=ist_wurzel)
-    if wer:
-        for name, pf in owner_dateien(root, wer):
-            for t in tasks(pf, skip_rollup=False):
-                t['proj'] = name          # der Projektname schlaegt die ###-Ueberschrift
-                offen.append(t)
     if not offen:
         print(t9n['leer'].format(w=root.name))
         return 0
