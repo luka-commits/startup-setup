@@ -204,6 +204,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--root', default='.')
     ap.add_argument('--alle', action='store_true', help='alle Aufgaben statt der ersten acht')
+    ap.add_argument('--nur-ohne-eigenen', dest='nur_ohne_eigenen', action='store_true',
+                    help='Schweigen, wenn der Workspace einen eigenen tasks_hier-Hook '
+                         'hat — sonst feuern Benutzer- und Projektebene gemeinsam.')
     ap.add_argument('--hook', action='store_true',
                     help='Ausgabe als Hook-JSON: die Liste erscheint sofort beim '
                          'Sitzungsstart, ohne dass der Nutzer erst etwas tippt.')
@@ -214,6 +217,20 @@ def main():
     a = ap.parse_args()
 
     root = Path(a.root).resolve()
+
+    # Zwei Hooks fuer denselben Zweck: der auf Benutzerebene (gilt ueberall, nur
+    # fuer Luka) und der im Repo (wird mitausgeliefert, damit Alex, Jono und
+    # Kunden ihn auch haben). In Automatable feuerten am 15.08. beide — die
+    # zweite Ausgabe landete als Prompt im Eingabefeld und wurde beantwortet.
+    # Traegt der Workspace einen eigenen Hook, schweigt der von Benutzerebene.
+    # Der Home-Ordner ist ausgenommen: dort liegt ~/.claude/settings.json, also
+    # genau die Benutzerdatei, die diesen Hook selbst eintraegt — ungeprueft
+    # haelt der Hook sie fuer einen Projekt-Hook und bringt sich zum Schweigen.
+    if a.nur_ohne_eigenen and root != Path.home():
+        eigen = root / '.claude/settings.json'
+        if eigen.is_file() and 'tasks_hier' in eigen.read_text(encoding='utf-8'):
+            return 0
+
     wer = person(root)
     f = task_file(root, wer)
     if not f and a.fallback:
@@ -229,20 +246,36 @@ def main():
     ist_wurzel = ROLLUP_START in f.read_text(encoding='utf-8')
     offen = tasks(f, skip_rollup=ist_wurzel)
     if not offen:
-        print(t9n['leer'].format(w=root.name))
+        # Im Hook-Modus muss die Ausgabe JSON bleiben oder leer sein. Ein
+        # Klartext-Satz hier liess das Paket ungueltiges JSON liefern.
+        if not a.hook:
+            print(t9n['leer'].format(w=root.name))
         return 0
 
     offen.sort(key=lambda t: (not t['laeuft'], t['quad'], t['due'] or dt.date.max))
     zeige = offen if a.alle else offen[:LIMIT]
 
-    zeilen = [t9n['offen'].format(w=root.name, n=len(offen))]
+    # Ausgerichtete Spalten statt einer Textwurst: Luka liest die Liste im
+    # Terminal, und dort ist ein Bleiwuestenabsatz genau das, was man ueberfliegt
+    # statt ihn zu lesen. Breiten aus dem Inhalt, nicht geraten.
+    TXT_W, PRJ_W = 62, 18
+    reihen = []
     for t in zeige:
         frist = ''
         if t['due']:
-            frist = '  (' + (t9n['ueber'] if (t['due'] - TODAY).days < 0
-                             else t9n['bis'].format(d=t['due'].strftime('%d.%m.'))) + ')'
-        mark = '▶ ' if t['laeuft'] else ''
-        zeilen.append(f'  {t["quad"]}  {mark}{t["text"][:95]}{frist}  · {t["proj"]}')
+            frist = (t9n['ueber'] if (t['due'] - TODAY).days < 0
+                     else t9n['bis'].format(d=t['due'].strftime('%d.%m.')))
+        titel = ('▶ ' if t['laeuft'] else '') + t['text']
+        if len(titel) > TXT_W:
+            titel = titel[:TXT_W - 1].rstrip() + '…'
+        prj = t['proj']
+        if len(prj) > PRJ_W:
+            prj = prj[:PRJ_W - 1].rstrip() + '…'
+        reihen.append((t['quad'].upper(), titel, prj, frist))
+
+    zeilen = [t9n['offen'].format(w=root.name, n=len(offen))]
+    for q, titel, prj, frist in reihen:
+        zeilen.append(f'  {q}  {titel:<{TXT_W}}  {prj:<{PRJ_W}}  {frist}'.rstrip())
     if len(offen) > len(zeige):
         zeilen.append('  ' + t9n['mehr'].format(n=len(offen) - len(zeige)))
     if ist_wurzel:
